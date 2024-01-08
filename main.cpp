@@ -1,11 +1,14 @@
+#include <QWidget>
 #include "mainwindow.h"
-
+#include "registerscreen.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    QWidget w;
+    RegisterScreen rs;
+    w.setLayout(&rs);
     w.show();
     return a.exec();
 }

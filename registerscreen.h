@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QImage>
 #include <QLineEdit>
+#include <QWidget>
 #include <QLabel>
 #include <QString>
 #include <QVBoxLayout>
@@ -19,6 +20,7 @@ class RegisterScreen: public QVBoxLayout {
 Q_OBJECT //use the macro to specify Qt to interpret this as a Qt related class
 private:
     QImage* logoImg = nullptr;
+    QLabel* logoLabel = nullptr;
     QLineEdit* nameTf = nullptr;
     QLineEdit* passwordTf1 = nullptr;
     QLineEdit* passwordTf2 = nullptr; //confirmation pass field
@@ -38,6 +40,7 @@ public:
     static const QString NAME_LABEL_STR;
     static const QString PASS_LABEL_STR;
     static const QString PASS_CONFIRM_LABEL_STR;
+    static const int LOGO_IMAGE_LENGTH;
 
 public:
     RegisterScreen();
