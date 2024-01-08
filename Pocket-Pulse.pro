@@ -12,11 +12,13 @@ SOURCES += \
     loginscreen.cpp \
     main.cpp \
     mainwindow.cpp \
+    registerscreen.cpp \
     user.cpp
 
 HEADERS += \
     loginscreen.h \
     mainwindow.h \
+    registerscreen.h \
     user.h
 
 # Default rules for deployment.

@@ -2,9 +2,20 @@
 #define LOGINSCREEN_H
 
 #include <QWidget>
+#include <QImage>
+#include <QTextEdit>
 
-class LoginScreen: QWidget
-{
+#include <cstddef>
+
+using namespace std;
+
+//Login screen
+class LoginScreen: public QWidget{
+private:
+    QImage* logoImg = nullptr;
+    QTextEdit* nameTf = nullptr;
+    QTextEdit* passwordTf1 = nullptr;
+
 public:
     LoginScreen();
 };
