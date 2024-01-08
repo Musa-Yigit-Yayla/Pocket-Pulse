@@ -16,15 +16,7 @@
 using namespace std;
 
 class RegisterScreen: public QVBoxLayout {
-public:
-    RegisterScreen();
-    ~RegisterScreen();
-
-    //some public cont fields
-    static const QString LOGO_PATH;
-    static const QString NAME_LABEL_STR;
-    static const QString PASS_LABEL_STR;
-    static const QString PASS_CONFIRM_LABEL_STR;
+Q_OBJECT //use the macro to specify Qt to interpret this as a Qt related class
 private:
     QImage* logoImg = nullptr;
     QLineEdit* nameTf = nullptr;
@@ -40,6 +32,22 @@ private:
     QVBoxLayout vboxName;
     QVBoxLayout vboxPass1;
     QVBoxLayout vboxPass2;
+public:
+    //some public cont fields
+    static const QString LOGO_PATH;
+    static const QString NAME_LABEL_STR;
+    static const QString PASS_LABEL_STR;
+    static const QString PASS_CONFIRM_LABEL_STR;
+
+public:
+    RegisterScreen();
+    ~RegisterScreen();
+//private methods
+private:
+    void setLayout();
+
+public slots:
+    void btOkHandler();
 };
 
 #endif // REGISTERSCREEN_H
