@@ -34,6 +34,7 @@ private:
     QVBoxLayout vboxName;
     QVBoxLayout vboxPass1;
     QVBoxLayout vboxPass2;
+    QVBoxLayout vboxButton; //vbox to contain btOk and error label when necessary
 public:
     //some public cont fields
     static const QString LOGO_PATH;
@@ -48,6 +49,8 @@ public:
 //private methods
 private:
     void setLayout();
+
+    static const int BTOK_STRETCH = 4;
 
 public slots:
     void btOkHandler();

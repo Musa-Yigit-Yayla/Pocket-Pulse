@@ -20,13 +20,15 @@ RegisterScreen::RegisterScreen(){
     this->nameLabel = new QLabel(RegisterScreen::NAME_LABEL_STR);
     this->pwLabel1 = new QLabel(RegisterScreen::PASS_LABEL_STR);
     this->pwLabel2 = new QLabel(RegisterScreen::PASS_CONFIRM_LABEL_STR);
-    this->setLayout();
 
     this->btOk = new QPushButton(QString("ok"));
+    this->setLayout();
+
+
     QObject::connect(this->btOk, &QPushButton::clicked, this, &RegisterScreen::btOkHandler);
 }
 RegisterScreen::~RegisterScreen(){
-
+    //No need to manually deallocate children widgets & layouts since Qt will handle deallocation of them automatically
 }
 void RegisterScreen::setLayout(){
     this->vboxName.addWidget(this->nameTf);
@@ -40,12 +42,21 @@ void RegisterScreen::setLayout(){
     this->addLayout(&this->vboxName);
     this->addLayout(&this->vboxPass1);
     this->addLayout(&this->vboxPass2);
+
+    QSpacerItem* vboxSpacer = new QSpacerItem(200, 200, QSizePolicy::Fixed, QSizePolicy::Fixed); //spacer for vbox
+
+
+    this->vboxButton.addWidget(this->btOk, RegisterScreen::BTOK_STRETCH, Qt::AlignRight);
+
+    this->addLayout(&this->vboxButton);
+    this->addSpacerItem(vboxSpacer);
+
 }
 void RegisterScreen::btOkHandler(){
 
 }
-const QString RegisterScreen::LOGO_PATH("C:\\Users\\yigit\\Desktop\\Qt_Container\\QT_PROJECTS\\Pocket-Pulse");
+const QString RegisterScreen::LOGO_PATH("C:\\Users\\yigit\\Desktop\\Qt_Container\\QT_PROJECTS\\Pocket-Pulse\\pocket-pulse-logo.jpg");
 const QString RegisterScreen::NAME_LABEL_STR("Your Name: ");
 const QString RegisterScreen::PASS_LABEL_STR("Password: ");
 const QString RegisterScreen::PASS_CONFIRM_LABEL_STR("Confirm Password: ");
-const int RegisterScreen::LOGO_IMAGE_LENGTH = 300;
+const int RegisterScreen::LOGO_IMAGE_LENGTH = 200;
