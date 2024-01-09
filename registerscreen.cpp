@@ -16,27 +16,35 @@ RegisterScreen::RegisterScreen(){
     this->passwordTf2 = new QLineEdit();
     this->passwordTf1->setEchoMode(QLineEdit::EchoMode::Password);
     this->passwordTf2->setEchoMode(QLineEdit::EchoMode::Password);
+    this->passwordTf2->setVisible(false); //passwordTf2 is hidden initially
 
     this->nameLabel = new QLabel(RegisterScreen::NAME_LABEL_STR);
     this->pwLabel1 = new QLabel(RegisterScreen::PASS_LABEL_STR);
     this->pwLabel2 = new QLabel(RegisterScreen::PASS_CONFIRM_LABEL_STR);
+    this->pwLabel2->setVisible(false);
+
+    this->errorLabel = new QLabel();
+    this->errorLabel->setStyleSheet(RegisterScreen::ERROR_LABEL_STYLE);
+    this->errorLabel->setVisible(false);
 
     this->btOk = new QPushButton(QString("ok"));
     this->setLayout();
 
 
     QObject::connect(this->btOk, &QPushButton::clicked, this, &RegisterScreen::btOkHandler);
+    QObject::connect(this->passwordTf1, &QLineEdit::textEdited, this, &RegisterScreen::tf1Changed);
 }
 RegisterScreen::~RegisterScreen(){
     //No need to manually deallocate children widgets & layouts since Qt will handle deallocation of them automatically
 }
 void RegisterScreen::setLayout(){
-    this->vboxName.addWidget(this->nameTf);
     this->vboxName.addWidget(this->nameLabel);
-    this->vboxPass1.addWidget(this->passwordTf1);
+    this->vboxName.addWidget(this->nameTf);
     this->vboxPass1.addWidget(this->pwLabel1);
-    this->vboxPass2.addWidget(this->passwordTf2);
+    this->vboxPass1.addWidget(this->passwordTf1);
     this->vboxPass2.addWidget(this->pwLabel2);
+    this->vboxPass2.addWidget(this->passwordTf2);
+
 
     this->addWidget(this->logoLabel);
     this->addLayout(&this->vboxName);
@@ -45,18 +53,78 @@ void RegisterScreen::setLayout(){
 
     QSpacerItem* vboxSpacer = new QSpacerItem(200, 200, QSizePolicy::Fixed, QSizePolicy::Fixed); //spacer for vbox
 
-
+    this->vboxButton.addWidget(this->errorLabel, RegisterScreen::BTOK_STRETCH, Qt::AlignRight);
     this->vboxButton.addWidget(this->btOk, RegisterScreen::BTOK_STRETCH, Qt::AlignRight);
 
     this->addLayout(&this->vboxButton);
     this->addSpacerItem(vboxSpacer);
 
 }
-void RegisterScreen::btOkHandler(){
+//static method to check whether a given password is acceptable
+//A valid password contains uppercase and lowercase letter(s), and digit(s), and non alphanumeric character(s), and its length >= 8
+bool RegisterScreen::isValidPassword(const string password){
+    bool lengthSatisfied = false;
 
+    bool containsDigit = false;
+    bool containsLc = false;
+    bool containsUc = false;
+    bool containsNac = false; //non alpha numeric
+
+    if(password.length() >= 8){
+        lengthSatisfied = true;
+
+        for(int i = 0; i < password.size(); i++){
+            char ch = password.at(i);
+            if(isdigit(ch)){
+                containsDigit = true;
+            }
+            else if(islower(ch)){
+                containsLc = true;
+            }
+            else if(isupper(ch)){
+                containsUc = true;
+            }
+            else{
+                containsNac = true;
+            }
+        }
+    }
+
+    return lengthSatisfied && containsDigit && containsLc && containsUc && containsNac;
+}
+void RegisterScreen::btOkHandler(){
+    string pw1 = this->passwordTf1->text().toStdString();
+    string pw2 = this->passwordTf2->text().toStdString();
+    string givenName = this->nameTf->text().toStdString();
+
+    if(givenName != "" && pw1 != "" && pw2 != ""){
+        if(pw1 != pw2){
+
+        }
+        else if(RegisterScreen::isValidPassword(pw1)){
+
+        }
+        else{
+
+        }
+    }
+    else{
+        this->errorLabel->setText("Fields cannot be empty!");
+        this->errorLabel->setVisible(true);
+    }
+
+}
+//Slot for handling the text change on password1
+void RegisterScreen::tf1Changed(const QString& text){
+
+    if(!this->passwordTf2->isVisible()){
+        this->passwordTf2->setVisible(true);
+        this->pwLabel2->setVisible(true);
+    }
 }
 const QString RegisterScreen::LOGO_PATH("C:\\Users\\yigit\\Desktop\\Qt_Container\\QT_PROJECTS\\Pocket-Pulse\\pocket-pulse-logo.jpg");
 const QString RegisterScreen::NAME_LABEL_STR("Your Name: ");
 const QString RegisterScreen::PASS_LABEL_STR("Password: ");
 const QString RegisterScreen::PASS_CONFIRM_LABEL_STR("Confirm Password: ");
 const int RegisterScreen::LOGO_IMAGE_LENGTH = 200;
+const QString RegisterScreen::ERROR_LABEL_STYLE = "QLabel {color: red;}";
