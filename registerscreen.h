@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 #include <QSpacerItem>
 #include <QPushButton>
+#include <QMessageBox>
 
 #include <string>
 #include <cstddef>
@@ -54,8 +55,11 @@ public:
 //private methods
 private:
     void setLayout();
+    bool retrieveConfirmation() const; //display pop-up message box
 
     static const int BTOK_STRETCH = 4;
+    static const int NAMETF_MAXLENGTH = 120;
+    static const int PASSTF_MAXLENGTH = 160;
 
 public slots:
     void btOkHandler();

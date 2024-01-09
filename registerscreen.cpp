@@ -1,4 +1,5 @@
 #include "registerscreen.h"
+#include <iostream>
 
 using namespace std;
 
@@ -18,6 +19,10 @@ RegisterScreen::RegisterScreen(){
     this->passwordTf2->setEchoMode(QLineEdit::EchoMode::Password);
     this->passwordTf2->setVisible(false); //passwordTf2 is hidden initially
 
+    this->nameTf->setFixedWidth(RegisterScreen::NAMETF_MAXLENGTH);
+    this->passwordTf1->setFixedWidth(RegisterScreen::PASSTF_MAXLENGTH);
+    this->passwordTf2->setFixedWidth(RegisterScreen::PASSTF_MAXLENGTH);
+
     this->nameLabel = new QLabel(RegisterScreen::NAME_LABEL_STR);
     this->pwLabel1 = new QLabel(RegisterScreen::PASS_LABEL_STR);
     this->pwLabel2 = new QLabel(RegisterScreen::PASS_CONFIRM_LABEL_STR);
@@ -27,7 +32,7 @@ RegisterScreen::RegisterScreen(){
     this->errorLabel->setStyleSheet(RegisterScreen::ERROR_LABEL_STYLE);
     this->errorLabel->setVisible(false);
 
-    this->btOk = new QPushButton(QString("ok"));
+    this->btOk = new QPushButton(QString("continue"));
     this->setLayout();
 
 
@@ -51,7 +56,7 @@ void RegisterScreen::setLayout(){
     this->addLayout(&this->vboxPass1);
     this->addLayout(&this->vboxPass2);
 
-    QSpacerItem* vboxSpacer = new QSpacerItem(200, 200, QSizePolicy::Fixed, QSizePolicy::Fixed); //spacer for vbox
+    QSpacerItem* vboxSpacer = new QSpacerItem(200, 100, QSizePolicy::Fixed, QSizePolicy::Fixed); //spacer for vbox
 
     this->vboxButton.addWidget(this->errorLabel, RegisterScreen::BTOK_STRETCH, Qt::AlignRight);
     this->vboxButton.addWidget(this->btOk, RegisterScreen::BTOK_STRETCH, Qt::AlignRight);
@@ -92,6 +97,18 @@ bool RegisterScreen::isValidPassword(const string password){
 
     return lengthSatisfied && containsDigit && containsLc && containsUc && containsNac;
 }
+//Display popup messagebox
+bool RegisterScreen::retrieveConfirmation() const{
+    QMessageBox confirmBox;
+    confirmBox.setText(QString("Should we proceed ?"));
+    confirmBox.setInformativeText(QString("Once registered, the username cannot be changed. \nAre you sure you want to proceed ?"));
+    confirmBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirmBox.setDefaultButton(QMessageBox::Yes);
+
+    int choice = confirmBox.exec();
+    cout << "Debug: current choice in registering is " << choice << endl;
+    return choice == QMessageBox::Yes;
+}
 void RegisterScreen::btOkHandler(){
     string pw1 = this->passwordTf1->text().toStdString();
     string pw2 = this->passwordTf2->text().toStdString();
@@ -99,13 +116,18 @@ void RegisterScreen::btOkHandler(){
 
     if(givenName != "" && pw1 != "" && pw2 != ""){
         if(pw1 != pw2){
-
+            this->errorLabel->setText("Passwords do not match");
+            this->errorLabel->setVisible(true);
         }
         else if(RegisterScreen::isValidPassword(pw1)){
-
+            this->errorLabel->setVisible(false);
+            if(this->retrieveConfirmation()){
+                //proceed with registration
+            }
         }
         else{
-
+            this->errorLabel->setText("A password must be at least length 8 and\n contain lowercase and uppercase letter(s) \n digit(s) and special character(s)");
+            this->errorLabel->setVisible(true);
         }
     }
     else{
