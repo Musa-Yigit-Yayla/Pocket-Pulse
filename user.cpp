@@ -45,5 +45,14 @@ void User::createUser(string name, string password){
         User::user->saveCode = string(chars);
     }
 }
-
+string User::getPassword(){
+    return User::user->password;
+}
+string User::getUserName(){
+    return User::user->name;
+}
+//Given password is expected to be a valid password
+void User::setPassword(const string password){
+    User::user->password = password;
+}
 User* User::user = nullptr;

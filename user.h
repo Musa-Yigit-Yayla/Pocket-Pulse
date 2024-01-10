@@ -23,5 +23,8 @@ private: //instance data fields
 public:
     static void createUser(string name, string password);
     static void onExit();
+    static string getUserName();
+    static string getPassword();
+    static void setPassword(const string password);
 };
 #endif // USER_H
