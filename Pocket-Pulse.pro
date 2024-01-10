@@ -13,12 +13,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     registerscreen.cpp \
+    savecodepane.cpp \
     user.cpp
 
 HEADERS += \
     loginscreen.h \
     mainwindow.h \
     registerscreen.h \
+    savecodepane.h \
     user.h
 
 # Default rules for deployment.
