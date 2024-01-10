@@ -21,6 +21,7 @@ using namespace std;
 class RegisterScreen: public QVBoxLayout {
 Q_OBJECT //use the macro to specify Qt to interpret this as a Qt related class
 private:
+    QWidget* container = nullptr;
     QImage* logoImg = nullptr;
     QLabel* logoLabel = nullptr;
     QLineEdit* nameTf = nullptr;
@@ -48,7 +49,7 @@ public:
     static const QString ERROR_LABEL_STYLE;
 
 public:
-    RegisterScreen();
+    RegisterScreen(QWidget* container);
     ~RegisterScreen();
 
     static bool isValidPassword(const string password);

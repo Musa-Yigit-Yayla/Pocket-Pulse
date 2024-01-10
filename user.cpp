@@ -20,7 +20,6 @@ void User::createUser(string name, string password){
         //during the very initial instantion of the user, instantiate and display svp
         User::user->svp = new SavecodePane(User::user->name);
 
-
     }
 }
 string User::getPassword(){

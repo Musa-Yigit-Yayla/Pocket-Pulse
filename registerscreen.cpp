@@ -4,41 +4,46 @@
 
 using namespace std;
 
-RegisterScreen::RegisterScreen(){
-    this->logoImg = new QImage(RegisterScreen::LOGO_PATH);
-    QImage tempImg = (this->logoImg->scaled(LOGO_IMAGE_LENGTH, LOGO_IMAGE_LENGTH)); //use scaled method to resize the image
-    this->logoImg = &tempImg;
-    this->logoLabel = new QLabel();
-    this->logoLabel->setPixmap(QPixmap::fromImage(*this->logoImg));
+//Caller is obliged to provide the correct container QWidget
+RegisterScreen::RegisterScreen(QWidget* container){
+    if(container != nullptr){
+        this->container = container;
+        this->logoImg = new QImage(RegisterScreen::LOGO_PATH);
+        QImage tempImg = (this->logoImg->scaled(LOGO_IMAGE_LENGTH, LOGO_IMAGE_LENGTH)); //use scaled method to resize the image
+        this->logoImg = &tempImg;
+        this->logoLabel = new QLabel();
+        this->logoLabel->setPixmap(QPixmap::fromImage(*this->logoImg));
 
 
-    this->nameTf = new QLineEdit();
+        this->nameTf = new QLineEdit();
 
-    this->passwordTf1 = new QLineEdit();
-    this->passwordTf2 = new QLineEdit();
-    this->passwordTf1->setEchoMode(QLineEdit::EchoMode::Password);
-    this->passwordTf2->setEchoMode(QLineEdit::EchoMode::Password);
-    this->passwordTf2->setVisible(false); //passwordTf2 is hidden initially
+        this->passwordTf1 = new QLineEdit();
+        this->passwordTf2 = new QLineEdit();
+        this->passwordTf1->setEchoMode(QLineEdit::EchoMode::Password);
+        this->passwordTf2->setEchoMode(QLineEdit::EchoMode::Password);
+        this->passwordTf2->setVisible(false); //passwordTf2 is hidden initially
 
-    this->nameTf->setFixedWidth(RegisterScreen::NAMETF_MAXLENGTH);
-    this->passwordTf1->setFixedWidth(RegisterScreen::PASSTF_MAXLENGTH);
-    this->passwordTf2->setFixedWidth(RegisterScreen::PASSTF_MAXLENGTH);
+        this->nameTf->setFixedWidth(RegisterScreen::NAMETF_MAXLENGTH);
+        this->passwordTf1->setFixedWidth(RegisterScreen::PASSTF_MAXLENGTH);
+        this->passwordTf2->setFixedWidth(RegisterScreen::PASSTF_MAXLENGTH);
 
-    this->nameLabel = new QLabel(RegisterScreen::NAME_LABEL_STR);
-    this->pwLabel1 = new QLabel(RegisterScreen::PASS_LABEL_STR);
-    this->pwLabel2 = new QLabel(RegisterScreen::PASS_CONFIRM_LABEL_STR);
-    this->pwLabel2->setVisible(false);
+        this->nameLabel = new QLabel(RegisterScreen::NAME_LABEL_STR);
+        this->pwLabel1 = new QLabel(RegisterScreen::PASS_LABEL_STR);
+        this->pwLabel2 = new QLabel(RegisterScreen::PASS_CONFIRM_LABEL_STR);
+        this->pwLabel2->setVisible(false);
 
-    this->errorLabel = new QLabel();
-    this->errorLabel->setStyleSheet(RegisterScreen::ERROR_LABEL_STYLE);
-    this->errorLabel->setVisible(false);
+        this->errorLabel = new QLabel();
+        this->errorLabel->setStyleSheet(RegisterScreen::ERROR_LABEL_STYLE);
+        this->errorLabel->setVisible(false);
 
-    this->btOk = new QPushButton(QString("continue"));
-    this->setLayout();
+        this->btOk = new QPushButton(QString("continue"));
+        this->setLayout();
 
 
-    QObject::connect(this->btOk, &QPushButton::clicked, this, &RegisterScreen::btOkHandler);
-    QObject::connect(this->passwordTf1, &QLineEdit::textEdited, this, &RegisterScreen::tf1Changed);
+        QObject::connect(this->btOk, &QPushButton::clicked, this, &RegisterScreen::btOkHandler);
+        QObject::connect(this->passwordTf1, &QLineEdit::textEdited, this, &RegisterScreen::tf1Changed);
+    }
+
 }
 RegisterScreen::~RegisterScreen(){
     //No need to manually deallocate children widgets & layouts since Qt will handle deallocation of them automatically
@@ -124,6 +129,7 @@ void RegisterScreen::btOkHandler(){
             this->errorLabel->setVisible(false);
             if(this->retrieveConfirmation()){
                 //proceed with registration
+                this->container->close();
                 User::createUser(givenName, pw1);
             }
         }
