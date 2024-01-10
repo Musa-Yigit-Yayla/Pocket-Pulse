@@ -5,8 +5,7 @@
 #include <cstdlib>
 
 using namespace std;
-User::User()
-{
+User::User(){
 
 }
 void User::createUser(string name, string password){

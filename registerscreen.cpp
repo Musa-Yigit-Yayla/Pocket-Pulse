@@ -1,4 +1,5 @@
 #include "registerscreen.h"
+#include "user.h"
 #include <iostream>
 
 using namespace std;
@@ -123,6 +124,7 @@ void RegisterScreen::btOkHandler(){
             this->errorLabel->setVisible(false);
             if(this->retrieveConfirmation()){
                 //proceed with registration
+                User::createUser(givenName, pw1);
             }
         }
         else{

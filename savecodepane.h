@@ -13,7 +13,6 @@
 
 using namespace std;
 class SavecodePane: public QWidget{
-Q_OBJECT
 private:
     QLabel label1;
     QLabel label2;

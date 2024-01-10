@@ -10,6 +10,8 @@ SavecodePane::SavecodePane(const string username){
     this->codeLabel.setText(QString::fromStdString(CODE_HIDDEN_TEXT));
     this->codeLabel.setStyleSheet(QString::fromStdString("border: 2px solid black;"));
 
+    this->setLayout();
+
     QObject::connect(this->btReveal, &QPushButton::clicked, this, &SavecodePane::btRevealHandler);
     QObject::connect(this->btRegenerate, &QPushButton::clicked, this, &SavecodePane::btRegenHandler);
 }
