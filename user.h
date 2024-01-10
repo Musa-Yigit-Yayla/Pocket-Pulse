@@ -1,6 +1,7 @@
 #ifndef USER_H
 #define USER_H
 
+#include "savecodepane.h"
 #include <cstddef>
 #include <string>
 
@@ -19,6 +20,7 @@ private: //instance data fields
     string name;
     string password;
     string saveCode; //lifetime saving code
+    SavecodePane* svp = nullptr;
 
 public:
     static void createUser(string name, string password);

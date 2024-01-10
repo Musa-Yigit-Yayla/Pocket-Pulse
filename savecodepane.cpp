@@ -1,9 +1,8 @@
 #include "savecodepane.h"
 
-SavecodePane::SavecodePane(const string username, const string savecode){
+SavecodePane::SavecodePane(const string username){
     this->btReveal = new QPushButton(QString("reveal"));
     this->btRegenerate = new QPushButton(QString("regenerate"));
-    this->btReturn = new QPushButton(QString("return to\n registration"));
     this->label1.setText(QString("Your privacy is our main concern"));
 
     string labelHeader2 = username + ", we will provide you a saving code.\nYou may need this code to reset your password.\nPlease ensure that you write it somewhere safe";
@@ -13,7 +12,6 @@ SavecodePane::SavecodePane(const string username, const string savecode){
 
     QObject::connect(this->btReveal, &QPushButton::clicked, this, &SavecodePane::btRevealHandler);
     QObject::connect(this->btRegenerate, &QPushButton::clicked, this, &SavecodePane::btRegenHandler);
-    QObject::connect(this->btReturn, &QPushButton::clicked, this, &SavecodePane::btReturnHandler);
 }
 void SavecodePane::setLayout(){
     //instantiate the layouts
@@ -30,10 +28,36 @@ void SavecodePane::setLayout(){
 void SavecodePane::btRevealHandler(){
 
 }
+string SavecodePane::generateCode(){
+    char chars[saveCodeLength];
+    chars[0] = rand() % 10 + 48;
+    chars[1] = rand() % 26 + 65; //uppercase letters
+    for(int i = 2; i < saveCodeLength; i++){
+        bool isLetter = rand() % 2 == 0;
+        char ch;
+        if(isLetter){
+            ch = rand() % 26 + 65;
+            if(rand() % 2 == 0){
+                //convert to lowercase
+                ch = tolower(ch);
+            }
+        }
+        else{
+            ch = rand() % 10 + 48;
+        }
+        chars[i] = ch;
+    }
+    //shuffle the generated chars
+    for(int i = 0; i < saveCodeLength; i++){
+        int j = rand() % saveCodeLength;
+
+        char temp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = temp;
+    }
+    return string(chars);
+}
 void SavecodePane::btRegenHandler(){
     //Regenerate the saving code
-}
-void SavecodePane::btReturnHandler(){
-
 }
 const string SavecodePane::CODE_HIDDEN_TEXT = "******";

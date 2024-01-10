@@ -13,28 +13,27 @@
 
 using namespace std;
 class SavecodePane: public QWidget{
+Q_OBJECT
 private:
     QLabel label1;
     QLabel label2;
     QLabel codeLabel;
     QPushButton* btReveal = nullptr;
     QPushButton* btRegenerate = nullptr;
-    QPushButton* btReturn = nullptr; //button for returning back to registerscreen
     bool isCodeHidden = true;
-
+    const int saveCodeLength = 6;
     //layout data fields
     QVBoxLayout* vbox = nullptr; //high level vbox;
     QGridLayout* codeBox = nullptr;
 
     void setLayout();
 public:
-    SavecodePane(const string username, const string passcode);
-
+    SavecodePane(const string username);
+    string generateCode();
     static const string CODE_HIDDEN_TEXT;
 public slots:
     void btRevealHandler();
     void btRegenHandler();
-    void btReturnHandler();
 };
 
 #endif // SAVECODEPANE_H
