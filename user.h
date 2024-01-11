@@ -28,5 +28,7 @@ public:
     static string getUserName();
     static string getPassword();
     static void setPassword(const string password);
+    static void setSaveCode(const string savecode);
+    static SavecodePane* getSVP(); //get the pointer to save code pane
 };
 #endif // USER_H

@@ -1,7 +1,9 @@
 #include "savecodepane.h"
 
 SavecodePane::SavecodePane(const string username){
-    this->btReveal = new QPushButton(QString("reveal"));
+    this->currCode = this->generateCode();
+
+    this->btReveal = new QCheckBox(QString("reveal"));
     this->btRegenerate = new QPushButton(QString("regenerate"));
     this->label1.setText(QString("Your privacy is our main concern"));
 
@@ -10,12 +12,13 @@ SavecodePane::SavecodePane(const string username){
     this->codeLabel.setText(QString::fromStdString(CODE_HIDDEN_TEXT));
     this->codeLabel.setStyleSheet(QString::fromStdString("border: 2px solid black;"));
 
-    this->setLayout();
+    this->setLayoutManagement();
+    this->setLayout(this->vbox);
 
-    QObject::connect(this->btReveal, &QPushButton::clicked, this, &SavecodePane::btRevealHandler);
+    QObject::connect(this->btReveal, &QCheckBox::clicked, this, &SavecodePane::btRevealHandler);
     QObject::connect(this->btRegenerate, &QPushButton::clicked, this, &SavecodePane::btRegenHandler);
 }
-void SavecodePane::setLayout(){
+void SavecodePane::setLayoutManagement(){
     //instantiate the layouts
     this->vbox = new QVBoxLayout(this);
     this->codeBox = new QGridLayout(this);
@@ -26,9 +29,19 @@ void SavecodePane::setLayout(){
     this->codeBox->addWidget(&this->codeLabel, 0, 0, 2, 1);
     this->codeBox->addWidget(this->btReveal, 0, 1);
     this->codeBox->addWidget(this->btRegenerate, 1, 1);
-}
-void SavecodePane::btRevealHandler(){
 
+    this->vbox->addLayout(this->codeBox);
+}
+void SavecodePane::btRevealHandler(bool checked){
+    if(checked){
+        //reveal the code
+        this->codeLabel.setText(QString::fromStdString(this->currCode));
+        this->codeLabel.setStyleSheet("QLabel{color: red; border: 2px solid black;}");
+    }
+    else{
+        this->codeLabel.setText(QString::fromStdString(CODE_HIDDEN_TEXT));
+        this->codeLabel.setStyleSheet("QLabel{color: black; border: 2px solid black;}");
+    }
 }
 string SavecodePane::generateCode(){
     char chars[saveCodeLength];
@@ -61,5 +74,9 @@ string SavecodePane::generateCode(){
 }
 void SavecodePane::btRegenHandler(){
     //Regenerate the saving code
+    this->currCode = this->generateCode();
+    //redraw the text by simply invoking the btRevealHandler without changing the checked property
+    bool isChecked = this->btReveal->isChecked();
+    this->btRevealHandler(isChecked);
 }
 const string SavecodePane::CODE_HIDDEN_TEXT = "******";

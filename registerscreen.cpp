@@ -129,8 +129,16 @@ void RegisterScreen::btOkHandler(){
             this->errorLabel->setVisible(false);
             if(this->retrieveConfirmation()){
                 //proceed with registration
-                this->container->close();
+                this->container->close(); //programatically close the container QWidget
                 User::createUser(givenName, pw1);
+
+                SavecodePane* svpPtr = User::getSVP();
+                if(svpPtr != nullptr){
+                    svpPtr->show();
+                }
+                else{
+                    cout << "Debug: SVP pointer retrieved in RegisterScreen::btOkHandler is nullptr" << endl;
+                }
             }
         }
         else{
