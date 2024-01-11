@@ -21,7 +21,9 @@ private:
     QLabel label2;
     QLabel codeLabel;
     QCheckBox* btReveal = nullptr;
+    QCheckBox* btConfirmed = nullptr;
     QPushButton* btRegenerate = nullptr;
+    QPushButton* btFinish = nullptr;
     bool isCodeHidden = true;
     const int saveCodeLength = 6;
     //layout data fields
@@ -30,13 +32,17 @@ private:
     string currCode;
 
     void setLayoutManagement();
+    static const int CODE_LABEL_FONT_SIZE = 30;
+    static const int LABEL1_FONT_SIZE = 50;
 public:
     SavecodePane(const string username);
+    ~SavecodePane();
     string generateCode();
     static const string CODE_HIDDEN_TEXT;
 public slots:
-    void btRevealHandler(bool checked);
+    void btRevealHandler(int checked);
     void btRegenHandler();
+    void btFinishHandler();
 };
 
 #endif // SAVECODEPANE_H
