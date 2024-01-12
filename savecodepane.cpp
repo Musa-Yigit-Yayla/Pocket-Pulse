@@ -8,6 +8,9 @@ SavecodePane::SavecodePane(const string username){
     this->btConfirmed = new QCheckBox(QString("I have saved my lifetime save code in a secure location"));
     this->btRegenerate = new QPushButton(QString("regenerate"));
     this->btFinish = new QPushButton(QString("finish"));
+    this->btConfirmed->setVisible(false);
+    this->btFinish->setVisible(false);
+
     this->label1.setText(QString("Your privacy is our main concern"));
     string label1Style = "QLabel{font-size: " + to_string(SavecodePane::LABEL1_FONT_SIZE) + ";}";
     this->label1.setStyleSheet(QString::fromStdString(label1Style));
@@ -36,9 +39,11 @@ SavecodePane::~SavecodePane(){
     delete this->btFinish;
 
     delete this->codeBox;
+    delete this->codeBoxContainer;
     delete this->vbox;
 }
 void SavecodePane::setLayoutManagement(){
+    this->codeBoxContainer = new QWidget(this);
     //instantiate the layouts
     this->vbox = new QVBoxLayout(this);
     this->codeBox = new QGridLayout(this);
@@ -52,7 +57,13 @@ void SavecodePane::setLayoutManagement(){
     this->codeBox->addWidget(this->btConfirmed, 2, 0);
     this->codeBox->addWidget(this->btFinish, 2, 1);
 
-    this->vbox->addLayout(this->codeBox);
+    //wrap the codeBox layout into the QWidget
+    this->codeBoxContainer->setLayout(this->codeBox);
+    this->vbox->addWidget(this->codeBoxContainer);
+    this->setFixedWidth(FIXED_WIDTH);
+    this->setFixedHeight(FIXED_HEIGHT);
+    //this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
 }
 void SavecodePane::btRevealHandler(int checked){
     if(checked){

@@ -69,7 +69,6 @@ void RegisterScreen::setLayout(){
 
     this->addLayout(&this->vboxButton);
     this->addSpacerItem(vboxSpacer);
-
 }
 //static method to check whether a given password is acceptable
 //A valid password contains uppercase and lowercase letter(s), and digit(s), and non alphanumeric character(s), and its length >= 8

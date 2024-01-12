@@ -47,6 +47,8 @@ public:
     static const QString PASS_CONFIRM_LABEL_STR;
     static const int LOGO_IMAGE_LENGTH;
     static const QString ERROR_LABEL_STYLE;
+    static const int CONTAINER_FIXED_WIDTH = 250; //recommended fixed width for the container
+    static const int CONTAINER_FIXED_HEIGHT = 450;
 
 public:
     RegisterScreen(QWidget* container);

@@ -28,6 +28,7 @@ private:
     const int saveCodeLength = 6;
     //layout data fields
     QVBoxLayout* vbox = nullptr; //high level vbox;
+    QWidget* codeBoxContainer = nullptr;
     QGridLayout* codeBox = nullptr;
     string currCode;
 
@@ -39,6 +40,8 @@ public:
     ~SavecodePane();
     string generateCode();
     static const string CODE_HIDDEN_TEXT;
+    static const int FIXED_WIDTH = 450;
+    static const int FIXED_HEIGHT = 200;
 public slots:
     void btRevealHandler(int checked);
     void btRegenHandler();
