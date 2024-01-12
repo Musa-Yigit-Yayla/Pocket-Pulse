@@ -9,7 +9,6 @@
 #include <QCheckBox>
 #include <QWidget>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QGridLayout>
 #include <string>
 #include <cstddef>
@@ -29,7 +28,6 @@ private:
     const int saveCodeLength = 6;
     //layout data fields
     QVBoxLayout* vbox = nullptr; //high level vbox;
-    QHBoxLayout* hboxConfirm = nullptr;
     QGridLayout* codeBox = nullptr;
     string currCode;
 
