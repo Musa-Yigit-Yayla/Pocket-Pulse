@@ -35,12 +35,14 @@ SavecodePane::~SavecodePane(){
     delete this->btRegenerate;
     delete this->btFinish;
 
+    delete this->hboxConfirm;
     delete this->codeBox;
     delete this->vbox;
 }
 void SavecodePane::setLayoutManagement(){
     //instantiate the layouts
     this->vbox = new QVBoxLayout(this);
+    this->hboxConfirm = new QHBoxLayout(this);
     this->codeBox = new QGridLayout(this);
 
     this->vbox->addWidget(&this->label1);
@@ -49,10 +51,14 @@ void SavecodePane::setLayoutManagement(){
     this->codeBox->addWidget(&this->codeLabel, 0, 0, 2, 1);
     this->codeBox->addWidget(this->btReveal, 0, 1);
     this->codeBox->addWidget(this->btRegenerate, 1, 1);
-    this->codeBox->addWidget(this->btConfirmed, 2, 0);
-    this->codeBox->addWidget(this->btFinish, 2, 1);
+    //this->codeBox->addWidget(this->btConfirmed, 2, 0);
+    //this->codeBox->addWidget(this->btFinish, 2, 1);
+
+    this->hboxConfirm->addWidget(this->btConfirmed);
+    this->hboxConfirm->addWidget(this->btFinish);
 
     this->vbox->addLayout(this->codeBox);
+    this->vbox->addLayout(this->hboxConfirm);
 }
 void SavecodePane::btRevealHandler(int checked){
     if(checked){
