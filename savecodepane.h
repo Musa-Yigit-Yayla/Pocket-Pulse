@@ -43,6 +43,7 @@ public slots:
     void btRevealHandler(int checked);
     void btRegenHandler();
     void btFinishHandler();
+    void confirmCheckHandler(int checked);
 };
 
 #endif // SAVECODEPANE_H

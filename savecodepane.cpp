@@ -23,7 +23,8 @@ SavecodePane::SavecodePane(const string username){
 
     QObject::connect(this->btReveal, &QCheckBox::stateChanged, this, &SavecodePane::btRevealHandler);
     QObject::connect(this->btRegenerate, &QPushButton::clicked, this, &SavecodePane::btRegenHandler);
-    //QObject::connect(this->btFinish
+    QObject::connect(this->btFinish, &QPushButton::clicked, this, &SavecodePane::btFinishHandler);
+    QObject::connect(this->btConfirmed, &QCheckBox::stateChanged, &SavecodePane::confirmCheckHandler);
 }
 SavecodePane::~SavecodePane(){
     this->codeBox->removeWidget(this->btReveal);
@@ -51,15 +52,17 @@ void SavecodePane::setLayoutManagement(){
 
     this->vbox->addLayout(this->codeBox);
 }
-void SavecodePane::btRevealHandler(bool checked){
+void SavecodePane::btRevealHandler(int checked){
     if(checked){
         //reveal the code
         this->codeLabel.setText(QString::fromStdString(this->currCode));
         this->codeLabel.setStyleSheet("QLabel{color: red; border: 2px solid black;}");
+        this->btFinish->setVisible(true);
     }
     else{
         this->codeLabel.setText(QString::fromStdString(CODE_HIDDEN_TEXT));
         this->codeLabel.setStyleSheet("QLabel{color: black; border: 2px solid black;}");
+        this->btFinish->setVisible(false);
     }
 }
 string SavecodePane::generateCode(){
@@ -104,8 +107,15 @@ void SavecodePane::btFinishHandler(){
         User::setSaveCode(this->currCode);
         this->close();
     }
+    else{
+        //set the stroke of the confirm checkbox to red
+        this->btConfirmed->setStyleSheet("QCheckBox{border-color: red}");
+    }
 }
-void SavecodePane::btRevealHandler(int checked){
-
+void SavecodePane::confirmCheckHandler(int checked){
+    if(checked){
+        //set the stroke back to normal
+        this->btConfirmed->setStyleSheet("QCheckBox{border-color: black}");
+    }
 }
 const string SavecodePane::CODE_HIDDEN_TEXT = "******";
