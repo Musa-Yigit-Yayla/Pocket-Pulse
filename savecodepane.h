@@ -12,6 +12,7 @@
 #include <QGridLayout>
 #include <string>
 #include <cstddef>
+#include "RegisterScreen.h"
 
 
 using namespace std;
@@ -31,12 +32,13 @@ private:
     QWidget* codeBoxContainer = nullptr;
     QGridLayout* codeBox = nullptr;
     string currCode;
+    RegisterScreen* registerScreen = nullptr;
 
     void setLayoutManagement();
     static const int CODE_LABEL_FONT_SIZE = 30;
     static const int LABEL1_FONT_SIZE = 50;
 public:
-    SavecodePane(const string username);
+    SavecodePane(const string username, RegisterScreen* const registerScreen );
     ~SavecodePane();
     string generateCode();
     static const string CODE_HIDDEN_TEXT;

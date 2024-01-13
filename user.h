@@ -12,23 +12,18 @@ using namespace std;
  */
 class User{
 
-private:
-    static User* user;
-    User(); //private constructor for providing single instance
-    ~User();
 private: //instance data fields
     string name;
     string password;
     string saveCode; //lifetime saving code
-    SavecodePane* svp = nullptr;
 
 public:
-    static void createUser(string name, string password);
-    static void onExit();
-    static string getUserName();
-    static string getPassword();
-    static void setPassword(const string password);
-    static void setSaveCode(const string savecode);
-    static SavecodePane* getSVP(); //get the pointer to save code pane
+    User(string name, string password, string savecode); //private constructor for providing single instance
+    ~User();
+
+    string getUserName() const;
+    string getPassword() const;
+    string getSaveCode() const;
+    void setPassword(const string password);
 };
 #endif // USER_H

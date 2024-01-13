@@ -39,6 +39,7 @@ private:
     QVBoxLayout vboxPass2;
     QVBoxLayout vboxButton; //vbox to contain btOk and error label when necessary
 
+
 public:
     //some public cont fields
     static const QString LOGO_PATH;
@@ -54,6 +55,7 @@ public:
     RegisterScreen(QWidget* container);
     ~RegisterScreen();
 
+    void setSaveCode(string saveCode);
     static bool isValidPassword(const string password);
 //private methods
 private:

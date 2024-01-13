@@ -1,7 +1,11 @@
 #include "savecodepane.h"
 #include "user.h"
+#include <iostream>
 
-SavecodePane::SavecodePane(const string username){
+using namespace std;
+
+SavecodePane::SavecodePane(const string username, RegisterScreen* const registerScreen){
+    this->registerScreen = registerScreen;
     this->currCode = this->generateCode();
 
     this->btReveal = new QCheckBox(QString("reveal"));
@@ -120,8 +124,9 @@ void SavecodePane::btRegenHandler(){
 void SavecodePane::btFinishHandler(){
     //proceed if the btConfirmed checkbox is checked
     if(this->btConfirmed->isChecked()){
-        User::setSaveCode(this->currCode);
-        this->close();
+        cout << "Debug: Executing if block in SavecodePane::btFinishHandler " << endl;
+        this->registerScreen->setSaveCode(this->currCode); //transfer the saveCode to registerScreen
+        this->close(); //programmatically close the widget
     }
     else{
         //set the stroke of the confirm checkbox to red

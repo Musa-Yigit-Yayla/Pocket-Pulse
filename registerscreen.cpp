@@ -70,6 +70,18 @@ void RegisterScreen::setLayout(){
     this->addLayout(&this->vboxButton);
     this->addSpacerItem(vboxSpacer);
 }
+/*Sets the given saveCode and insantiates a new user
+ * Then saves the instantiated user to database upon success
+ * Invoke only from savecodepane
+*/
+void RegisterScreen::setSaveCode(string saveCode){
+    cout << "Debug: rs::setSaveCode invoked with code " << saveCode << endl;
+    string givenName = this->nameTf->text().toStdString();
+    string pw1 = this->passwordTf1->text().toStdString();
+    User* newUser = new User(givenName, pw1, saveCode);
+
+    //proceed with registering the user to the DB
+}
 //static method to check whether a given password is acceptable
 //A valid password contains uppercase and lowercase letter(s), and digit(s), and non alphanumeric character(s), and its length >= 8
 bool RegisterScreen::isValidPassword(const string password){
@@ -129,15 +141,20 @@ void RegisterScreen::btOkHandler(){
             if(this->retrieveConfirmation()){
                 //proceed with registration
                 this->container->close(); //programatically close the container QWidget
-                User::createUser(givenName, pw1);
 
-                SavecodePane* svpPtr = User::getSVP();
-                if(svpPtr != nullptr){
-                    svpPtr->show();
+                SavecodePane* svp = new SavecodePane(givenName, this);
+                svp->show();
+
+                /*cout << "Debug: saveCode is " << this->saveCode << " with length " << this->saveCode.length() << endl;
+                //after svp execution completes, we should check whether the saveCode datafield has been updated successfuly or not
+                if(this->saveCode.length() > 0){
+                    //saveCode retrieved successfully, instantiate the user
+                    cout << "Debug: instantiating the user with saveCode: " << this->saveCode << endl;
+                    User* newUser = new User(givenName, pw1, this->saveCode);
                 }
                 else{
-                    cout << "Debug: SVP pointer retrieved in RegisterScreen::btOkHandler is nullptr" << endl;
-                }
+                    cout << "Exception: user abandoned registration without saving the saveCode" << endl;
+                }*/
             }
         }
         else{
