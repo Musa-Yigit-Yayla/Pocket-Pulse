@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <QSqlQuery>
 #include <QSqlDatabase>
+#include <QSqlError>
 
 using namespace std;
 /**
@@ -15,14 +16,15 @@ class MainController{
 private:
     QSqlDatabase db;
 
+    //static constants
+    static const string DB_NAME; //change the name when the app is deployed and ensure it matches the created db file
+    static const string DB_PASSWORD;
+    static const string DB_USERNAME;
 public:
     MainController();
     ~MainController();
-    static bool createUser(User* user);
+    bool createUser(User* user);
 
-    //static constants
-    static const string DB_NAME;; //change the name when the app is deployed and ensure it matches the created db file
-    static const string DB_PASSWORD;
 };
 
 #endif // MAINCONTROLLER_H

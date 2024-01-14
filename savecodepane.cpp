@@ -1,5 +1,6 @@
 #include "savecodepane.h"
 #include "user.h"
+#include "maincontroller.h"
 #include <iostream>
 
 using namespace std;
@@ -119,6 +120,7 @@ void SavecodePane::btRegenHandler(){
     this->currCode = this->generateCode();
     //redraw the text by simply invoking the btRevealHandler without changing the checked property
     bool isChecked = this->btReveal->isChecked();
+    this->btConfirmed->setCheckState(Qt::CheckState::Unchecked); //set unchecked
     this->btRevealHandler(isChecked);
 }
 void SavecodePane::btFinishHandler(){
@@ -127,6 +129,8 @@ void SavecodePane::btFinishHandler(){
         cout << "Debug: Executing if block in SavecodePane::btFinishHandler " << endl;
         this->registerScreen->setSaveCode(this->currCode); //transfer the saveCode to registerScreen
         this->close(); //programmatically close the widget
+
+        MainController mc;
     }
     else{
         //set the stroke of the confirm checkbox to red

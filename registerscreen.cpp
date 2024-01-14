@@ -62,7 +62,7 @@ void RegisterScreen::setLayout(){
     this->addLayout(&this->vboxPass1);
     this->addLayout(&this->vboxPass2);
 
-    QSpacerItem* vboxSpacer = new QSpacerItem(200, 100, QSizePolicy::Fixed, QSizePolicy::Fixed); //spacer for vbox
+    QSpacerItem* vboxSpacer = new QSpacerItem(100, 50, QSizePolicy::Fixed, QSizePolicy::Fixed); //spacer for vbox
 
     this->vboxButton.addWidget(this->errorLabel, RegisterScreen::BTOK_STRETCH, Qt::AlignRight);
     this->vboxButton.addWidget(this->btOk, RegisterScreen::BTOK_STRETCH, Qt::AlignRight);
