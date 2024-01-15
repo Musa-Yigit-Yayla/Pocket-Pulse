@@ -4,7 +4,7 @@
 using namespace std;
 MainController::MainController(){
     //Create and establish the database connection
-    this->db = QSqlDatabase::addDatabase("QMYSQL");
+    this->db = QSqlDatabase::addDatabase("QSQLITE");
     this->db.setHostName("localhost");
     this->db.setPort(3306);
     this->db.setPassword(QString::fromStdString(*(const_cast<string*>(&DB_PASSWORD))));

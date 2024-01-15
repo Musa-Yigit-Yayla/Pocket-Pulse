@@ -2,6 +2,7 @@
 #include "user.h"
 #include "maincontroller.h"
 #include <iostream>
+#include <qDebug>
 
 using namespace std;
 
@@ -130,6 +131,7 @@ void SavecodePane::btFinishHandler(){
         this->registerScreen->setSaveCode(this->currCode); //transfer the saveCode to registerScreen
         this->close(); //programmatically close the widget
 
+        qDebug() << "Debug: available drivers are " << QSqlDatabase::drivers();
         MainController mc;
     }
     else{
