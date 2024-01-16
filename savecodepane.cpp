@@ -30,6 +30,8 @@ SavecodePane::SavecodePane(const string username, RegisterScreen* const register
     this->setLayoutManagement();
     this->setLayout(this->vbox);
 
+
+
     QObject::connect(this->btReveal, &QCheckBox::stateChanged, this, &SavecodePane::btRevealHandler);
     QObject::connect(this->btRegenerate, &QPushButton::clicked, this, &SavecodePane::btRegenHandler);
     QObject::connect(this->btFinish, &QPushButton::clicked, this, &SavecodePane::btFinishHandler);
@@ -130,8 +132,6 @@ void SavecodePane::btFinishHandler(){
         cout << "Debug: Executing if block in SavecodePane::btFinishHandler " << endl;
         this->registerScreen->setSaveCode(this->currCode); //transfer the saveCode to registerScreen
         this->close(); //programmatically close the widget
-
-        MainController mc;
     }
     else{
         //set the stroke of the confirm checkbox to red
