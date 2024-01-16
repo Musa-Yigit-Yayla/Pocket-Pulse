@@ -7,6 +7,7 @@
 #include <QSqlQuery>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <qDebug>
 
 using namespace std;
 /**

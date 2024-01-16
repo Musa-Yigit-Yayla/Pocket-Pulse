@@ -26,28 +26,34 @@ MainController::~MainController(){
 //Namely given user is expected to be a new user, not an existing one
 bool MainController::createUser(User* user){
     bool success = false;
+    cout << "Debug: MainController::createUser has been invoked" << endl;
     if(user != nullptr){
         //check whether the User table exists or not
         if(!this->tableExists(MainController::USER_TABLE_NAME)){
+            cout << "Debug: createUser execution entered table creation condition" << endl;
             //create the user table
-            QString createUserTable = "CREATE TABLE :userTableName (id INTEGER PRIMARY KEY, name TEXT, password TEXT, savecode TEXT);";
+            QString createUserTable = QString::fromStdString("CREATE TABLE " + USER_TABLE_NAME +  " (id INTEGER PRIMARY KEY, name TEXT, password TEXT, savecode TEXT);");
             QSqlQuery userTableQuery(this->db);
             userTableQuery.prepare(createUserTable);
-            userTableQuery.bindValue(":userTableName", QString::fromStdString(USER_TABLE_NAME));
+            //userTableQuery.bindValue(":userTableName", QString::fromStdString(USER_TABLE_NAME));
             userTableQuery.exec();
         }
 
         //proceed registering the user
-        QString insertUser = "INSERT INTO :userTableName VALUES (NULL, ':userName', ':password', ':savecode');";
+        QString insertUser = QString::fromStdString("INSERT INTO " + USER_TABLE_NAME + " VALUES (NULL, :userName, :password, :savecode);");
         QSqlQuery query(this->db);
         query.prepare(insertUser);
-        query.bindValue(":userTableName", QString::fromStdString(USER_TABLE_NAME));
+        //query.bindValue(":userTableName", QString::fromStdString(USER_TABLE_NAME));
         query.bindValue(":userName", QString::fromStdString(user->getUserName()));
         query.bindValue(":password", QString::fromStdString(user->getPassword()));
         query.bindValue(":savecode", QString::fromStdString(user->getSaveCode()));
 
         success = query.exec();
+        if(!success){
+            qDebug() << "Debug: Error inserting the user: " << (query.lastError());
+        }
     }
+    cout << "Debug: MainController::createUser is returning success " << success << endl;
     return success;
 }
 bool MainController::tableExists(string tableName){
