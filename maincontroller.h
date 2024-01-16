@@ -24,7 +24,9 @@ public:
     MainController();
     ~MainController();
     bool createUser(User* user);
+    bool tableExists(string tableName);
 
+    static const string USER_TABLE_NAME;
 };
 
 #endif // MAINCONTROLLER_H
