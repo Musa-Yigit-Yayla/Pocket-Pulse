@@ -91,6 +91,7 @@ void RegisterScreen::setSaveCode(string saveCode){
     else{
         cout << "Debug: user cannot be registered to the db (printed by RegisterScreen::SetSaveCode)";
     }
+    delete mc;
 }
 //static method to check whether a given password is acceptable
 //A valid password contains uppercase and lowercase letter(s), and digit(s), and non alphanumeric character(s), and its length >= 8
@@ -142,8 +143,13 @@ void RegisterScreen::btOkHandler(){
     string givenName = this->nameTf->text().toStdString();
 
     if(givenName != "" && pw1 != "" && pw2 != ""){
+        MainController* mc = new MainController();
         if(pw1 != pw2){
             this->errorLabel->setText("Passwords do not match");
+            this->errorLabel->setVisible(true);
+        }
+        else if(mc->userExists(givenName)){
+            this->errorLabel->setText("Given username is already in use\nKindly specify another username");
             this->errorLabel->setVisible(true);
         }
         else if(RegisterScreen::isValidPassword(pw1)){

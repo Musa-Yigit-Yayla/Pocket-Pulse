@@ -20,6 +20,10 @@ MainController::MainController(){
 MainController::~MainController(){
     if(this->db.isOpen()){
         this->db.close();
+        if(!this->db.isOpen()){
+            cout << "Debug: Database connection has been closed successfully" << endl;
+        }
+
     }
 }
 //Given user has to be checked from the caller to ensure that no such user exists
@@ -54,6 +58,25 @@ bool MainController::createUser(User* user){
         }
     }
     cout << "Debug: MainController::createUser is returning success " << success << endl;
+    return success;
+}
+bool MainController::userExists(string username){
+    bool success = false;
+
+    QSqlQuery query(this->db);
+    query.prepare(QString::fromStdString("SELECT * FROM " + USER_TABLE_NAME + " WHERE name = :username;"));
+    query.bindValue(QString::fromStdString(":username"), QString::fromStdString(username));
+
+    success = query.exec();
+    cout << "Debug: userExists query.exec is " << success << endl;
+
+    if(!success){
+        qDebug() << "Debug: userExists query error is: " << query.lastError().text();
+    }
+
+    success = success & query.next();
+    cout << "Debug: userExists query.next is " << success << endl;
+    cout << "Debug: returning " << success << " from MainController::userExists" << endl;
     return success;
 }
 bool MainController::tableExists(string tableName){
