@@ -1,5 +1,4 @@
 #include <QWidget>
-#include "mainwindow.h"
 #include "registerscreen.h"
 #include <QApplication>
 

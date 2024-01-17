@@ -18,10 +18,10 @@ CONFIG += c++17
 
 
 SOURCES += \
+    MainScreen.cpp \
     loginscreen.cpp \
     main.cpp \
     maincontroller.cpp \
-    mainwindow.cpp \
     registerscreen.cpp \
     savecodepane.cpp \
     user.cpp
@@ -29,7 +29,7 @@ SOURCES += \
 HEADERS += \
     loginscreen.h \
     maincontroller.h \
-    mainwindow.h \
+    mainscreen.h \
     registerscreen.h \
     savecodepane.h \
     user.h

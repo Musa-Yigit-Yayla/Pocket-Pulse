@@ -1,6 +1,6 @@
 #include "registerscreen.h"
 #include "user.h"
-#include "savecodepane.h";
+#include "savecodepane.h"
 #include "maincontroller.h"
 #include <iostream>
 
@@ -87,11 +87,14 @@ void RegisterScreen::setSaveCode(string saveCode){
     bool userCreated = mc->createUser(newUser);
     if(userCreated){
         cout << "Debug: user " << newUser->getUserName() <<  " has successfuly been registered to the db" << endl;
+        delete mc;
+        //instantiate the main screen since the registration is successfull
     }
     else{
         cout << "Debug: user cannot be registered to the db (printed by RegisterScreen::SetSaveCode)";
+        delete mc;
     }
-    delete mc;
+
 }
 //static method to check whether a given password is acceptable
 //A valid password contains uppercase and lowercase letter(s), and digit(s), and non alphanumeric character(s), and its length >= 8
