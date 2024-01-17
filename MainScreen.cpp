@@ -10,6 +10,7 @@ MainScreen::MainScreen(User* registeredUser){
     this->user = registeredUser;
 
     //ToDo layout management
+    this->setLayoutManagement();
 }
 //invoke when login is successfully performed
 MainScreen::MainScreen(string username){
@@ -27,7 +28,24 @@ MainScreen::~MainScreen(){
         delete this->user;
     }
 }
+void MainScreen::setLayoutManagement(){
+    this->wrapper = new QWidget();
+    this->hbox1 = new QHBoxLayout(this->wrapper);
+    this->hbox2 = new QHBoxLayout(this->wrapper);
 
+    this->vboxSide = new QVBoxLayout(this->wrapper);
+    this->vboxScrollable = new QVBoxLayout(this->wrapper);
+    this->setScrollableContent();
+
+    this->qsa = new QScrollArea(this->wrapper);
+}
+void MainScreen::setScrollableContent(){
+    //initialize the pushbuttons with their icons, then add them
+    QPushButton* toolExpense = new QPushButton();
+    this->toolButtons.push_back(toolExpense);
+
+    QObject::connect(toolExpense, &QPushButton::clicked, this, &MainScreen::toolExpenseSlot);
+}
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
         this->wrapper->show();
@@ -37,4 +55,27 @@ void MainScreen::show(){
 //set the visiblity of the container QWidget to false
 void MainScreen::close(){
     this->wrapper->setVisible(false);
+}
+
+//public slots
+void MainScreen::toolExpenseSlot(){
+
+}
+void MainScreen::toolIncomeSlot(){
+
+}
+void MainScreen::toolFinGoalSlot(){
+
+}
+void MainScreen::toolDebtManagerSlot(){
+
+}
+void MainScreen::toolVisualReportSlot(){
+
+}
+void MainScreen::toolBankAccSlot(){
+
+}
+void MainScreen::toolAddContactSlot(){
+
 }

@@ -4,10 +4,15 @@
 #include <maincontroller.h>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QScrollArea>
 #include <QWidget>
 #include <QString>
+#include <QImage>
 #include <cstddef>
 #include <string>
+#include <vector>
+#include <QPushButton>
+#include <QLayoutItem>
 
 using namespace std;
 class MainScreen: public QVBoxLayout{
@@ -16,10 +21,13 @@ private:
     MainController* controller = nullptr;
     User* user = nullptr;
 
-    QVBoxLayout vboxMain;
-    QHBoxLayout hbox1;
-    QHBoxLayout hbox2;
-    QVBoxLayout vbox1; //change name
+    QHBoxLayout* hbox1 = nullptr;
+    QHBoxLayout* hbox2 = nullptr;
+    QVBoxLayout* vboxSide = nullptr; //vbox for containing menu scrollpane and logout icon
+    QVBoxLayout* vboxScrollable = nullptr;
+    QScrollArea* qsa = nullptr;
+
+    vector<QPushButton*> toolButtons;
 public:
     MainScreen(User* registeredUser); //invoke when registration has been successfully performed
     MainScreen(string username); //invoke when login is successfully performed
@@ -27,6 +35,16 @@ public:
 
     void show(); //show the mainscreen
     void close(); //set the visiblity to false
+    void setLayoutManagement();
+    void setScrollableContent();
+public slots:
+    void toolExpenseSlot();
+    void toolIncomeSlot();
+    void toolFinGoalSlot();
+    void toolDebtManagerSlot();
+    void toolVisualReportSlot();
+    void toolBankAccSlot();
+    void toolAddContactSlot();
 };
 
 #endif // MAINSCREEN_H

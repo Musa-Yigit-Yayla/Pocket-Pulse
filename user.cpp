@@ -8,6 +8,9 @@ User::User(string name, string password, string saveCode){
     this->password = password;
     this->saveCode = saveCode;
 }
+User::~User(){
+    //ToDo
+}
 string User::getPassword() const{
     return this->password;
 }
