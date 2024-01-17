@@ -41,10 +41,18 @@ void MainScreen::setLayoutManagement(){
 }
 void MainScreen::setScrollableContent(){
     //initialize the pushbuttons with their icons, then add them
-    QPushButton* toolExpense = new QPushButton();
-    this->toolButtons.push_back(toolExpense);
+    for(int i = 0; i < 7; i++){
+        QPushButton* currBt = new QPushButton();
+        this->vboxScrollable->addWidget(currBt);
+    }
 
-    QObject::connect(toolExpense, &QPushButton::clicked, this, &MainScreen::toolExpenseSlot);
+    QObject::connect(reinterpret_cast<QPushButton*>(this->vboxScrollable->itemAt(0)), &QPushButton::clicked, this, &MainScreen::toolExpenseSlot);
+    QObject::connect(reinterpret_cast<QPushButton*>(this->vboxScrollable->itemAt(1)), &QPushButton::clicked, this, &MainScreen::toolIncomeSlot);
+    QObject::connect(reinterpret_cast<QPushButton*>(this->vboxScrollable->itemAt(2)), &QPushButton::clicked, this, &MainScreen::toolFinGoalSlot);
+    QObject::connect(reinterpret_cast<QPushButton*>(this->vboxScrollable->itemAt(3)), &QPushButton::clicked, this, &MainScreen::toolDebtManagerSlot);
+    QObject::connect(reinterpret_cast<QPushButton*>(this->vboxScrollable->itemAt(4)), &QPushButton::clicked, this, &MainScreen::toolVisualReportSlot);
+    QObject::connect(reinterpret_cast<QPushButton*>(this->vboxScrollable->itemAt(5)), &QPushButton::clicked, this, &MainScreen::toolBankAccSlot);
+    QObject::connect(reinterpret_cast<QPushButton*>(this->vboxScrollable->itemAt(6)), &QPushButton::clicked, this, &MainScreen::toolAddContactSlot);
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
