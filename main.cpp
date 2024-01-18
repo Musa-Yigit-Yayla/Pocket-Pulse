@@ -18,6 +18,6 @@ int main(int argc, char *argv[])
     w.setFixedSize(RegisterScreen::CONTAINER_FIXED_WIDTH, RegisterScreen::CONTAINER_FIXED_HEIGHT);
     w.setLayout(&rs);
     w.show();
-    //test0(); //remove later on
+    test0(); //remove later on
     return a.exec();
 }

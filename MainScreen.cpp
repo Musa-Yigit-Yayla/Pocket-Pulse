@@ -1,5 +1,6 @@
 #include "mainscreen.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ void MainScreen::setLayoutManagement(){
     this->vboxSide->addLayout(this->vboxScrollable);
     //set the btLogout's properties after instantiating it
     this->btLogout = new QPushButton();
-    QPixmap logoutImg("icons//logouticon.png");
+    QPixmap logoutImg(QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + "\\logouticon.png"));
     logoutImg.rect().setSize(QSize(LOGOUT_ICON_LENGTH, LOGOUT_ICON_LENGTH));
     this->btLogout->setIcon(logoutImg);
 
@@ -70,12 +71,13 @@ void MainScreen::setScrollableContent(){
 
         //set the currBt's QIcon
         char currIndex = i + 48;
-        string str = "icons//icon";
+        string str = "\\icon";
         str += currIndex;
         str += ".png";
-        QString iconPath = QString::fromStdString(str);
+        QString iconPath = QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + str);
         QPixmap img(iconPath);
-        img.rect().setSize(QSize(TOOL_ICON_LENGTH, TOOL_ICON_LENGTH));
+        QRect imgRect = img.rect();
+        imgRect.setSize(QSize(TOOL_ICON_LENGTH, TOOL_ICON_LENGTH));
         //img = img.scaled(MainScreen::TOOL_ICON_LENGTH, MainScreen::TOOL_ICON_LENGTH);
         currBt->setIcon(img);
         this->vboxScrollable->addWidget(currBt);
@@ -130,5 +132,6 @@ void MainScreen::toolAddContactSlot(){
 
 }
 void MainScreen::logoutHandler(){
-
+    cout << "Debug: logoutHandler has been invoked" << endl;
 }
+const string MainScreen::ICONS_FOLDER_PATH = "C:\\Users\\yigit\\Desktop\\Qt_Container\\QT_PROJECTS\\Pocket-Pulse\\icons";

@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QString>
 #include <QImage>
+#include <QRect>
 #include <cstddef>
 #include <string>
 #include <vector>
@@ -42,6 +43,7 @@ public:
 
     static const int TOOL_ICON_LENGTH = 40;
     static const int LOGOUT_ICON_LENGTH = 50;
+    static const string ICONS_FOLDER_PATH; //change these during deployment in the deployment related branch
 public slots:
     void toolExpenseSlot();
     void toolIncomeSlot();
