@@ -48,8 +48,7 @@ void MainScreen::setLayoutManagement(){
     this->qsa->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->qsa->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    this->vboxScrollable->addWidget(this->qsa);
-    this->vboxSide->addLayout(this->vboxScrollable);
+    this->vboxSide->addWidget(this->qsa);
     //set the btLogout's properties after instantiating it
     this->btLogout = new QPushButton();
     QPixmap logoutImg(QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + "\\logouticon.png"));

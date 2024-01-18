@@ -28,6 +28,7 @@ private:
     QVBoxLayout* vboxSide = nullptr; //vbox for containing menu scrollpane and logout icon
     QVBoxLayout* vboxScrollable = nullptr;
     QScrollArea* qsa = nullptr;
+    QWidget* tbWidget = nullptr; //widget for holding toolbuttons
 
     vector<QPushButton*> toolButtons;
     QPushButton* btLogout = nullptr; //add widget
