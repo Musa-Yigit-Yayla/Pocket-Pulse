@@ -13,6 +13,7 @@
 #include <vector>
 #include <QPushButton>
 #include <QLayoutItem>
+#include <QIcon>
 
 using namespace std;
 class MainScreen: public QVBoxLayout{
@@ -37,6 +38,8 @@ public:
     void close(); //set the visiblity to false
     void setLayoutManagement();
     void setScrollableContent();
+
+    static const int TOOL_ICON_LENGTH = 40;
 public slots:
     void toolExpenseSlot();
     void toolIncomeSlot();

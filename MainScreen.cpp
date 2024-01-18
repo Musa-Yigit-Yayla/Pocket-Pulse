@@ -43,6 +43,14 @@ void MainScreen::setScrollableContent(){
     //initialize the pushbuttons with their icons, then add them
     for(int i = 0; i < 7; i++){
         QPushButton* currBt = new QPushButton();
+
+        //set the currBt's QIcon
+        string str = "icons/icon" + to_string(i) + ".png";
+        QString iconPath = QString::fromStdString(str);
+        QPixmap img(iconPath);
+        img.rect().setSize(QSize(TOOL_ICON_LENGTH, TOOL_ICON_LENGTH));
+        //img = img.scaled(MainScreen::TOOL_ICON_LENGTH, MainScreen::TOOL_ICON_LENGTH);
+        currBt->setIcon(img);
         this->vboxScrollable->addWidget(currBt);
     }
 
