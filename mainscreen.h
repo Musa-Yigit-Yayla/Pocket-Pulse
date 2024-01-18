@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <QPushButton>
+#include <QToolButton>
 #include <QLayoutItem>
 #include <QIcon>
 
@@ -30,7 +31,7 @@ private:
     QScrollArea* qsa = nullptr;
     QWidget* tbWidget = nullptr; //widget for holding toolbuttons
 
-    vector<QPushButton*> toolButtons;
+    vector<QToolButton*> toolButtons;
     QPushButton* btLogout = nullptr; //add widget
 public:
     MainScreen(User* registeredUser); //invoke when registration has been successfully performed

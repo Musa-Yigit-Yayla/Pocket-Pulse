@@ -65,7 +65,7 @@ void MainScreen::setLayoutManagement(){
 void MainScreen::setScrollableContent(){
     //initialize the pushbuttons with their icons, then add them
     for(int i = 0; i < 7; i++){
-        QPushButton* currBt = new QPushButton();
+        QToolButton* currBt = new QToolButton();
         this->toolButtons.push_back(currBt);
 
         //set the currBt's QIcon
@@ -82,20 +82,20 @@ void MainScreen::setScrollableContent(){
         this->vboxScrollable->addWidget(currBt);
     }
 
-    QPushButton* bt0 = this->toolButtons.at(0);
-    QObject::connect(bt0, &QPushButton::clicked, this, &MainScreen::toolExpenseSlot);
-    QPushButton* bt1 = this->toolButtons.at(1);
-    QObject::connect(bt1, &QPushButton::clicked, this, &MainScreen::toolIncomeSlot);
-    QPushButton* bt2 = this->toolButtons.at(2);
-    QObject::connect(bt2, &QPushButton::clicked, this, &MainScreen::toolFinGoalSlot);
-    QPushButton* bt3 = this->toolButtons.at(3);
-    QObject::connect(bt3, &QPushButton::clicked, this, &MainScreen::toolDebtManagerSlot);
-    QPushButton* bt4 = this->toolButtons.at(4);
-    QObject::connect(bt4, &QPushButton::clicked, this, &MainScreen::toolVisualReportSlot);
-    QPushButton* bt5 = this->toolButtons.at(5);
-    QObject::connect(bt5, &QPushButton::clicked, this, &MainScreen::toolBankAccSlot);
-    QPushButton* bt6 = this->toolButtons.at(6);
-    QObject::connect(bt6, &QPushButton::clicked, this, &MainScreen::toolAddContactSlot);
+    QToolButton* bt0 = this->toolButtons.at(0);
+    QObject::connect(bt0, &QToolButton::clicked, this, &MainScreen::toolExpenseSlot);
+    QToolButton* bt1 = this->toolButtons.at(1);
+    QObject::connect(bt1, &QToolButton::clicked, this, &MainScreen::toolIncomeSlot);
+    QToolButton* bt2 = this->toolButtons.at(2);
+    QObject::connect(bt2, &QToolButton::clicked, this, &MainScreen::toolFinGoalSlot);
+    QToolButton* bt3 = this->toolButtons.at(3);
+    QObject::connect(bt3, &QToolButton::clicked, this, &MainScreen::toolDebtManagerSlot);
+    QToolButton* bt4 = this->toolButtons.at(4);
+    QObject::connect(bt4, &QToolButton::clicked, this, &MainScreen::toolVisualReportSlot);
+    QToolButton* bt5 = this->toolButtons.at(5);
+    QObject::connect(bt5, &QToolButton::clicked, this, &MainScreen::toolBankAccSlot);
+    QToolButton* bt6 = this->toolButtons.at(6);
+    QObject::connect(bt6, &QToolButton::clicked, this, &MainScreen::toolAddContactSlot);
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
