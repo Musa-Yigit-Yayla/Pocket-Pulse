@@ -29,6 +29,7 @@ private:
     QScrollArea* qsa = nullptr;
 
     vector<QPushButton*> toolButtons;
+    QPushButton* btLogout = nullptr; //add widget
 public:
     MainScreen(User* registeredUser); //invoke when registration has been successfully performed
     MainScreen(string username); //invoke when login is successfully performed
@@ -40,6 +41,7 @@ public:
     void setScrollableContent();
 
     static const int TOOL_ICON_LENGTH = 40;
+    static const int LOGOUT_ICON_LENGTH = 50;
 public slots:
     void toolExpenseSlot();
     void toolIncomeSlot();
@@ -48,6 +50,7 @@ public slots:
     void toolVisualReportSlot();
     void toolBankAccSlot();
     void toolAddContactSlot();
+    void logoutHandler();
 };
 
 #endif // MAINSCREEN_H

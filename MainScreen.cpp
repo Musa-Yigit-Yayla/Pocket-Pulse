@@ -27,6 +27,7 @@ MainScreen::~MainScreen(){
         //delete the user object
         delete this->user;
     }
+    //deallocate the buttons and other controls when necessary
 }
 void MainScreen::setLayoutManagement(){
     this->wrapper = new QWidget();
@@ -38,6 +39,21 @@ void MainScreen::setLayoutManagement(){
     this->setScrollableContent();
 
     this->qsa = new QScrollArea(this->wrapper);
+    this->qsa->setLayout(this->vboxScrollable);
+    this->qsa->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->qsa->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    this->vboxScrollable->addWidget(this->qsa);
+    this->vboxSide->addLayout(this->vboxScrollable);
+    //set the btLogout's properties after instantiating it
+    this->btLogout = new QPushButton();
+    QPixmap logoutImg("icons/logouticon.png");
+    logoutImg.rect().setSize(QSize(LOGOUT_ICON_LENGTH, LOGOUT_ICON_LENGTH));
+    this->btLogout->setIcon(logoutImg);
+
+    this->vboxSide->addWidget(this->btLogout);
+
+    QObject::connect(this->btLogout, &QPushButton::clicked, this, &MainScreen::logoutHandler);
 }
 void MainScreen::setScrollableContent(){
     //initialize the pushbuttons with their icons, then add them
@@ -93,5 +109,8 @@ void MainScreen::toolBankAccSlot(){
 
 }
 void MainScreen::toolAddContactSlot(){
+
+}
+void MainScreen::logoutHandler(){
 
 }
