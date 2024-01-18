@@ -28,6 +28,10 @@ MainScreen::~MainScreen(){
         delete this->user;
     }
     //deallocate the buttons and other controls when necessary
+    for(int i = 0; i < this->toolButtons.size(); i++){
+        delete toolButtons.at(i);
+    }
+    delete this->btLogout;
 }
 void MainScreen::setLayoutManagement(){
     this->wrapper = new QWidget();
@@ -52,6 +56,9 @@ void MainScreen::setLayoutManagement(){
     this->btLogout->setIcon(logoutImg);
 
     this->vboxSide->addWidget(this->btLogout);
+
+    this->addLayout(this->vboxSide); //mockup test line remove later on
+    this->wrapper->setLayout(this);
 
     QObject::connect(this->btLogout, &QPushButton::clicked, this, &MainScreen::logoutHandler);
 }

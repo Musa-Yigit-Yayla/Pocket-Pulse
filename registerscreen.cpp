@@ -2,6 +2,7 @@
 #include "user.h"
 #include "savecodepane.h"
 #include "maincontroller.h"
+#include "mainscreen.h"
 #include <iostream>
 
 using namespace std;
@@ -89,6 +90,8 @@ void RegisterScreen::setSaveCode(string saveCode){
         cout << "Debug: user " << newUser->getUserName() <<  " has successfuly been registered to the db" << endl;
         delete mc;
         //instantiate the main screen since the registration is successfull
+        MainScreen mc(newUser);
+        mc.show();
     }
     else{
         cout << "Debug: user cannot be registered to the db (printed by RegisterScreen::SetSaveCode)";
