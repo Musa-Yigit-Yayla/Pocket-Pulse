@@ -4,6 +4,8 @@
 #include <maincontroller.h>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
 #include <QScrollArea>
 #include <QWidget>
 #include <QString>
@@ -16,6 +18,7 @@
 #include <QToolButton>
 #include <QLayoutItem>
 #include <QIcon>
+#include <QColor>
 
 using namespace std;
 class MainScreen: public QVBoxLayout{
@@ -30,9 +33,11 @@ private:
     QVBoxLayout* vboxScrollable = nullptr;
     QScrollArea* qsa = nullptr;
     QWidget* tbWidget = nullptr; //widget for holding toolbuttons
+    QGridLayout* profileGrid = nullptr;
 
+    QImage* topLeftImg = nullptr;
     vector<QToolButton*> toolButtons;
-    QPushButton* btLogout = nullptr; //add widget
+    QToolButton* btLogout = nullptr; //add widget
 public:
     MainScreen(User* registeredUser); //invoke when registration has been successfully performed
     MainScreen(string username); //invoke when login is successfully performed
@@ -42,9 +47,12 @@ public:
     void close(); //set the visiblity to false
     void setLayoutManagement();
     void setScrollableContent();
+    void setProfileGrid();
 
     static const int TOOL_ICON_LENGTH = 40;
     static const int LOGOUT_ICON_LENGTH = 50;
+    static const int TOP_LEFT_IMG_RADIUS = 30;
+    static const QColor USER_PP_CHAR_COLOR;
     static const string ICONS_FOLDER_PATH; //change these during deployment in the deployment related branch
 public slots:
     void toolExpenseSlot();

@@ -16,14 +16,17 @@ private: //instance data fields
     string name;
     string password;
     string saveCode; //lifetime saving code
+    string profilePicPath;
 
 public:
-    User(string name, string password, string savecode); //private constructor for providing single instance
+    User(string name, string password, string savecode);
+    User(string name); //constructor to fetch an existing user from the database and insantiate it, given its username
     ~User();
 
     string getUserName() const;
     string getPassword() const;
     string getSaveCode() const;
+    string getProfileImagePath() const;
     void setPassword(const string password);
 };
 #endif // USER_H
