@@ -45,7 +45,7 @@ void MainScreen::setLayoutManagement(){
     this->setScrollableContent();
 
     this->profileGrid = new QGridLayout(this->wrapper);
-
+    this->setProfileGrid();
 
 }
 void MainScreen::setScrollableContent(){
@@ -112,7 +112,7 @@ void MainScreen::setScrollableContent(){
 void MainScreen::setProfileGrid(){
     string imagePath = this->user->getProfileImagePath();
     this->topLeftImg = new QImage();
-    if(this->topLeftImg->load(QString::fromStdString(imagePath))){
+    if(imagePath != "" && this->topLeftImg->load(QString::fromStdString(imagePath))){
         //given profile image has been loaded successfully
     }
     else{

@@ -36,7 +36,7 @@ bool MainController::createUser(User* user){
         if(!this->tableExists(MainController::USER_TABLE_NAME)){
             cout << "Debug: createUser execution entered table creation condition" << endl;
             //create the user table
-            QString createUserTable = QString::fromStdString("CREATE TABLE " + USER_TABLE_NAME +  " (id INTEGER PRIMARY KEY, name TEXT, password TEXT, savecode TEXT);");
+            QString createUserTable = QString::fromStdString("CREATE TABLE " + USER_TABLE_NAME +  " (id INTEGER PRIMARY KEY, name TEXT, password TEXT, savecode TEXT, imageurl TEXT);");
             QSqlQuery userTableQuery(this->db);
             userTableQuery.prepare(createUserTable);
             //userTableQuery.bindValue(":userTableName", QString::fromStdString(USER_TABLE_NAME));
@@ -44,13 +44,14 @@ bool MainController::createUser(User* user){
         }
 
         //proceed registering the user
-        QString insertUser = QString::fromStdString("INSERT INTO " + USER_TABLE_NAME + " VALUES (NULL, :userName, :password, :savecode);");
+        QString insertUser = QString::fromStdString("INSERT INTO " + USER_TABLE_NAME + " VALUES (NULL, :userName, :password, :savecode, :imgurl);");
         QSqlQuery query(this->db);
         query.prepare(insertUser);
         //query.bindValue(":userTableName", QString::fromStdString(USER_TABLE_NAME));
         query.bindValue(":userName", QString::fromStdString(user->getUserName()));
         query.bindValue(":password", QString::fromStdString(user->getPassword()));
         query.bindValue(":savecode", QString::fromStdString(user->getSaveCode()));
+        query.bindValue(":imgurl", QString::fromStdString(user->getProfileImagePath()));
 
         success = query.exec();
         if(!success){
