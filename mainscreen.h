@@ -19,6 +19,8 @@
 #include <QLayoutItem>
 #include <QIcon>
 #include <QColor>
+#include <QPainter>
+#include <QPaintDevice>
 
 using namespace std;
 class MainScreen: public QVBoxLayout{
@@ -36,8 +38,10 @@ private:
     QGridLayout* profileGrid = nullptr;
 
     QImage* topLeftImg = nullptr;
+    QLabel* topLeftImgLabel = nullptr;
     vector<QToolButton*> toolButtons;
     QToolButton* btLogout = nullptr; //add widget
+    QToolButton* btEditProfile = nullptr;
 public:
     MainScreen(User* registeredUser); //invoke when registration has been successfully performed
     MainScreen(string username); //invoke when login is successfully performed
@@ -45,15 +49,16 @@ public:
 
     void show(); //show the mainscreen
     void close(); //set the visiblity to false
-    void setLayoutManagement();
-    void setScrollableContent();
-    void setProfileGrid();
 
     static const int TOOL_ICON_LENGTH = 40;
     static const int LOGOUT_ICON_LENGTH = 50;
     static const int TOP_LEFT_IMG_RADIUS = 30;
     static const QColor USER_PP_CHAR_COLOR;
     static const string ICONS_FOLDER_PATH; //change these during deployment in the deployment related branch
+private:
+    void setLayoutManagement();
+    void setScrollableContent();
+    void setProfileGrid();
 public slots:
     void toolExpenseSlot();
     void toolIncomeSlot();
