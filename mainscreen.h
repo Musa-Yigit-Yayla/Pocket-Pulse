@@ -1,7 +1,8 @@
 #ifndef MAINSCREEN_H
 #define MAINSCREEN_H
 
-#include <maincontroller.h>
+#include "maincontroller.h"
+#include "circularimage.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -38,7 +39,9 @@ private:
     QGridLayout* profileGrid = nullptr;
 
     QImage* topLeftImg = nullptr;
+    CircularImage* ppInitialImage = nullptr;
     QLabel* topLeftImgLabel = nullptr;
+
     vector<QToolButton*> toolButtons;
     QToolButton* btLogout = nullptr; //add widget
     QToolButton* btEditProfile = nullptr;
@@ -68,6 +71,7 @@ public slots:
     void toolBankAccSlot();
     void toolAddContactSlot();
     void logoutHandler();
+    void editProfileHandler();
 };
 
 #endif // MAINSCREEN_H

@@ -22,9 +22,9 @@ MainScreen::MainScreen(string username){
 }
 //invoke when login is successfully performed
 MainScreen::~MainScreen(){
+    //!!! YOU MIGHT WANT TO SAVE THE CURRENT STATUS OF THE USER TO THE DATABASE BEFORE DEALLOCATION
     //close the controller by deallocation
     delete this->controller;
-    delete this->wrapper;
     if(this->user != NULL){
         //delete the user object
         delete this->user;
@@ -34,6 +34,7 @@ MainScreen::~MainScreen(){
         delete toolButtons.at(i);
     }
     delete this->btLogout;
+    delete this->wrapper;
 }
 void MainScreen::setLayoutManagement(){
     this->hbox1 = new QHBoxLayout(this->wrapper);
@@ -47,6 +48,11 @@ void MainScreen::setLayoutManagement(){
     this->profileGrid = new QGridLayout(this->wrapper);
     this->setProfileGrid();
     this->hbox1->addLayout(this->profileGrid);
+
+    this->addLayout(this->hbox1);
+    this->hbox2->addLayout(this->vboxSide);
+    this->addLayout(this->hbox2);
+    this->wrapper->setLayout(this);
 }
 void MainScreen::setScrollableContent(){
     QSpacerItem* spacer0 = new QSpacerItem(50, 50);
@@ -104,8 +110,7 @@ void MainScreen::setScrollableContent(){
 
     this->vboxSide->addWidget(this->btLogout);
 
-    this->addLayout(this->vboxSide); //mockup test line remove later on
-    this->wrapper->setLayout(this);
+    //this->addLayout(this->vboxSide); //mockup test line remove later on
 
     QObject::connect(this->btLogout, &QToolButton::clicked, this, &MainScreen::logoutHandler);
 }
@@ -113,32 +118,33 @@ void MainScreen::setProfileGrid(){
     string imagePath = this->user->getProfileImagePath();
     this->topLeftImg = new QImage();
 
-    QPainter painter;
-    painter.begin(this->topLeftImg);
+    //QPainter painter;
+    //painter.begin(this->topLeftImg);
     if(imagePath != "" && this->topLeftImg->load(QString::fromStdString(imagePath))){
         //given profile image has been loaded successfully
+        this->topLeftImgLabel = new QLabel(this->wrapper);
+        this->topLeftImgLabel->setPixmap(QPixmap::fromImage(*topLeftImg));
+        this->profileGrid->addWidget(this->topLeftImgLabel, 0, 0);
     }
     else{
-        //paint the topLeftImg with the user's initial char
-        string initial = "" + this->user->getUserName().at(0);
+        //paint the topLeftImg with the user's initial char by using CircularImage class
+        cout << "Debug: about to instantiate the CircularImage class" << endl;
+        //delete and reinstantiate the topLeftImg
+        delete this->topLeftImg;
+        this->topLeftImg = nullptr;
 
-        painter.setBrush(QBrush(MainScreen::USER_PP_CHAR_COLOR));
-        painter.setPen(QPen(MainScreen::USER_PP_CHAR_COLOR));
-
-        painter.drawText(5, 5, QString::fromStdString(initial));
-
-
+        this->ppInitialImage = new CircularImage(this->user->getUserName().at(0));
+        this->profileGrid->addWidget(this->ppInitialImage, 0, 0);
     }
-    painter.end();
     //painter.drawArc()
-    this->topLeftImgLabel = new QLabel(this->wrapper);
-    this->topLeftImgLabel->setPixmap(QPixmap::fromImage(*topLeftImg));
-    this->profileGrid->addWidget(this->topLeftImgLabel, 0, 0);
+
     this->profileGrid->addWidget(new QLabel(QString::fromStdString(this->user->getUserName())), 0, 1);
     this->btEditProfile = new QToolButton();
     QPixmap editImg(QString::fromStdString(MainScreen::ICONS_FOLDER_PATH) + "\\editicon.png");
     this->btEditProfile->setIcon(editImg);
     this->profileGrid->addWidget(this->btEditProfile);
+
+    QObject::connect(this->btEditProfile, &QToolButton::clicked, this, &MainScreen::editProfileHandler);
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
@@ -175,6 +181,9 @@ void MainScreen::toolAddContactSlot(){
 }
 void MainScreen::logoutHandler(){
     cout << "Debug: logoutHandler has been invoked" << endl;
+}
+void MainScreen::editProfileHandler(){
+
 }
 const string MainScreen::ICONS_FOLDER_PATH = "C:\\Users\\yigit\\Desktop\\Qt_Container\\QT_PROJECTS\\Pocket-Pulse\\icons";
 const QColor MainScreen::USER_PP_CHAR_COLOR = QColor(249, 166, 2);
