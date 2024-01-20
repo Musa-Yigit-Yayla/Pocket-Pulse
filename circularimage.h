@@ -20,7 +20,8 @@ public:
     CircularImage(char initial, QWidget *parent = nullptr);
     void paintEvent(QPaintEvent* event) override;
 
-    static const int PP_RADIUS_MID = 6;
+    static const int PP_RADIUS_MID = 12;
+    static const int CHAR_LENGTH = 16;
 signals:
 
 };
