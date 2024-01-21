@@ -31,6 +31,7 @@ public:
     static const int P_WIDTH = 40;
     static const int P_HEIGHT = HEIGHT;
     static const int P_LEFT_X = 52;
+    static const int P_POINT_SIZE = 50;
     static const QColor BACKGROUND_BLUE;
     static const QColor PATH_WHITE;
 signals:

@@ -37,8 +37,10 @@ MainScreen::~MainScreen(){
     delete this->wrapper;
 }
 void MainScreen::setLayoutManagement(){
+    this->hbox1Widget = new QWidget(this->wrapper);
     this->hbox1 = new QHBoxLayout(this->wrapper);
     this->hbox2 = new QHBoxLayout(this->wrapper);
+    this->hbox1Widget->setStyleSheet(QString::fromStdString(MainScreen::BACKGROUND_BLUE_STR));
 
     this->vboxSide = new QVBoxLayout(this->wrapper);
     this->vboxScrollable = new QVBoxLayout(this->wrapper);
@@ -52,8 +54,9 @@ void MainScreen::setLayoutManagement(){
     this->animatedLabel = new AnimatedLabel(this->wrapper);
     this->setAnimatedLabel();
     this->hbox1->addWidget(this->animatedLabel);
+    this->hbox1Widget->setLayout(this->hbox1);
 
-    this->addLayout(this->hbox1);
+    this->addWidget(this->hbox1Widget);
     this->hbox2->addLayout(this->vboxSide);
     this->addLayout(this->hbox2);
     this->wrapper->setLayout(this);
@@ -142,9 +145,11 @@ void MainScreen::setProfileGrid(){
     }
     //painter.drawArc()
 
-    this->profileGrid->addWidget(new QLabel(QString::fromStdString(this->user->getUserName())), 0, 1);
+    QLabel* nameLabel = new QLabel(QString::fromStdString(this->user->getUserName()), this->wrapper);
+    nameLabel->setStyleSheet("color: rgb(249, 246, 238);");
+    this->profileGrid->addWidget(nameLabel, 0, 1);
     this->btEditProfile = new QToolButton();
-    QPixmap editImg(QString::fromStdString(MainScreen::ICONS_FOLDER_PATH) + "\\editicon.png");
+    QPixmap editImg(QString::fromStdString(MainScreen::ICONS_FOLDER_PATH) + "\\editiconwhite.png");
     this->btEditProfile->setIcon(editImg);
     this->profileGrid->addWidget(this->btEditProfile);
 
@@ -194,3 +199,4 @@ void MainScreen::editProfileHandler(){
 }
 const string MainScreen::ICONS_FOLDER_PATH = "C:\\Users\\yigit\\Desktop\\Qt_Container\\QT_PROJECTS\\Pocket-Pulse\\icons";
 const QColor MainScreen::USER_PP_CHAR_COLOR = QColor(249, 166, 2);
+const string MainScreen::BACKGROUND_BLUE_STR = "background-color: rgb(6, 59, 131);";

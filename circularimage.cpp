@@ -1,5 +1,6 @@
 #include "circularimage.h"
 #include "mainscreen.h"
+#include "animatedlabel.h"
 #include <qDebug>
 #include <iostream>
 #include <string>
@@ -17,6 +18,11 @@ CircularImage::CircularImage(char initial, QWidget *parent)
 void CircularImage::paintEvent(QPaintEvent* event){
     QPainter painter(this);
 
+    //paint the background to blue color
+    //painter.setBrush(AnimatedLabel::BACKGROUND_BLUE);
+    //painter.setPen(QPen(AnimatedLabel::BACKGROUND_BLUE));
+    painter.fillRect(0, 0, this->width(), this->height(), AnimatedLabel::BACKGROUND_BLUE);
+    //painter.setBackground(QBrush(AnimatedLabel::BACKGROUND_BLUE));
     painter.setBrush(QBrush(MainScreen::USER_PP_CHAR_COLOR));
     painter.setPen(QPen(MainScreen::USER_PP_CHAR_COLOR));
 
@@ -26,7 +32,7 @@ void CircularImage::paintEvent(QPaintEvent* event){
     font.setPointSize(FONT_SIZE_MID);
     painter.setFont(font);
 
-    painter.drawText(0, 0, CircularImage::FONT_SIZE_MID * 2, CircularImage::FONT_SIZE_MID * 2, 0, str );
+    painter.drawText( this->width() / 3, 0, CircularImage::FONT_SIZE_MID * 2, CircularImage::FONT_SIZE_MID * 2, 0, str );
 
     qDebug() << "Debug: drawn QString in paintEvent of circular image is " << str;
 

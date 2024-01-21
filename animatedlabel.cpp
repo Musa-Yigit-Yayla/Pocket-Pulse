@@ -33,6 +33,9 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
     }
     painter.drawPath(path);
 
+    QFont font = painter.font();
+    font.setPointSize(AnimatedLabel::P_POINT_SIZE);
+    painter.setFont(font);
     painter.drawText(P_LEFT_X, 0, AnimatedLabel::P_WIDTH, AnimatedLabel::P_HEIGHT, 0, str);
 
 }

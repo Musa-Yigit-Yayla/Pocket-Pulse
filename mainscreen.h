@@ -38,6 +38,7 @@ private:
     QScrollArea* qsa = nullptr;
     QWidget* tbWidget = nullptr; //widget for holding toolbuttons
     QGridLayout* profileGrid = nullptr;
+    QWidget* hbox1Widget = nullptr;
 
     QImage* topLeftImg = nullptr;
     CircularImage* ppInitialImage = nullptr;
@@ -60,6 +61,7 @@ public:
     static const int TOP_LEFT_IMG_RADIUS = 30;
     static const QColor USER_PP_CHAR_COLOR;
     static const string ICONS_FOLDER_PATH; //change these during deployment in the deployment related branch
+    static const string BACKGROUND_BLUE_STR;
 private:
     void setLayoutManagement();
     void setScrollableContent();
