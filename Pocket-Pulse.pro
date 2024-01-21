@@ -19,6 +19,7 @@ CONFIG += c++17
 
 SOURCES += \
     MainScreen.cpp \
+    animatedlabel.cpp \
     circularimage.cpp \
     loginscreen.cpp \
     main.cpp \
@@ -28,6 +29,7 @@ SOURCES += \
     user.cpp
 
 HEADERS += \
+    animatedlabel.h \
     circularimage.h \
     loginscreen.h \
     maincontroller.h \

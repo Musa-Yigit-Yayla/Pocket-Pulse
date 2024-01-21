@@ -3,6 +3,7 @@
 
 #include "maincontroller.h"
 #include "circularimage.h"
+#include "animatedlabel.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -41,6 +42,7 @@ private:
     QImage* topLeftImg = nullptr;
     CircularImage* ppInitialImage = nullptr;
     QLabel* topLeftImgLabel = nullptr;
+    AnimatedLabel* animatedLabel = nullptr;
 
     vector<QToolButton*> toolButtons;
     QToolButton* btLogout = nullptr; //add widget
@@ -62,6 +64,7 @@ private:
     void setLayoutManagement();
     void setScrollableContent();
     void setProfileGrid();
+    void setAnimatedLabel();
 public slots:
     void toolExpenseSlot();
     void toolIncomeSlot();

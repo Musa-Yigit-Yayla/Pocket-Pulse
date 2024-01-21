@@ -49,6 +49,10 @@ void MainScreen::setLayoutManagement(){
     this->setProfileGrid();
     this->hbox1->addLayout(this->profileGrid);
 
+    this->animatedLabel = new AnimatedLabel(this->wrapper);
+    this->setAnimatedLabel();
+    this->hbox1->addWidget(this->animatedLabel);
+
     this->addLayout(this->hbox1);
     this->hbox2->addLayout(this->vboxSide);
     this->addLayout(this->hbox2);
@@ -145,6 +149,9 @@ void MainScreen::setProfileGrid(){
     this->profileGrid->addWidget(this->btEditProfile);
 
     QObject::connect(this->btEditProfile, &QToolButton::clicked, this, &MainScreen::editProfileHandler);
+}
+void MainScreen::setAnimatedLabel(){
+    //set the animated label properties and initialize the animation
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
