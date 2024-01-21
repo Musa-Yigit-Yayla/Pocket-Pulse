@@ -6,7 +6,7 @@
 
 
 void test0(){
-    User* mockUser = new User("name", "password", "savecode");
+    User* mockUser = new User("Yame dude", "password", "savecode");
     MainScreen* mc = new MainScreen(mockUser);
     mc->show();
 }

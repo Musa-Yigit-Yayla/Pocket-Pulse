@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QPaintEvent>
 #include <QPainter>
+#include <QFont>
 #include <string>
 
 using namespace std;
@@ -22,6 +23,7 @@ public:
 
     static const int PP_RADIUS_MID = 12;
     static const int CHAR_LENGTH = 16;
+    static const int FONT_SIZE_MID = 25;
 signals:
 
 };
