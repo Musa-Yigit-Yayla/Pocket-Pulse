@@ -14,6 +14,8 @@
 #include <QRect>
 #include <vector>
 #include <QPainterPath>
+#include <QPen>
+#include <QTransform>
 
 using namespace std;
 class AnimatedLabel : public QWidget{
@@ -32,10 +34,16 @@ public:
     static const int P_HEIGHT = HEIGHT;
     static const int P_LEFT_X = 52;
     static const int P_POINT_SIZE = 50;
+    static const int POLYLINE_OFFSET_X = 15;
+    static const int POLYLINE_OFFSET_Y = 24;
+    static const int PULSE_WIDTH_SIZE = 4;
     static const QColor BACKGROUND_BLUE;
     static const QColor PATH_WHITE;
 signals:
 
+    class Pulse: public QWidget{
+
+    };
 };
 
 #endif // ANIMATEDLABEL_H
