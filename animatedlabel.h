@@ -16,6 +16,8 @@
 #include <QPainterPath>
 #include <QPen>
 #include <QTransform>
+#include <QTimer>
+#include <cstddef>
 
 using namespace std;
 class AnimatedLabel : public QWidget{
@@ -47,8 +49,9 @@ public:
         int height = 3;
         int durationMillis;
         bool active = false;
-        int currX;
-        int currY;
+        int currX = 0;
+        int currY = 0;
+        QTimer timer;
 
     public:
         Pulse(int durationMillis, QWidget* parent = nullptr);
@@ -59,15 +62,19 @@ public:
         void stop();
         void setDurationMillis(int durationMillis);
         int getDurationMillis() const;
+        vector<int> getCoordinates() const;
+        void setCoordinates(int newX, int newY);
+        QRect getRect() const;
 
         static const QColor PULSE_ORANGE;
-    public slots:
 
-    signals:
     };
 private:
     Pulse* pulse = nullptr;;
 signals:
+
+public slots:
+    void repaintSlot();
 
 };
 
