@@ -42,7 +42,7 @@ public:
     static const QColor BACKGROUND_BLUE;
     static const QColor PATH_WHITE;
 
-    class Pulse: public QWidget{
+    class Pulse: public QObject{
         //use the scope resolution operator twice to implement the methods of the Pulse class
     private:
         int width = 5;
@@ -51,12 +51,12 @@ public:
         bool active = false;
         int currX = 0;
         int currY = 0;
+        int state = 0; //5 states {0, 1, 2, 3, 4} which determine where we are positioned along the pulse like path
         QTimer timer;
 
     public:
         Pulse(int durationMillis, QWidget* parent = nullptr);
 
-        void paintEvent(QPaintEvent*) override;
         bool isActive() const;
         void play();
         void stop();
@@ -65,6 +65,8 @@ public:
         vector<int> getCoordinates() const;
         void setCoordinates(int newX, int newY);
         QRect getRect() const;
+        void setState(int state);
+        int getState() const;
 
         static const QColor PULSE_ORANGE;
 

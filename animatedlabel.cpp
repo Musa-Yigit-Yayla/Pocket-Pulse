@@ -5,7 +5,7 @@ using namespace std;
 AnimatedLabel::AnimatedLabel(QWidget *parent)
     : QWidget{parent}
 {
-    this->pulse = new Pulse(5000, this); //ensure you pass the parent as the outer class
+    this->pulse = new Pulse(5000); //ensure you pass the parent as the outer class
 }
 void AnimatedLabel::play(){
 
@@ -54,13 +54,37 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
         //painter.setPen(AnimatedLabel::Pulse::PULSE_ORANGE);
 
         painter.fillRect(this->pulse->getRect(), AnimatedLabel::Pulse::PULSE_ORANGE);
+        //alter the x and y coordinates of the pulse
+        vector<int> coordinates = this->pulse->getCoordinates();
+        int currX = coordinates.at(0);
+        int currY = coordinates.at(1);
+
+        int incX = 0, incY = 0; //incremental rates
+        int duration = this->pulse->getDurationMillis();
+        int stateDuration;
+        //state time distribution is as follows: {s0 = 0.3, s1 = 0.1, s2 = 0.2, s3 = 0.1, s4 = 0.3}
+        switch(this->pulse->getState()){
+        case 0:
+            stateDuration = duration * 0.3;
+            incX = (pathPoints.at(2) - pathPoints.at(0)) / stateDuration;
+            incY = 0; break;
+        case 1:
+            stateDuration = duration * 0.1;
+            incX = (pathPoints.at(4) - pathPoints.at(2)) / stateDuration;
+            incY = (pathPoints.at(5) - pathPoints.at(3)) / stateDuration; break;
+        case 2:
+            stateDuration = duration *  0.2;
+            incX =(pathPoints.at(6) - pathPoints.at(4));
+            incY = (pathPoints.at(7) - pathPoints.at(5)); break;
+        }
+        this->pulse->setCoordinates(currX + incX, currY + incY);
     }
     painter.end();
 }
 void AnimatedLabel::repaintSlot() {
     this->update();
 }
-AnimatedLabel::Pulse::Pulse(int durationMillis, QWidget* parent): QWidget{parent}{
+AnimatedLabel::Pulse::Pulse(int durationMillis, QWidget* parent): QObject{parent}{
     this->durationMillis = durationMillis;
 
     //bind the timer with paintEvent of the outer class
@@ -84,9 +108,6 @@ void AnimatedLabel::Pulse::setDurationMillis(int durationMillis){
 int AnimatedLabel::Pulse::getDurationMillis() const{
     return this->durationMillis;
 }
-void AnimatedLabel::Pulse::paintEvent(QPaintEvent* event){
-
-}
 vector<int> AnimatedLabel::Pulse::getCoordinates() const{
     vector<int> vec = {this->currX, this->currY};
     return vec;
@@ -94,9 +115,17 @@ vector<int> AnimatedLabel::Pulse::getCoordinates() const{
 void AnimatedLabel::Pulse::setCoordinates(int newX, int newY){
     this->currX = newX;
     this->currY = newY;
+
+    //Don't forget to update the state when applicable
 }
 QRect AnimatedLabel::Pulse::getRect() const{
     return QRect(this->currX, this->currY, this->width, this->height);
+}
+void AnimatedLabel::Pulse::setState(int state){
+    this->state = state;
+}
+int AnimatedLabel::Pulse::getState() const{
+    return this->state;
 }
 const QColor AnimatedLabel::BACKGROUND_BLUE = QColor(6, 59, 135);
 const QColor AnimatedLabel::PATH_WHITE = QColor(242, 240, 230);
