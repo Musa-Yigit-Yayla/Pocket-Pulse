@@ -5,7 +5,7 @@ using namespace std;
 AnimatedLabel::AnimatedLabel(QWidget *parent)
     : QWidget{parent}
 {
-    this->pulse = new Pulse(500, this); //ensure you pass the parent as the outer class
+    this->pulse = new Pulse(80, this); //ensure you pass the parent as the outer class
     this->play();
 }
 void inline AnimatedLabel::play(){
@@ -60,29 +60,29 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
         int currX = coordinates.at(0);
         int currY = coordinates.at(1);
 
-        int incX = 0, incY = 0; //incremental rates
-        double stateDuration = ANIMATION_DURATION_SEC; //5 seconds is the expected duration
+        double incX = 0, incY = 0; //incremental rates
+        double stateDuration = ANIMATION_DURATION_SEC * 2; //5 seconds is the expected duration
         //state time distribution is as follows: {s0 = 0.3, s1 = 0.1, s2 = 0.2, s3 = 0.1, s4 = 0.3}
         switch(this->pulse->getState()){
         case 0:
-            stateDuration = stateDuration * 0.3;
-            incX = (pathPoints.at(2) - pathPoints.at(0)) / stateDuration;
+            stateDuration = stateDuration * 0.03;
+            incX = (pathPoints.at(2) - pathPoints.at(0)) * stateDuration;
             incY = 0; break;
         case 1:
-            stateDuration = stateDuration * 0.1;
-            incX = (pathPoints.at(4) - pathPoints.at(2)) / stateDuration;
-            incY = (pathPoints.at(5) - pathPoints.at(3)) / stateDuration; break;
+            stateDuration = stateDuration * 0.01;
+            incX = (pathPoints.at(4) - pathPoints.at(2)) * stateDuration;
+            incY = (pathPoints.at(5) - pathPoints.at(3)) * stateDuration; break;
         case 2:
-            stateDuration = stateDuration *  0.2;
-            incX = (pathPoints.at(6) - pathPoints.at(4)) / stateDuration;
-            incY = (pathPoints.at(7) - pathPoints.at(5)) / stateDuration; break;
+            stateDuration = stateDuration *  0.02;
+            incX = (pathPoints.at(6) - pathPoints.at(4)) * stateDuration;
+            incY = (pathPoints.at(7) - pathPoints.at(5)) * stateDuration; break;
         case 3:
-            stateDuration = stateDuration * 0.1;
-            incX = (pathPoints.at(8) - pathPoints.at(6)) / stateDuration;
-            incY = (pathPoints.at(9) - pathPoints.at(7)) / stateDuration; break;
+            stateDuration = stateDuration * 0.01;
+            incX = (pathPoints.at(8) - pathPoints.at(6)) * stateDuration;
+            incY = (pathPoints.at(9) - pathPoints.at(7)) * stateDuration; break;
         case 4:
-            stateDuration = stateDuration * 0.3;
-            incX = (pathPoints.at(10) - pathPoints.at(8)) / stateDuration;
+            stateDuration = stateDuration * 0.03;
+            incX = (pathPoints.at(10) - pathPoints.at(8)) * stateDuration;
             incY = 0; break;
         }
         this->pulse->setCoordinates(currX + incX, currY + incY);
