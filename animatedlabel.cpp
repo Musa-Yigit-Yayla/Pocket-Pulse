@@ -50,5 +50,29 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
 
 }
 
+AnimatedLabel::Pulse::Pulse(int durationMillis, QWidget* parent): QWidget{parent}{
+    this->durationMillis = durationMillis;
+}
+bool AnimatedLabel::Pulse::isActive() const{
+    return this->active;
+}
+void AnimatedLabel::Pulse::play(){
+    this->active = true;
+}
+void AnimatedLabel::Pulse::stop(){
+    this->active = false;
+}
+void AnimatedLabel::Pulse::setDurationMillis(int durationMillis){
+    if(durationMillis > 0){
+        this->durationMillis = durationMillis;
+    }
+}
+int AnimatedLabel::Pulse::getDurationMillis() const{
+    return this->durationMillis;
+}
+void AnimatedLabel::Pulse::paintEvent(QPaintEvent* event){
+
+}
 const QColor AnimatedLabel::BACKGROUND_BLUE = QColor(6, 59, 135);
 const QColor AnimatedLabel::PATH_WHITE = QColor(242, 240, 230);
+const QColor AnimatedLabel::Pulse::PULSE_ORANGE = QColor(251, 185, 9);

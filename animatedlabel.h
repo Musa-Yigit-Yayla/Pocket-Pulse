@@ -39,11 +39,36 @@ public:
     static const int PULSE_WIDTH_SIZE = 4;
     static const QColor BACKGROUND_BLUE;
     static const QColor PATH_WHITE;
-signals:
 
     class Pulse: public QWidget{
+        //use the scope resolution operator twice to implement the methods of the Pulse class
+    private:
+        int width = 5;
+        int height = 3;
+        int durationMillis;
+        bool active = false;
+        int currX;
+        int currY;
 
+    public:
+        Pulse(int durationMillis, QWidget* parent = nullptr);
+
+        void paintEvent(QPaintEvent*) override;
+        bool isActive() const;
+        void play();
+        void stop();
+        void setDurationMillis(int durationMillis);
+        int getDurationMillis() const;
+
+        static const QColor PULSE_ORANGE;
+    public slots:
+
+    signals:
     };
+private:
+    Pulse* pulse = nullptr;;
+signals:
+
 };
 
 #endif // ANIMATEDLABEL_H
