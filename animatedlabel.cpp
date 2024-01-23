@@ -54,14 +54,18 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
 
     //paint the pulse if it's active
     if(this->pulse != NULL && this->pulse->isActive()){
+        int Y_OFFSET = 22;
         //painter.setBrush(AnimatedLabel::Pulse::PULSE_ORANGE);
         //painter.setPen(AnimatedLabel::Pulse::PULSE_ORANGE);
 
-        painter.fillRect(this->pulse->getRect(), AnimatedLabel::Pulse::PULSE_ORANGE);
+
+
         //alter the x and y coordinates of the pulse
         vector<int> coordinates = this->pulse->getCoordinates();
         int currX = coordinates.at(0);
         int currY = coordinates.at(1);
+
+        painter.fillRect(QRect(currX, currY + Y_OFFSET, this->pulse->getWidth(), this->pulse->getHeight()), AnimatedLabel::Pulse::PULSE_ORANGE);
 
         double incX = 0, incY = 0; //incremental rates
         double stateDuration = ANIMATION_DURATION_SEC * 2; //5 seconds is the expected duration
@@ -74,25 +78,25 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
         case 1:
             stateDuration = stateDuration * 0.01;
             incX = (pathPoints.at(4) - pathPoints.at(2)) * stateDuration;
-            incY = (pathPoints.at(5) - pathPoints.at(3)) * stateDuration; break;
+            incY = (pathPoints.at(5) - pathPoints.at(3)) * stateDuration * 10000; break;
         case 2:
             stateDuration = stateDuration *  0.02;
             incX = (pathPoints.at(6) - pathPoints.at(4)) * stateDuration;
-            incY = (pathPoints.at(7) - pathPoints.at(5)) * stateDuration; break;
+            incY = (pathPoints.at(7) - pathPoints.at(5)) * stateDuration * 5000; break;
         case 3:
             stateDuration = stateDuration * 0.01;
             incX = (pathPoints.at(8) - pathPoints.at(6)) * stateDuration;
-            incY = (pathPoints.at(9) - pathPoints.at(7)) * stateDuration; break;
+            incY = 15; break;//(pathPoints.at(9) - pathPoints.at(7)) * stateDuration * 1000; break;
         case 4:
             stateDuration = stateDuration * 0.03;
             incX = (pathPoints.at(10) - pathPoints.at(8)) * stateDuration;
             incY = 0; break;
         }
-        if(incX < 1){
+        if(incX > 0 && incX < 1){
             incX = 1;
         }
-        if(incY < 1){
-            incY = 1;
+        else if(incX < 0){
+            incX = -1;
         }
         this->pulse->setCoordinates(currX + incX, currY + incY);
     }
@@ -124,6 +128,12 @@ void AnimatedLabel::Pulse::play(){
 void AnimatedLabel::Pulse::stop(){
     this->active = false;
     this->timer->stop();
+}
+inline int AnimatedLabel::Pulse::getWidth() const{
+    return this->width;
+}
+inline int AnimatedLabel::Pulse::getHeight() const{
+    return this->height;
 }
 void AnimatedLabel::Pulse::setDurationMillis(int durationMillis){
     if(durationMillis > 0){

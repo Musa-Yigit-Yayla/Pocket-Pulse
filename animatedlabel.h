@@ -49,7 +49,7 @@ public:
         //use the scope resolution operator twice to implement the methods of the Pulse class
     private:
         int width = 5;
-        int height = 3;
+        int height = 5;
         int durationMillis;
         bool active = false;
         int currX = pathPoints.at(0);
@@ -63,6 +63,8 @@ public:
         bool isActive() const;
         void play();
         void stop();
+        inline int getWidth() const;
+        inline int getHeight() const;
         void setDurationMillis(int durationMillis);
         int getDurationMillis() const;
         vector<int> getCoordinates() const;
