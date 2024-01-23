@@ -56,6 +56,7 @@ public:
         int currY = pathPoints.at(1);
         int state = 0; //5 states {0, 1, 2, 3, 4} which determine where we are positioned along the pulse like path
         QTimer* timer = nullptr;
+        static const vector<int> statePoints;
 
     public:
         Pulse(int durationMillis, QWidget* parent = nullptr);

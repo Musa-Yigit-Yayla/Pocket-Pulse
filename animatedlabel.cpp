@@ -55,10 +55,6 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
     //paint the pulse if it's active
     if(this->pulse != NULL && this->pulse->isActive()){
         int Y_OFFSET = 22;
-        //painter.setBrush(AnimatedLabel::Pulse::PULSE_ORANGE);
-        //painter.setPen(AnimatedLabel::Pulse::PULSE_ORANGE);
-
-
 
         //alter the x and y coordinates of the pulse
         vector<int> coordinates = this->pulse->getCoordinates();
@@ -67,36 +63,24 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
 
         painter.fillRect(QRect(currX, currY + Y_OFFSET, this->pulse->getWidth(), this->pulse->getHeight()), AnimatedLabel::Pulse::PULSE_ORANGE);
 
-        double incX = 0, incY = 0; //incremental rates
-        double stateDuration = ANIMATION_DURATION_SEC * 2; //5 seconds is the expected duration
+        int incX = 0, incY = 0; //incremental rates
         //state time distribution is as follows: {s0 = 0.3, s1 = 0.1, s2 = 0.2, s3 = 0.1, s4 = 0.3}
         switch(this->pulse->getState()){
         case 0:
-            stateDuration = stateDuration * 0.03;
-            incX = (pathPoints.at(2) - pathPoints.at(0)) * stateDuration;
+            incX = 6;
             incY = 0; break;
         case 1:
-            stateDuration = stateDuration * 0.01;
-            incX = (pathPoints.at(4) - pathPoints.at(2)) * stateDuration;
-            incY = (pathPoints.at(5) - pathPoints.at(3)) * stateDuration * 10000; break;
-        case 2:
-            stateDuration = stateDuration *  0.02;
-            incX = (pathPoints.at(6) - pathPoints.at(4)) * stateDuration;
-            incY = (pathPoints.at(7) - pathPoints.at(5)) * stateDuration * 5000; break;
-        case 3:
-            stateDuration = stateDuration * 0.01;
-            incX = (pathPoints.at(8) - pathPoints.at(6)) * stateDuration;
-            incY = 15; break;//(pathPoints.at(9) - pathPoints.at(7)) * stateDuration * 1000; break;
-        case 4:
-            stateDuration = stateDuration * 0.03;
-            incX = (pathPoints.at(10) - pathPoints.at(8)) * stateDuration;
-            incY = 0; break;
-        }
-        if(incX > 0 && incX < 1){
             incX = 1;
-        }
-        else if(incX < 0){
-            incX = -1;
+            incY = -2;break;
+        case 2:
+            incX = 1;
+            incY = 4;break;
+        case 3:
+            incX = 1;
+            incY = -3; break;
+        case 4:
+            incX = 12;
+            incY = 0; break;
         }
         this->pulse->setCoordinates(currX + incX, currY + incY);
     }
@@ -148,29 +132,31 @@ vector<int> AnimatedLabel::Pulse::getCoordinates() const{
     return vec;
 }
 void AnimatedLabel::Pulse::setCoordinates(int newX, int newY){
+    if(newX < 0){
+        newX = 0;
+    }
+    if(newY < 0){
+        newY = 0;
+    }
     this->currX = newX;
     this->currY = newY;
 
     //update the state when applicable
-    vector<int> vecX;
 
-    for(int i = 0; i < pathPoints.size(); i += 2){
-        vecX.push_back(pathPoints.at(i));
-    }
-    if(this->currX < vecX.at(1)){
+    if(this->currX < statePoints.at(0)){
         //state 0
         this->state = 0;
     }
-    else if(this->currX < vecX.at(2)){
+    else if(this->currX < statePoints.at(1)){
         this->state = 1;
     }
-    else if(this->currX < vecX.at(3)){
+    else if(this->currX < statePoints.at(2)){
         this->state = 2;
     }
-    else if(this->currX < vecX.at(4)){
+    else if(this->currX < statePoints.at(3)){
         this->state = 3;
     }
-    else if(this->currX < vecX.at(5)){
+    else if(this->currX < statePoints.at(4)){
         this->state = 4;
     }
     else{
@@ -191,6 +177,7 @@ int AnimatedLabel::Pulse::getState() const{
     return this->state;
 }
 const vector<int> AnimatedLabel::pathPoints = {0, 35, 50, 35, 56, 10, 58, 60, 64, 35, 120, 35};
+const vector<int> AnimatedLabel::Pulse::statePoints = {30, 55, 65, 75, 85};
 const QColor AnimatedLabel::BACKGROUND_BLUE = QColor(6, 59, 135);
 const QColor AnimatedLabel::PATH_WHITE = QColor(242, 240, 230);
 const QColor AnimatedLabel::LOGO_ORANGE = QColor(253, 106, 2);
