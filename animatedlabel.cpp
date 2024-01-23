@@ -71,10 +71,10 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
             incY = 0; break;
         case 1:
             incX = 1;
-            incY = -2;break;
+            incY = -3;break;
         case 2:
             incX = 1;
-            incY = 4;break;
+            incY = 8;break;
         case 3:
             incX = 1;
             incY = -3; break;
@@ -135,8 +135,11 @@ void AnimatedLabel::Pulse::setCoordinates(int newX, int newY){
     if(newX < 0){
         newX = 0;
     }
-    if(newY < 0){
-        newY = 0;
+    if(newY < 10){
+        newY = 10;
+    }
+    else if(newY > 54){
+        newY = 54;
     }
     this->currX = newX;
     this->currY = newY;
@@ -177,7 +180,7 @@ int AnimatedLabel::Pulse::getState() const{
     return this->state;
 }
 const vector<int> AnimatedLabel::pathPoints = {0, 35, 50, 35, 56, 10, 58, 60, 64, 35, 120, 35};
-const vector<int> AnimatedLabel::Pulse::statePoints = {30, 55, 65, 75, 85};
+const vector<int> AnimatedLabel::Pulse::statePoints = {55, 70, 80, 90, 150};
 const QColor AnimatedLabel::BACKGROUND_BLUE = QColor(6, 59, 135);
 const QColor AnimatedLabel::PATH_WHITE = QColor(242, 240, 230);
 const QColor AnimatedLabel::LOGO_ORANGE = QColor(253, 106, 2);
