@@ -18,6 +18,7 @@
 #include <QTransform>
 #include <QTimer>
 #include <cstddef>
+#include <random>
 
 using namespace std;
 class AnimatedLabel : public QWidget{
@@ -75,6 +76,7 @@ public:
         int getState() const;
 
         static const QColor PULSE_ORANGE;
+        static const QColor PULSE_PURPLE;
 
     };
 private:

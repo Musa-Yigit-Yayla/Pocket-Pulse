@@ -61,7 +61,9 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
         int currX = coordinates.at(0);
         int currY = coordinates.at(1);
 
-        painter.fillRect(QRect(currX, currY + Y_OFFSET, this->pulse->getWidth(), this->pulse->getHeight()), AnimatedLabel::Pulse::PULSE_ORANGE);
+        QColor fillColor = AnimatedLabel::Pulse::PULSE_PURPLE;
+
+        painter.fillRect(QRect(currX, currY + Y_OFFSET, this->pulse->getWidth(), this->pulse->getHeight()), fillColor);
 
         int incX = 0, incY = 0; //incremental rates
         //state time distribution is as follows: {s0 = 0.3, s1 = 0.1, s2 = 0.2, s3 = 0.1, s4 = 0.3}
@@ -80,6 +82,7 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
             incY = -3; break;
         case 4:
             incX = 12;
+            currY = this->pathPoints.at(pathPoints.size() - 1);
             incY = 0; break;
         }
         this->pulse->setCoordinates(currX + incX, currY + incY);
@@ -179,11 +182,12 @@ void AnimatedLabel::Pulse::setState(int state){
 int AnimatedLabel::Pulse::getState() const{
     return this->state;
 }
-const vector<int> AnimatedLabel::pathPoints = {0, 35, 50, 35, 56, 10, 58, 60, 64, 35, 120, 35};
-const vector<int> AnimatedLabel::Pulse::statePoints = {55, 70, 80, 90, 150};
+const vector<int> AnimatedLabel::pathPoints = {0, 35, 50, 35, 56, 10, 67, 60, 72, 35, 120, 35};
+const vector<int> AnimatedLabel::Pulse::statePoints = {55, 70, 80, 86, 130};
 const QColor AnimatedLabel::BACKGROUND_BLUE = QColor(6, 59, 135);
 const QColor AnimatedLabel::PATH_WHITE = QColor(242, 240, 230);
 const QColor AnimatedLabel::LOGO_ORANGE = QColor(253, 106, 2);
 const QColor AnimatedLabel::Pulse::PULSE_ORANGE = QColor(251, 185, 9);
+const QColor AnimatedLabel::Pulse::PULSE_PURPLE = QColor(214, 32, 134);
 
 
