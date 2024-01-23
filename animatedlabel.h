@@ -42,6 +42,7 @@ public:
 
     static const QColor BACKGROUND_BLUE;
     static const QColor PATH_WHITE;
+    static const QColor LOGO_ORANGE;
     static const int ANIMATION_DURATION_SEC = 5;
 
     class Pulse: public QObject{

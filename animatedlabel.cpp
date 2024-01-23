@@ -25,10 +25,18 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
     painter.setPen(QPen(PATH_WHITE));
 
     QString str = "P";
+    QPen pen;
+    pen.setBrush(QBrush(LOGO_ORANGE));
+    painter.setPen(pen);
+    QFont font = painter.font();
+    font.setPointSize(AnimatedLabel::P_POINT_SIZE);
+    font.setItalic(true);
+    painter.setFont(font);
 
+    painter.drawText(P_LEFT_X, 0, AnimatedLabel::P_WIDTH, AnimatedLabel::P_HEIGHT, 0, str);
     QPainterPath path;
     QPen initialPen = painter.pen();
-    QPen pen;
+
     pen.setWidth(AnimatedLabel::PULSE_WIDTH_SIZE);
     pen.setBrush(QBrush(PATH_WHITE));
     painter.setPen(pen);
@@ -41,13 +49,8 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
     painter.drawPath(path);
 
     //reset the QPen to its initial state
-    painter.setPen(initialPen);
 
-    QFont font = painter.font();
-    font.setPointSize(AnimatedLabel::P_POINT_SIZE);
-    font.setItalic(true);
-    painter.setFont(font);
-    painter.drawText(P_LEFT_X, 0, AnimatedLabel::P_WIDTH, AnimatedLabel::P_HEIGHT, 0, str);
+    //pen.setBrush(QBrush(PATH_WHITE));
 
     //paint the pulse if it's active
     if(this->pulse != NULL && this->pulse->isActive()){
@@ -84,6 +87,12 @@ void AnimatedLabel::paintEvent(QPaintEvent* event){
             stateDuration = stateDuration * 0.03;
             incX = (pathPoints.at(10) - pathPoints.at(8)) * stateDuration;
             incY = 0; break;
+        }
+        if(incX < 1){
+            incX = 1;
+        }
+        if(incY < 1){
+            incY = 1;
         }
         this->pulse->setCoordinates(currX + incX, currY + incY);
     }
@@ -174,5 +183,7 @@ int AnimatedLabel::Pulse::getState() const{
 const vector<int> AnimatedLabel::pathPoints = {0, 35, 50, 35, 56, 10, 58, 60, 64, 35, 120, 35};
 const QColor AnimatedLabel::BACKGROUND_BLUE = QColor(6, 59, 135);
 const QColor AnimatedLabel::PATH_WHITE = QColor(242, 240, 230);
+const QColor AnimatedLabel::LOGO_ORANGE = QColor(253, 106, 2);
 const QColor AnimatedLabel::Pulse::PULSE_ORANGE = QColor(251, 185, 9);
+
 
