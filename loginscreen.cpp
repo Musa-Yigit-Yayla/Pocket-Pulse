@@ -1,6 +1,6 @@
 #include "LoginScreen.h"
 
-LoginScreen::LoginScreen()
+LoginScreen::LoginScreen(): QWidget{nullptr}
 {
 
 }

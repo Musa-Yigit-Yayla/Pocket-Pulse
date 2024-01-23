@@ -171,7 +171,7 @@ void AnimatedLabel::Pulse::setCoordinates(int newX, int newY){
         this->currY = pathPoints.at(1);
         this->state = 0;
     }
-    qDebug() << "The new coordinates are {" << this->currX << ", " << this->currY << " and the new state is " << this->state;
+    //qDebug() << "The new coordinates are {" << this->currX << ", " << this->currY << " and the new state is " << this->state;
 }
 QRect AnimatedLabel::Pulse::getRect() const{
     return QRect(this->currX, this->currY, this->width, this->height);
