@@ -1,4 +1,8 @@
 #include "loginscreen.h"
+#include "maincontroller.h"
+#include "mainscreen.h"
+#include "registerscreen.h"
+#include "user.h"
 
 LoginScreen::LoginScreen(): QWidget{nullptr}{
     //establish database connection
@@ -47,6 +51,8 @@ void LoginScreen::slotRegdirect(){
     //close the widget programmatically after having directed the user to the registration page
     QWidget* rsContainer = new QWidget();
     RegisterScreen* rs = new RegisterScreen(rsContainer);
+    rsContainer->setLayout(rs);
+    rsContainer->setFixedSize(RegisterScreen::CONTAINER_FIXED_WIDTH, RegisterScreen::CONTAINER_FIXED_HEIGHT);
     rsContainer->show();
     this->close();
 }

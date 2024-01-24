@@ -1,9 +1,8 @@
 #ifndef LOGINSCREEN_H
 #define LOGINSCREEN_H
 
-#include "maincontroller.h"
-#include "mainscreen.h"
-#include "registerscreen.h"
+class MainController;
+
 #include <QWidget>
 #include <QImage>
 #include <QLineEdit>

@@ -11,7 +11,6 @@
 #include <QSpacerItem>
 #include <QPushButton>
 #include <QMessageBox>
-
 #include <string>
 #include <cstddef>
 #include <cctype>
@@ -32,6 +31,7 @@ private:
     QLabel* pwLabel2 = nullptr;
     QLabel* errorLabel = nullptr; //label for denoting any input password related warnings
     QPushButton* btOk = nullptr;
+    QPushButton* btLogindirect = nullptr;
 
     //layout datafields
     QVBoxLayout vboxName;
@@ -68,6 +68,7 @@ private:
 
 public slots:
     void btOkHandler();
+    void loginDirectSlot();
     void tf1Changed(const QString& text);
 };
 

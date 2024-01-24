@@ -12,9 +12,10 @@
 #include <QGridLayout>
 #include <string>
 #include <cstddef>
-#include "RegisterScreen.h"
+#include "registerscreen.h"
 
 
+class RegisterScreen;
 using namespace std;
 class SavecodePane: public QWidget{
 private:

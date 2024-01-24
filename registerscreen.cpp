@@ -3,6 +3,7 @@
 #include "savecodepane.h"
 #include "maincontroller.h"
 #include "mainscreen.h"
+#include "loginscreen.h"
 #include <iostream>
 
 using namespace std;
@@ -40,11 +41,16 @@ RegisterScreen::RegisterScreen(QWidget* container){
         this->errorLabel->setVisible(false);
 
         this->btOk = new QPushButton(QString("continue"));
+
+        this->btLogindirect = new QPushButton(QString("back to login"));
+        this->btLogindirect->setFlat(true);
+        this->btLogindirect->setStyleSheet("text-decoration: underline; color: rgb(0, 0, 255);");
         this->setLayout();
 
 
         QObject::connect(this->btOk, &QPushButton::clicked, this, &RegisterScreen::btOkHandler);
         QObject::connect(this->passwordTf1, &QLineEdit::textEdited, this, &RegisterScreen::tf1Changed);
+        QObject::connect(this->btLogindirect, &QPushButton::clicked, this, &RegisterScreen::loginDirectSlot);
     }
 
 }
@@ -69,6 +75,7 @@ void RegisterScreen::setLayout(){
 
     this->vboxButton.addWidget(this->errorLabel, RegisterScreen::BTOK_STRETCH, Qt::AlignRight);
     this->vboxButton.addWidget(this->btOk, RegisterScreen::BTOK_STRETCH, Qt::AlignRight);
+    this->vboxButton.addWidget(this->btLogindirect);
 
     this->addLayout(&this->vboxButton);
     this->addSpacerItem(vboxSpacer);
@@ -186,6 +193,12 @@ void RegisterScreen::tf1Changed(const QString& text){
         this->passwordTf2->setVisible(true);
         this->pwLabel2->setVisible(true);
     }
+}
+void RegisterScreen::loginDirectSlot(){
+    //programmatically close the widget and instantiate a new loginscreen
+    this->parentWidget()->close();
+    LoginScreen* ls = new LoginScreen();
+    ls->show();
 }
 const QString RegisterScreen::LOGO_PATH("C:\\Users\\yigit\\Desktop\\Qt_Container\\QT_PROJECTS\\Pocket-Pulse\\pocket-pulse-logo.jpg");
 const QString RegisterScreen::NAME_LABEL_STR("Your Name: ");

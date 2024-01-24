@@ -1,4 +1,5 @@
 #include "maincontroller.h"
+#include "user.h"
 #include <iostream>
 
 using namespace std;

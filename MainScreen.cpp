@@ -1,4 +1,5 @@
 #include "mainscreen.h"
+#include "user.h"
 #include <string>
 #include <iostream>
 

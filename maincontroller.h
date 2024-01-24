@@ -1,7 +1,7 @@
 #ifndef MAINCONTROLLER_H
 #define MAINCONTROLLER_H
 
-#include "user.h"
+//#include "user.h"
 #include <string>
 #include <cstddef>
 #include <QSqlQuery>
@@ -9,6 +9,7 @@
 #include <QSqlError>
 #include <qDebug>
 
+class User;
 using namespace std;
 /**
  * Controller class for interacting with the local database
