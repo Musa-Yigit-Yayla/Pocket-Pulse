@@ -166,17 +166,6 @@ void RegisterScreen::btOkHandler(){
 
                 SavecodePane* svp = new SavecodePane(givenName, this);
                 svp->show();
-
-                /*cout << "Debug: saveCode is " << this->saveCode << " with length " << this->saveCode.length() << endl;
-                //after svp execution completes, we should check whether the saveCode datafield has been updated successfuly or not
-                if(this->saveCode.length() > 0){
-                    //saveCode retrieved successfully, instantiate the user
-                    cout << "Debug: instantiating the user with saveCode: " << this->saveCode << endl;
-                    User* newUser = new User(givenName, pw1, this->saveCode);
-                }
-                else{
-                    cout << "Exception: user abandoned registration without saving the saveCode" << endl;
-                }*/
             }
         }
         else{

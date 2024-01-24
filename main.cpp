@@ -3,12 +3,14 @@
 #include <QApplication>
 #include "user.h"
 #include "mainscreen.h"
-
+#include "loginscreen.h"
 
 void test0(){
     User* mockUser = new User("Yame dude", "password", "savecode");
     MainScreen* mc = new MainScreen(mockUser);
+    LoginScreen* ls = new LoginScreen();
     mc->show();
+    ls->show();
 }
 int main(int argc, char *argv[])
 {
