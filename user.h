@@ -20,7 +20,6 @@ private: //instance data fields
 
 public:
     User(string name, string password, string savecode);
-    User(string name); //constructor to fetch an existing user from the database and insantiate it, given its username
     ~User();
 
     string getUserName() const;

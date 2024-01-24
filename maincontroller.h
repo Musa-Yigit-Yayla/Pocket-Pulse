@@ -27,6 +27,8 @@ public:
     bool createUser(User* user);
     bool tableExists(string tableName);
     bool userExists(string username);
+    string getPassword(string username);
+    string getSavecode(string username);
 
     static const string USER_TABLE_NAME;
 };

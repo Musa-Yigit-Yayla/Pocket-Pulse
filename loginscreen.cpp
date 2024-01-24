@@ -15,8 +15,16 @@ LoginScreen::LoginScreen(): QWidget{nullptr}{
     this->btRegdirect->setFlat(true);
     this->nameLabel = new QLabel("Name:");
     this->pwLabel = new QLabel("Password:");
+    this->errorLabel = new QLabel();
+    this->errorLabel->setStyleSheet("color: red;");
+    this->errorLabel->setVisible(false);
+
+    this->btHelpdirect->setStyleSheet("text-decoration: underline; color: rgb(0, 0, 255);");
+    this->btRegdirect->setStyleSheet("text-decoration: underline; color: rgb(0, 0, 255);");
 
     this->setLayoutManagement();
+    this->setFixedWidth(FIXED_WIDTH);
+    this->setFixedHeight(FIXED_HEIGHT);
     QObject::connect(this->btRegdirect, &QPushButton::clicked, this, &LoginScreen::slotRegdirect);
     QObject::connect(this->btLogin, &QPushButton::clicked, this, &LoginScreen::slotLogin);
     QObject::connect(this->btLoginDirect, &QPushButton::clicked, this, &LoginScreen::slotLoginDirect);
@@ -31,14 +39,46 @@ void LoginScreen::setLayoutManagement(){
     this->gridPane->addWidget(this->pwLabel, 2, 0);
     this->gridPane->addWidget(this->passwordTf, 3, 0, 1, 2);
     this->gridPane->addWidget(this->btLogin, 4, 2);
-    this->gridPane->addWidget(this->btHelpdirect, 7, 0);
-    this->gridPane->addWidget(this->btRegdirect, 8, 0);
+    this->gridPane->addWidget(this->errorLabel, 5, 2);
+    this->gridPane->addWidget(this->btHelpdirect, 8, 0);
+    this->gridPane->addWidget(this->btRegdirect, 9, 0);
 }
 void LoginScreen::slotRegdirect(){
 
 }
 void LoginScreen::slotLogin(){
+    string givenName = this->nameTf->text().toStdString();
+    string givenPassword = this->passwordTf->text().toStdString();
 
+    if(givenName == "" || givenPassword == ""){
+        this->errorLabel->setText(QString::fromStdString(LoginScreen::EMPTY_FIELD_STR));
+        this->errorLabel->setVisible(true);
+    }
+    else if(this->mc->userExists(givenName)){
+        //verify whether the given password is valid
+        string password = this->mc->getPassword(givenName);
+        if(password != ""){
+            if(password == givenPassword){
+                //grant access and deploy the mainscreen after instantiating the user
+                string savecode = this->mc->getSavecode(givenName);
+                User* user = new User(givenName, password, savecode);
+                MainScreen* ms = new MainScreen(user);
+                ms->show();
+                this->close(); //programmatically close the login screen
+            }
+            else{
+                this->errorLabel->setText(QString::fromStdString(LoginScreen::PASSWORD_MISMATCH_STR));
+                this->errorLabel->setVisible(true);
+            }
+        }
+        else{
+            qDebug() << "Debug: password retrieval from the database controller was unsuccessful";
+        }
+    }
+    else{
+        this->errorLabel->setText(QString::fromStdString(LoginScreen::USER_DNE_STR));
+        this->errorLabel->setVisible(true);
+    }
 }
 void LoginScreen::slotLoginDirect(){
 
@@ -47,7 +87,10 @@ void LoginScreen::slotHelpdirect(){
 
 }
 void LoginScreen::paintEvent(QPaintEvent* event){
-    QPainter painter; //SET THE PAINTER'S DESIGNATED TARGET
+    QPainter painter(this); //SET THE PAINTER'S DESIGNATED TARGET
     const QRect& boundingRect = QRect(0, 0, this->width(), this->height());
     painter.drawImage(boundingRect, *this->logoImg);
 }
+const string LoginScreen::EMPTY_FIELD_STR = "fields cannot be blank";
+const string LoginScreen::USER_DNE_STR = "username does not exist";
+const string LoginScreen::PASSWORD_MISMATCH_STR = "password is invalid";

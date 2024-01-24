@@ -2,6 +2,7 @@
 #define LOGINSCREEN_H
 
 #include "maincontroller.h"
+#include "mainscreen.h"
 #include <QWidget>
 #include <QImage>
 #include <QLineEdit>
@@ -11,6 +12,8 @@
 #include <QGridLayout>
 #include <QPainter>
 #include <QPaintEvent>
+#include <qDebug>
+#include <string>
 
 using namespace std;
 
@@ -29,13 +32,23 @@ private:
     QGridLayout* gridPane = nullptr;
     QLabel* nameLabel = nullptr;
     QLabel* pwLabel = nullptr;
+    QLabel* errorLabel = nullptr;
+
+    QGridLayout* helpPane1 = nullptr; //stage 1
+    QGridLayout* helpPane2 = nullptr; //stage 1
 
 
 public:
     LoginScreen();
     void paintEvent(QPaintEvent*) override;
+
+    static const int FIXED_WIDTH = 250;
+    static const int FIXED_HEIGHT = 350;
 private:
     void setLayoutManagement();
+    static const string EMPTY_FIELD_STR;
+    static const string USER_DNE_STR;
+    static const string PASSWORD_MISMATCH_STR;
 
 public slots:
     void slotRegdirect();

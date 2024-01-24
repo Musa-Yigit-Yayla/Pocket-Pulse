@@ -4,15 +4,11 @@
 
 using namespace std;
 
-//constructor to invoke after successfull registration
+//constructor to invoke after successfull registration or login
 User::User(string name, string password, string saveCode){
     this->name = name;
     this->password = password;
     this->saveCode = saveCode;
-}
-//constructor to invoke after successfull login
-User::User(string name){
-    this->name = name;
 }
 User::~User(){
     //ToDo

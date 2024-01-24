@@ -91,6 +91,27 @@ bool MainController::tableExists(string tableName){
     return sq.next();
 
 }
+string MainController::getPassword(string username){
+    string result = "";
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT password FROM " + USER_TABLE_NAME + " WHERE name = :username;"));
+    sq.bindValue(":username", QString::fromStdString(username));
+    if(sq.exec() && sq.next()){
+        //password retrieved successfully
+        result = (sq.value(0).toString()).toStdString();
+    }
+    return result;
+}
+string MainController::getSavecode(string username){
+    string result = "";
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT savecode FROM " + USER_TABLE_NAME + " WHERE name = :username;"));
+    sq.bindValue(":username", QString::fromStdString(username));
+    if(sq.exec() && sq.next()){
+        result = (sq.value(0).toString()).toStdString();
+    }
+    return result;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

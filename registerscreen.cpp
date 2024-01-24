@@ -90,8 +90,8 @@ void RegisterScreen::setSaveCode(string saveCode){
         cout << "Debug: user " << newUser->getUserName() <<  " has successfuly been registered to the db" << endl;
         delete mc;
         //instantiate the main screen since the registration is successfull
-        MainScreen* mc = new MainScreen(newUser);
-        mc->show();
+        MainScreen* ms = new MainScreen(newUser);
+        ms->show();
     }
     else{
         cout << "Debug: user cannot be registered to the db (printed by RegisterScreen::SetSaveCode)";
