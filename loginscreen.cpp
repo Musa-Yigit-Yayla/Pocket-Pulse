@@ -44,7 +44,11 @@ void LoginScreen::setLayoutManagement(){
     this->gridPane->addWidget(this->btRegdirect, 9, 0);
 }
 void LoginScreen::slotRegdirect(){
-
+    //close the widget programmatically after having directed the user to the registration page
+    QWidget* rsContainer = new QWidget();
+    RegisterScreen* rs = new RegisterScreen(rsContainer);
+    rsContainer->show();
+    this->close();
 }
 void LoginScreen::slotLogin(){
     string givenName = this->nameTf->text().toStdString();
@@ -81,10 +85,17 @@ void LoginScreen::slotLogin(){
     }
 }
 void LoginScreen::slotLoginDirect(){
-
+    //switch back to the initial login page state
+    this->nameTf->clear();
+    this->passwordTf->clear();
+    this->setLayout(this->gridPane);
 }
 void LoginScreen::slotHelpdirect(){
-
+    //switch to the next phase after instantiating the layouts
+    this->helpPane1 = new QGridLayout();
+    MainController mc;
+    vector<string> usernames = mc.getUsernames();
+    //initialize the combobox
 }
 void LoginScreen::paintEvent(QPaintEvent* event){
     QPainter painter(this); //SET THE PAINTER'S DESIGNATED TARGET

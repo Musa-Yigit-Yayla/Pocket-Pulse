@@ -3,6 +3,7 @@
 
 #include "maincontroller.h"
 #include "mainscreen.h"
+#include "registerscreen.h"
 #include <QWidget>
 #include <QImage>
 #include <QLineEdit>
@@ -12,6 +13,7 @@
 #include <QGridLayout>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QComboBox>
 #include <qDebug>
 #include <string>
 
@@ -35,6 +37,10 @@ private:
     QLabel* errorLabel = nullptr;
 
     QGridLayout* helpPane1 = nullptr; //stage 1
+    QComboBox* namesBox = nullptr;
+    QLineEdit* savecodeTf = nullptr;
+    QLabel* savecodeLabel = nullptr;
+    QPushButton* btResetPass = nullptr;
     QGridLayout* helpPane2 = nullptr; //stage 1
 
 

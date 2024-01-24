@@ -112,6 +112,19 @@ string MainController::getSavecode(string username){
     }
     return result;
 }
+//Method to retrieve each and every username existing on the local db
+vector<string> MainController::getUsernames(){
+    QSqlQuery* sq = new QSqlQuery(this->db);
+    sq->prepare(QString::fromStdString("SELECT name FROM " + USER_TABLE_NAME + ";"));
+    vector<string> names;
+
+    if(sq->exec()){
+        while(sq->next()){
+            names.push_back(sq->value(0).toString().toStdString());
+        }
+    }
+    return names;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

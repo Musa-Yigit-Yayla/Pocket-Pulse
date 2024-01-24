@@ -29,6 +29,7 @@ public:
     bool userExists(string username);
     string getPassword(string username);
     string getSavecode(string username);
+    vector<string> getUsernames();
 
     static const string USER_TABLE_NAME;
 };
