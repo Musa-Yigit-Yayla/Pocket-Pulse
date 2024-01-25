@@ -3,6 +3,9 @@
 #include "mainscreen.h"
 #include "registerscreen.h"
 #include "user.h"
+#include <iostream>
+
+using namespace std;
 
 LoginScreen::LoginScreen(): QWidget{nullptr}{
     //establish database connection
@@ -31,7 +34,6 @@ LoginScreen::LoginScreen(): QWidget{nullptr}{
     this->setFixedHeight(FIXED_HEIGHT);
     QObject::connect(this->btRegdirect, &QPushButton::clicked, this, &LoginScreen::slotRegdirect);
     QObject::connect(this->btLogin, &QPushButton::clicked, this, &LoginScreen::slotLogin);
-    QObject::connect(this->btLoginDirect, &QPushButton::clicked, this, &LoginScreen::slotLoginDirect);
     QObject::connect(this->btHelpdirect, &QPushButton::clicked, this, &LoginScreen::slotHelpdirect);
 }
 void LoginScreen::setLayoutManagement(){
@@ -94,39 +96,80 @@ void LoginScreen::slotLogin(){
 }
 void LoginScreen::slotLoginDirect(){
     //switch back to the initial login page state
+
+    //retrieve and programmatically close the outer close's container widget if it's not the actual loginscreen object
+    QObject* object = QObject::sender();
+    QObject* parentObject = object->parent();
+
+    //type cast the parentObj to QWidget then programmatically close
+    QWidget* parentWidget = qobject_cast<QWidget*>(parentObject);
+    if(parentWidget != this){
+        parentWidget->close();
+    }
+
     this->nameTf->clear();
     this->passwordTf->clear();
-    this->setLayout(this->gridPane);
+    this->setVisible(true);
 }
 void LoginScreen::slotHelpdirect(){
     //switch to the next phase after instantiating the layouts
-    this->helpPane1 = new QGridLayout(this);
+    this->helpContainer1 = new QWidget();
+    this->helpPane1 = new QGridLayout();
     MainController mc;
     vector<string> usernames = mc.getUsernames();
     //initialize the combobox
-    this->namesBox = new QComboBox(this);
+    this->namesBox = new QComboBox();
 
+    cout << "Debug: slotHelpDirect usernames size is  " << usernames.size() << endl;
     for(int i = 0; i < usernames.size(); i++){
+        cout << "Debug: curr username is " << usernames.at(i) << endl;
         this->namesBox->addItem(QString::fromStdString(usernames.at(i)));
     }
-    this->usernameLabel = new QLabel("Select your username to reset password:", this);
-    this->savecodeLabel = new QLabel("Your lifetime savecode:", this);
-    this->savecodeTf = new QLineEdit(this);
+    this->usernameLabel = new QLabel("Select your username to reset password:");
+    this->savecodeLabel = new QLabel("Your lifetime savecode:");
+    this->savecodeTf = new QLineEdit();
     this->btResetPass = new QPushButton("verify");
+    this->errorLabel1 = new QLabel(QString::fromStdString(LoginScreen::SAVECODE_MISMATCH_STR));
+    this->errorLabel1->setStyleSheet("color: red;");
+    this->errorLabel1->setVisible(false);
 
-    this->helpPane1 = new QGridLayout(this);
+
+    this->btLoginDirect = new QPushButton("Return login");
+    this->btLoginDirect->setStyleSheet("text-decoration: underline; color: rgb(0, 0, 255);");
+    this->btLoginDirect->setFlat(true);
+
+    this->helpPane1 = new QGridLayout(this->helpContainer1);
+
     this->helpPane1->addWidget(this->usernameLabel, 0, 0, 1, 2);
     this->helpPane1->addWidget(this->namesBox, 1, 0, 1, 3);
     this->helpPane1->addWidget(this->savecodeLabel, 2, 0, 1, 2);
     this->helpPane1->addWidget(this->savecodeTf, 3, 0, 1, 1);
+    this->helpPane1->addWidget(this->errorLabel1, 4, 0, 1, 1);
     this->helpPane1->addWidget(this->btResetPass, 5, 3, 1, 1);
+    this->helpPane1->addWidget(this->btLoginDirect, 6, 2, 1, 2);
 
-
+    this->helpContainer1->setLayout(this->helpPane1);
+    this->helpContainer1->show();
+    //this->setVisible(false);
 
     QObject::connect(this->btResetPass, &QPushButton::clicked, this, &LoginScreen::slotResetVerify);
+    QObject::connect(this->btLoginDirect, &QPushButton::clicked, this, &LoginScreen::slotLoginDirect);
 }
 void LoginScreen::slotResetVerify(){
+    //For simplifying implementation, we will only notify user the success of their savecode trial
+    string givenSavecode = this->savecodeTf->text().toStdString();
+    string username = this->namesBox->currentText().toStdString();
+    string retrievedSC = this->mc->getSavecode(username);
 
+    cout << "Debug: retrieved savecode of the user " << username << " is " << retrievedSC << endl;
+    if(givenSavecode != "" && givenSavecode == retrievedSC){
+        //grant access and proceed to the next pane state
+        cout << "Debug: Acces granted. Proceeding to helpPane2 state" << endl;
+    }
+    else{
+        //display the single state error label1
+        this->errorLabel1->setVisible(true);
+    }
 }
 void LoginScreen::paintEvent(QPaintEvent* event){
     QPainter painter(this); //SET THE PAINTER'S DESIGNATED TARGET
@@ -136,3 +179,5 @@ void LoginScreen::paintEvent(QPaintEvent* event){
 const string LoginScreen::EMPTY_FIELD_STR = "fields cannot be blank";
 const string LoginScreen::USER_DNE_STR = "username does not exist";
 const string LoginScreen::PASSWORD_MISMATCH_STR = "password is invalid";
+const string LoginScreen::SAVECODE_MISMATCH_STR = "savecode is invalid";
+
