@@ -115,8 +115,8 @@ void LoginScreen::slotHelpdirect(){
     //switch to the next phase after instantiating the layouts
     this->helpContainer1 = new QWidget();
     this->helpPane1 = new QGridLayout();
-    MainController mc;
-    vector<string> usernames = mc.getUsernames();
+
+    vector<string> usernames = this->mc->getUsernames();
     //initialize the combobox
     this->namesBox = new QComboBox();
 
@@ -150,7 +150,7 @@ void LoginScreen::slotHelpdirect(){
 
     this->helpContainer1->setLayout(this->helpPane1);
     this->helpContainer1->show();
-    //this->setVisible(false);
+    this->setVisible(false);
 
     QObject::connect(this->btResetPass, &QPushButton::clicked, this, &LoginScreen::slotResetVerify);
     QObject::connect(this->btLoginDirect, &QPushButton::clicked, this, &LoginScreen::slotLoginDirect);
