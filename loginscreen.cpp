@@ -112,8 +112,20 @@ void LoginScreen::slotHelpdirect(){
     this->usernameLabel = new QLabel("Select your username to reset password:", this);
     this->savecodeLabel = new QLabel("Your lifetime savecode:", this);
     this->savecodeTf = new QLineEdit(this);
+    this->btResetPass = new QPushButton("verify");
 
     this->helpPane1 = new QGridLayout(this);
+    this->helpPane1->addWidget(this->usernameLabel, 0, 0, 1, 2);
+    this->helpPane1->addWidget(this->namesBox, 1, 0, 1, 3);
+    this->helpPane1->addWidget(this->savecodeLabel, 2, 0, 1, 2);
+    this->helpPane1->addWidget(this->savecodeTf, 3, 0, 1, 1);
+    this->helpPane1->addWidget(this->btResetPass, 5, 3, 1, 1);
+
+
+
+    QObject::connect(this->btResetPass, &QPushButton::clicked, this, &LoginScreen::slotResetVerify);
+}
+void LoginScreen::slotResetVerify(){
 
 }
 void LoginScreen::paintEvent(QPaintEvent* event){

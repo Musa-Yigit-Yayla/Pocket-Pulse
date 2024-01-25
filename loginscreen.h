@@ -64,6 +64,7 @@ public slots:
     void slotLogin();
     void slotLoginDirect();
     void slotHelpdirect();
+    void slotResetVerify();
 };
 
 #endif // LOGINSCREEN_H
