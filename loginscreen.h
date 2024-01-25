@@ -36,11 +36,13 @@ private:
     QLabel* errorLabel = nullptr;
 
     QGridLayout* helpPane1 = nullptr; //stage 1
+    QLabel* usernameLabel = nullptr;
     QComboBox* namesBox = nullptr;
     QLineEdit* savecodeTf = nullptr;
     QLabel* savecodeLabel = nullptr;
     QPushButton* btResetPass = nullptr;
-    QGridLayout* helpPane2 = nullptr; //stage 1
+
+    QGridLayout* helpPane2 = nullptr; //stage 2
 
 
 public:
@@ -51,6 +53,8 @@ public:
     static const int FIXED_HEIGHT = 350;
 private:
     void setLayoutManagement();
+    void setLayoutHelp1();
+
     static const string EMPTY_FIELD_STR;
     static const string USER_DNE_STR;
     static const string PASSWORD_MISMATCH_STR;

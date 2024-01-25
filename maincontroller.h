@@ -31,6 +31,7 @@ public:
     string getPassword(string username);
     string getSavecode(string username);
     vector<string> getUsernames();
+    int getUserCount();
 
     static const string USER_TABLE_NAME;
 };

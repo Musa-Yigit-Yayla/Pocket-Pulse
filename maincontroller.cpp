@@ -126,6 +126,17 @@ vector<string> MainController::getUsernames(){
     }
     return names;
 }
+int MainController::getUserCount(){
+    QSqlQuery* sq = new QSqlQuery(this->db);
+    sq->prepare(QString::fromStdString("SELECT * FROM " + USER_TABLE_NAME + ";"));
+    int count = 0;
+    if(sq->exec() && sq->next()){ //the first next call reaches to the 0th index if execution is successfull
+        while(sq->next()){
+            count++;
+        }
+    }
+    return count;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

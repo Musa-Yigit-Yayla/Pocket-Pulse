@@ -44,7 +44,9 @@ void LoginScreen::setLayoutManagement(){
     this->gridPane->addWidget(this->passwordTf, 3, 0, 1, 2);
     this->gridPane->addWidget(this->btLogin, 4, 2);
     this->gridPane->addWidget(this->errorLabel, 5, 2);
-    this->gridPane->addWidget(this->btHelpdirect, 8, 0);
+    if(this->mc->getUserCount() > 0){
+        this->gridPane->addWidget(this->btHelpdirect, 8, 0);
+    }
     this->gridPane->addWidget(this->btRegdirect, 9, 0);
 }
 void LoginScreen::slotRegdirect(){
@@ -98,10 +100,21 @@ void LoginScreen::slotLoginDirect(){
 }
 void LoginScreen::slotHelpdirect(){
     //switch to the next phase after instantiating the layouts
-    this->helpPane1 = new QGridLayout();
+    this->helpPane1 = new QGridLayout(this);
     MainController mc;
     vector<string> usernames = mc.getUsernames();
     //initialize the combobox
+    this->namesBox = new QComboBox(this);
+
+    for(int i = 0; i < usernames.size(); i++){
+        this->namesBox->addItem(QString::fromStdString(usernames.at(i)));
+    }
+    this->usernameLabel = new QLabel("Select your username to reset password:", this);
+    this->savecodeLabel = new QLabel("Your lifetime savecode:", this);
+    this->savecodeTf = new QLineEdit(this);
+
+    this->helpPane1 = new QGridLayout(this);
+
 }
 void LoginScreen::paintEvent(QPaintEvent* event){
     QPainter painter(this); //SET THE PAINTER'S DESIGNATED TARGET
