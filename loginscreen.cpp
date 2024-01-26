@@ -114,27 +114,26 @@ void LoginScreen::slotLoginDirect(){
 void LoginScreen::slotHelpdirect(){
     //switch to the next phase after instantiating the layouts
     this->helpContainer1 = new QWidget();
-    this->helpPane1 = new QGridLayout();
 
     vector<string> usernames = this->mc->getUsernames();
     //initialize the combobox
-    this->namesBox = new QComboBox();
+    this->namesBox = new QComboBox(this->helpContainer1);
 
     cout << "Debug: slotHelpDirect usernames size is  " << usernames.size() << endl;
     for(int i = 0; i < usernames.size(); i++){
         cout << "Debug: curr username is " << usernames.at(i) << endl;
         this->namesBox->addItem(QString::fromStdString(usernames.at(i)));
     }
-    this->usernameLabel = new QLabel("Select your username to reset password:");
-    this->savecodeLabel = new QLabel("Your lifetime savecode:");
-    this->savecodeTf = new QLineEdit();
-    this->btResetPass = new QPushButton("verify");
-    this->errorLabel1 = new QLabel(QString::fromStdString(LoginScreen::SAVECODE_MISMATCH_STR));
+    this->usernameLabel = new QLabel("Select your username to reset password:", this->helpContainer1);
+    this->savecodeLabel = new QLabel("Your lifetime savecode:", this->helpContainer1);
+    this->savecodeTf = new QLineEdit(this->helpContainer1);
+    this->btResetPass = new QPushButton("verify", this->helpContainer1);
+    this->errorLabel1 = new QLabel(QString::fromStdString(LoginScreen::SAVECODE_MISMATCH_STR), this->helpContainer1);
     this->errorLabel1->setStyleSheet("color: red;");
     this->errorLabel1->setVisible(false);
 
 
-    this->btLoginDirect = new QPushButton("Return login");
+    this->btLoginDirect = new QPushButton("Return login", this->helpContainer1);
     this->btLoginDirect->setStyleSheet("text-decoration: underline; color: rgb(0, 0, 255);");
     this->btLoginDirect->setFlat(true);
 
@@ -161,10 +160,49 @@ void LoginScreen::slotResetVerify(){
     string username = this->namesBox->currentText().toStdString();
     string retrievedSC = this->mc->getSavecode(username);
 
-    cout << "Debug: retrieved savecode of the user " << username << " is " << retrievedSC << endl;
+    //cout << "Debug: retrieved savecode of the user " << username << " is " << retrievedSC << endl;
     if(givenSavecode != "" && givenSavecode == retrievedSC){
         //grant access and proceed to the next pane state
         cout << "Debug: Acces granted. Proceeding to helpPane2 state" << endl;
+        this->helpContainer1->setVisible(false);
+        this->savecodeTf->clear();
+        this->namesBox->setCurrentIndex(0);
+
+        this->helpContainer2 = new QWidget();
+        this->helpPane2 = new QGridLayout(this->helpContainer2);
+        this->expLabel2 = new QLabel("Upon successfull reset, you will be redirected to the login page", this->helpContainer2);
+        this->passLabel1 = new QLabel(this->helpContainer2);
+        this->passLabel2 = new QLabel(this->helpContainer2);
+        this->passTf1 = new QLineEdit(this->helpContainer2);
+        this->passTf2 = new QLineEdit(this->helpContainer2);
+        this->errorLabel2 = new QLabel(this->helpContainer2);
+        this->errorLabel2->setStyleSheet("color: red;");
+        this->errorLabel2->setVisible(false);
+        this->btResetAccept = new QPushButton("reset",this->helpContainer2);
+
+        this->btReturn = new QPushButton(this->helpContainer2);
+        string fileName = "iconback.jpg";
+        QString iconPath = QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + fileName);
+        QPixmap img(iconPath);
+        QRect imgRect = img.rect();
+        imgRect.setSize(QSize(LoginScreen::BT_BACK_LENGTH, LoginScreen::BT_BACK_LENGTH));
+        this->btReturn->setIcon(img);
+
+        //set the layout management and display the wrapper widget
+        this->helpPane2->addWidget(this->expLabel2, 0, 0);
+        this->helpPane2->addWidget(this->passLabel1, 1, 0);
+        this->helpPane2->addWidget(this->passTf1, 2, 0, 1, 2);
+        this->helpPane2->addWidget(this->passLabel2, 3, 0);
+        this->helpPane2->addWidget(this->passTf2, 4, 0, 1, 2);
+        this->helpPane2->addWidget(this->errorLabel2, 5, 2);
+        this->helpPane2->addWidget(this->btResetAccept, 6, 3);
+        this->helpPane2->addWidget(this->btReturn, 7, 0);
+
+        this->helpContainer2->setLayout(this->helpPane2);
+        this->helpContainer2->show();
+
+        QObject::connect(this->btResetAccept, &QPushButton::clicked, this, &LoginScreen::slotResetAccept);
+        QObject::connect(this->btReturn, &QPushButton::clicked, this, &LoginScreen::slotReturnDirect);
     }
     else{
         //display the single state error label1
@@ -175,6 +213,13 @@ void LoginScreen::paintEvent(QPaintEvent* event){
     QPainter painter(this); //SET THE PAINTER'S DESIGNATED TARGET
     const QRect& boundingRect = QRect(0, 0, this->width(), this->height());
     painter.drawImage(boundingRect, *this->logoImg);
+}
+void LoginScreen::slotResetAccept(){
+    //reset the password and redirect the user to the login screen
+
+}
+void LoginScreen::slotReturnDirect(){
+
 }
 const string LoginScreen::EMPTY_FIELD_STR = "fields cannot be blank";
 const string LoginScreen::USER_DNE_STR = "username does not exist";

@@ -15,6 +15,7 @@ class MainController;
 #include <QComboBox>
 #include <qDebug>
 #include <QPixmap>
+#include <QRect>
 #include <string>
 
 using namespace std;
@@ -47,6 +48,14 @@ private:
 
     QGridLayout* helpPane2 = nullptr; //stage 2
     QWidget* helpContainer2 = nullptr;
+    QLabel* passLabel1 = nullptr;
+    QLabel* passLabel2 = nullptr;
+    QLineEdit* passTf1 = nullptr;
+    QLineEdit* passTf2 = nullptr;
+    QLabel* errorLabel2 = nullptr;
+    QLabel* expLabel2 = nullptr;
+    QPushButton* btResetAccept = nullptr;
+    QPushButton* btReturn = nullptr;
 
 public:
     LoginScreen();
@@ -62,6 +71,7 @@ private:
     static const string USER_DNE_STR;
     static const string PASSWORD_MISMATCH_STR;
     static const string SAVECODE_MISMATCH_STR;
+    static const int BT_BACK_LENGTH = 15;
 
 public slots:
     void slotRegdirect();
@@ -69,6 +79,8 @@ public slots:
     void slotLoginDirect();
     void slotHelpdirect();
     void slotResetVerify();
+    void slotResetAccept();
+    void slotReturnDirect();
 };
 
 #endif // LOGINSCREEN_H
