@@ -164,23 +164,22 @@ void LoginScreen::slotResetVerify(){
     if(givenSavecode != "" && givenSavecode == retrievedSC){
         //grant access and proceed to the next pane state
         cout << "Debug: Acces granted. Proceeding to helpPane2 state" << endl;
-        this->helpContainer1->setVisible(false);
+        //this->helpContainer1->setVisible(false);
         this->savecodeTf->clear();
         this->namesBox->setCurrentIndex(0);
 
         this->helpContainer2 = new QWidget();
-        this->helpPane2 = new QGridLayout(this->helpContainer2);
-        this->expLabel2 = new QLabel("Upon successfull reset, you will be redirected to the login page", this->helpContainer2);
-        this->passLabel1 = new QLabel(this->helpContainer2);
-        this->passLabel2 = new QLabel(this->helpContainer2);
-        this->passTf1 = new QLineEdit(this->helpContainer2);
-        this->passTf2 = new QLineEdit(this->helpContainer2);
-        this->errorLabel2 = new QLabel(this->helpContainer2);
+        this->expLabel2 = new QLabel("Upon successfull reset, you will be redirected to the login page");
+        this->passLabel1 = new QLabel();
+        this->passLabel2 = new QLabel();
+        this->passTf1 = new QLineEdit();
+        this->passTf2 = new QLineEdit();
+        this->errorLabel2 = new QLabel();
         this->errorLabel2->setStyleSheet("color: red;");
         this->errorLabel2->setVisible(false);
-        this->btResetAccept = new QPushButton("reset",this->helpContainer2);
+        this->btResetAccept = new QPushButton("reset");
 
-        this->btReturn = new QPushButton(this->helpContainer2);
+        this->btReturn = new QPushButton();
         string fileName = "iconback.jpg";
         QString iconPath = QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + fileName);
         QPixmap img(iconPath);
@@ -188,18 +187,20 @@ void LoginScreen::slotResetVerify(){
         imgRect.setSize(QSize(LoginScreen::BT_BACK_LENGTH, LoginScreen::BT_BACK_LENGTH));
         this->btReturn->setIcon(img);
 
+        this->helpPane2 = new QGridLayout();
         //set the layout management and display the wrapper widget
-        this->helpPane2->addWidget(this->expLabel2, 0, 0);
-        this->helpPane2->addWidget(this->passLabel1, 1, 0);
+        this->helpPane2->addWidget(this->expLabel2, 0, 0, 1, 1);
+        this->helpPane2->addWidget(this->passLabel1, 1, 0, 1, 1);
         this->helpPane2->addWidget(this->passTf1, 2, 0, 1, 2);
-        this->helpPane2->addWidget(this->passLabel2, 3, 0);
+        this->helpPane2->addWidget(this->passLabel2, 3, 0, 1, 1);
         this->helpPane2->addWidget(this->passTf2, 4, 0, 1, 2);
-        this->helpPane2->addWidget(this->errorLabel2, 5, 2);
-        this->helpPane2->addWidget(this->btResetAccept, 6, 3);
-        this->helpPane2->addWidget(this->btReturn, 7, 0);
+        this->helpPane2->addWidget(this->errorLabel2, 5, 2, 1, 1);
+        this->helpPane2->addWidget(this->btResetAccept, 6, 3, 1, 1);
+        this->helpPane2->addWidget(this->btReturn, 7, 0, 1, 1);
 
-        this->helpContainer2->setLayout(this->helpPane2);
-        this->helpContainer2->show();
+        this->helpContainer1->setLayout(nullptr);
+        this->helpContainer1->setLayout(this->helpPane2);
+        //this->helpContainer2->show();
 
         QObject::connect(this->btResetAccept, &QPushButton::clicked, this, &LoginScreen::slotResetAccept);
         QObject::connect(this->btReturn, &QPushButton::clicked, this, &LoginScreen::slotReturnDirect);
@@ -208,6 +209,7 @@ void LoginScreen::slotResetVerify(){
         //display the single state error label1
         this->errorLabel1->setVisible(true);
     }
+    cout << "Debug: reached end of execution for LoginScreen::slotResetVerify" << endl;
 }
 void LoginScreen::paintEvent(QPaintEvent* event){
     QPainter painter(this); //SET THE PAINTER'S DESIGNATED TARGET
