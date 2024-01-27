@@ -137,6 +137,17 @@ void LoginScreen::slotHelpdirect(){
     this->btLoginDirect->setStyleSheet("text-decoration: underline; color: rgb(0, 0, 255);");
     this->btLoginDirect->setFlat(true);
 
+    this->passLabel1 = new QLabel("Password");
+    this->passLabel2 = new QLabel("Password again");
+    //this->passTf1 = new QLineEdit();
+    //this->passTf2 = new QLineEdit(this->helpContainer1);*/
+
+    QLineEdit* le1 = new QLineEdit();
+    le1->setEchoMode(QLineEdit::Password);
+    QLineEdit* le2 = new QLineEdit();
+    le1->setEchoMode(QLineEdit::Password);
+
+
     this->helpPane1 = new QGridLayout(this->helpContainer1);
 
     this->helpPane1->addWidget(this->usernameLabel, 0, 0, 1, 2);
@@ -146,6 +157,12 @@ void LoginScreen::slotHelpdirect(){
     this->helpPane1->addWidget(this->errorLabel1, 4, 0, 1, 1);
     this->helpPane1->addWidget(this->btResetPass, 5, 3, 1, 1);
     this->helpPane1->addWidget(this->btLoginDirect, 6, 2, 1, 2);
+    this->helpPane1->addWidget(this->passLabel1, 7, 0, 1, 2);
+    this->helpPane1->addWidget(le1, 8, 0, 1, 1);
+    this->helpPane1->addWidget(this->passLabel2, 9, 0, 1, 2);
+    this->helpPane1->addWidget(le2, 10, 0, 1, 1);
+
+
 
     this->helpContainer1->setLayout(this->helpPane1);
     this->helpContainer1->show();
@@ -162,25 +179,59 @@ void LoginScreen::slotResetVerify(){
 
     //cout << "Debug: retrieved savecode of the user " << username << " is " << retrievedSC << endl;
     if(givenSavecode != "" && givenSavecode == retrievedSC){
-        //grant access and proceed to the next pane state
+        if(this->errorLabel1->text().toStdString() == SAVECODE_MISMATCH_STR){
+            this->errorLabel1->setVisible(false);
+        }
+        //Retrieve the textfields from the container, then validate the given password content on both textfields
+        QLineEdit* passField1 = qobject_cast<QLineEdit*>(this->helpContainer1->childAt(8, 0));
+        QLineEdit* passField2 = qobject_cast<QLineEdit*>(this->helpContainer1->childAt(10, 0));
+
+        string pass1 = passField1->text().toStdString();
+        string pass2 = passField2->text().toStdString();
+
+        if(pass1 != pass2){
+            this->errorLabel1->setVisible(true);
+            this->errorLabel1->setText("Passwords do not match");
+        }
+        else if(!RegisterScreen::isValidPassword(pass1)){
+            this->errorLabel1->setVisible(true);
+            this->errorLabel1->setText("A password must be at least length 8 and\n contain lowercase and uppercase letter(s) \n digit(s) and special character(s)");
+        }
+        else{
+            //given password is valid, update the database column
+            bool success = this->mc->updatePassword(username, pass1);
+            if(success){
+                this->errorLabel1->setText("Password resetted successfuly\n you will be redirected to login shortly");
+                this->errorLabel1->setStyleSheet("color: green;");
+                this->errorLabel1->setVisible(true);
+
+                QTimer* redirectTimer = new QTimer(); //set the parent later on when applicable
+
+            }
+
+        }
+
+
+       /* //grant access and proceed to the next pane state
         cout << "Debug: Acces granted. Proceeding to helpPane2 state" << endl;
-        //this->helpContainer1->setVisible(false);
-        this->savecodeTf->clear();
-        this->namesBox->setCurrentIndex(0);
+        //delete this->helpContainer1;
+        //this->helpContainer1 = nullptr;
+        //this->savecodeTf->clear();
+        //this->namesBox->setCurrentIndex(0);
 
         this->helpContainer2 = new QWidget();
-        this->expLabel2 = new QLabel("Upon successfull reset, you will be redirected to the login page");
-        this->passLabel1 = new QLabel();
-        this->passLabel2 = new QLabel();
+        //this->expLabel2 = new QLabel("Upon successfull reset\n you will be redirected to the login page");
+        this->passLabel1 = new QLabel("Password");
+        this->passLabel2 = new QLabel("Password again");
         this->passTf1 = new QLineEdit();
-        this->passTf2 = new QLineEdit();
-        this->errorLabel2 = new QLabel();
-        this->errorLabel2->setStyleSheet("color: red;");
-        this->errorLabel2->setVisible(false);
-        this->btResetAccept = new QPushButton("reset");
+        //this->passTf2 = new QLineEdit();
+        //this->errorLabel2 = new QLabel();
+        //this->errorLabel2->setStyleSheet("color: red;");
+        //this->errorLabel2->setVisible(false);
+        //this->btResetAccept = new QPushButton("confirm");
 
-        this->btReturn = new QPushButton();
-        string fileName = "iconback.jpg";
+        /*this->btReturn = new QPushButton();
+        string fileName = "\\icon2.jpg";
         QString iconPath = QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + fileName);
         QPixmap img(iconPath);
         QRect imgRect = img.rect();
@@ -189,21 +240,25 @@ void LoginScreen::slotResetVerify(){
 
         this->helpPane2 = new QGridLayout();
         //set the layout management and display the wrapper widget
-        this->helpPane2->addWidget(this->expLabel2, 0, 0, 1, 1);
+        //this->helpPane2->addWidget(this->expLabel2, 0, 0, 1, 1);
         this->helpPane2->addWidget(this->passLabel1, 1, 0, 1, 1);
-        this->helpPane2->addWidget(this->passTf1, 2, 0, 1, 2);
-        this->helpPane2->addWidget(this->passLabel2, 3, 0, 1, 1);
-        this->helpPane2->addWidget(this->passTf2, 4, 0, 1, 2);
-        this->helpPane2->addWidget(this->errorLabel2, 5, 2, 1, 1);
-        this->helpPane2->addWidget(this->btResetAccept, 6, 3, 1, 1);
-        this->helpPane2->addWidget(this->btReturn, 7, 0, 1, 1);
+        //this->helpPane2->addWidget(this->passTf1, 2, 0);
+        //this->helpPane2->addWidget(this->passLabel2, 3, 0, 1, 1);
+        //this->helpPane2->addWidget(this->passTf2, 4, 0, 1, 2);
+        //this->helpPane2->addWidget(this->errorLabel2, 5, 2, 1, 1);
+        //this->helpPane2->addWidget(this->btResetAccept, 6, 3, 1, 1);
+        //this->helpPane2->addWidget(this->btReturn, 7, 0, 1, 1);
 
-        this->helpContainer1->setLayout(nullptr);
-        this->helpContainer1->setLayout(this->helpPane2);
-        //this->helpContainer2->show();
+        this->helpContainer2->setLayout(this->helpPane2);
+        this->helpContainer2->show();
 
         QObject::connect(this->btResetAccept, &QPushButton::clicked, this, &LoginScreen::slotResetAccept);
         QObject::connect(this->btReturn, &QPushButton::clicked, this, &LoginScreen::slotReturnDirect);
+        /*QPushButton* bt = new QPushButton("hi");
+        QVBoxLayout* vb = new QVBoxLayout();
+        vb->addWidget(bt);
+        this->helpContainer2->setLayout(vb);
+        this->helpContainer2->show();*/
     }
     else{
         //display the single state error label1

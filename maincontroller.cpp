@@ -124,6 +124,7 @@ vector<string> MainController::getUsernames(){
             names.push_back(sq->value(0).toString().toStdString());
         }
     }
+    delete sq;
     return names;
 }
 int MainController::getUserCount(){
@@ -135,7 +136,16 @@ int MainController::getUserCount(){
             count++;
         }
     }
+    delete sq;
     return count;
+}
+bool MainController::updatePassword(string username, string password){
+    QSqlQuery query(this->db);
+    query.prepare(QString::fromStdString("UPDATE " + USER_TABLE_NAME + " SET password = :passvalue WHERE username = :uservalue"));
+    query.bindValue(":passvalue", QString::fromStdString(password));
+    query.bindValue(":uservalue", QString::fromStdString(username));
+
+    return query.exec();
 }
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";

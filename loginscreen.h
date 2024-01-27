@@ -15,6 +15,7 @@ class MainController;
 #include <QComboBox>
 #include <qDebug>
 #include <QPixmap>
+#include <QVBoxLayout>
 #include <QRect>
 #include <string>
 

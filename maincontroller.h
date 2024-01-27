@@ -30,6 +30,7 @@ public:
     bool userExists(string username);
     string getPassword(string username);
     string getSavecode(string username);
+    bool updatePassword(string username, string password);
     vector<string> getUsernames();
     int getUserCount();
 
