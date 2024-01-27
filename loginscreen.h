@@ -58,6 +58,8 @@ private:
     QPushButton* btResetAccept = nullptr;
     QPushButton* btReturn = nullptr;
 
+    vector<QLineEdit*> passLabels;
+
 public:
     LoginScreen();
     void paintEvent(QPaintEvent*) override;

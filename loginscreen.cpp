@@ -57,8 +57,8 @@ void LoginScreen::slotRegdirect(){
     RegisterScreen* rs = new RegisterScreen(rsContainer);
     rsContainer->setLayout(rs);
     rsContainer->setFixedSize(RegisterScreen::CONTAINER_FIXED_WIDTH, RegisterScreen::CONTAINER_FIXED_HEIGHT);
-    rsContainer->show();
     this->close();
+    rsContainer->show();
 }
 void LoginScreen::slotLogin(){
     string givenName = this->nameTf->text().toStdString();
@@ -147,6 +147,9 @@ void LoginScreen::slotHelpdirect(){
     QLineEdit* le2 = new QLineEdit();
     le1->setEchoMode(QLineEdit::Password);
 
+    this->passLabels.push_back(le1);
+    this->passLabels.push_back(le2);
+
 
     this->helpPane1 = new QGridLayout(this->helpContainer1);
 
@@ -179,15 +182,27 @@ void LoginScreen::slotResetVerify(){
 
     //cout << "Debug: retrieved savecode of the user " << username << " is " << retrievedSC << endl;
     if(givenSavecode != "" && givenSavecode == retrievedSC){
+        qDebug() << "Debug: given savecode is valid executing password validation";
         if(this->errorLabel1->text().toStdString() == SAVECODE_MISMATCH_STR){
             this->errorLabel1->setVisible(false);
         }
         //Retrieve the textfields from the container, then validate the given password content on both textfields
-        QLineEdit* passField1 = qobject_cast<QLineEdit*>(this->helpContainer1->childAt(8, 0));
-        QLineEdit* passField2 = qobject_cast<QLineEdit*>(this->helpContainer1->childAt(10, 0));
+        //QLineEdit* passField1 = qobject_cast<QLineEdit*>(this->helpContainer1->childAt(8, 0));
+        //QLineEdit* passField2 = qobject_cast<QLineEdit*>(this->helpContainer1->childAt(10, 0));
 
-        string pass1 = passField1->text().toStdString();
-        string pass2 = passField2->text().toStdString();
+        qDebug() << "Debug: password retrieval executed successfully";
+
+        //string pass1 = passField1->text().toStdString();
+        //string pass2 = passField2->text().toStdString();
+
+        if(this->passLabels.at(0) == NULL || this->passLabels.at(1) == NULL){
+            cout << "Debug: passFields are nullptr" << endl;
+        }
+        else{
+            cout << "Debug: passFields are not nullptr" << endl;
+        }
+        string pass1 = this->passLabels.at(0)->text().toStdString();
+        string pass2 = this->passLabels.at(1)->text().toStdString();
 
         if(pass1 != pass2){
             this->errorLabel1->setVisible(true);
@@ -261,7 +276,7 @@ void LoginScreen::slotResetVerify(){
         this->helpContainer2->show();*/
     }
     else{
-        //display the single state error label1
+        this->errorLabel1->setText("Given savecode is invalid");
         this->errorLabel1->setVisible(true);
     }
     cout << "Debug: reached end of execution for LoginScreen::slotResetVerify" << endl;
