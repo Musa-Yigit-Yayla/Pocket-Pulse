@@ -121,7 +121,6 @@ void LoginScreen::slotHelpdirect(){
 
     cout << "Debug: slotHelpDirect usernames size is  " << usernames.size() << endl;
     for(int i = 0; i < usernames.size(); i++){
-        cout << "Debug: curr username is " << usernames.at(i) << endl;
         this->namesBox->addItem(QString::fromStdString(usernames.at(i)));
     }
     this->usernameLabel = new QLabel("Select your username to reset password:", this->helpContainer1);
@@ -215,6 +214,8 @@ void LoginScreen::slotResetVerify(){
         else{
             //given password is valid, update the database column
             bool success = this->mc->updatePassword(username, pass1);
+
+            qDebug() << "Debug: Success of password reset operation is " << success;
             if(success){
                 this->errorLabel1->setText("Password resetted successfuly\n you will be redirected to login shortly");
                 this->errorLabel1->setStyleSheet("color: green;");

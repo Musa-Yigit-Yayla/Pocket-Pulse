@@ -141,7 +141,7 @@ int MainController::getUserCount(){
 }
 bool MainController::updatePassword(string username, string password){
     QSqlQuery query(this->db);
-    query.prepare(QString::fromStdString("UPDATE " + USER_TABLE_NAME + " SET password = :passvalue WHERE username = :uservalue"));
+    query.prepare(QString::fromStdString("UPDATE " + USER_TABLE_NAME + " SET password = :passvalue WHERE name = :uservalue"));
     query.bindValue(":passvalue", QString::fromStdString(password));
     query.bindValue(":uservalue", QString::fromStdString(username));
 
