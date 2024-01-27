@@ -144,7 +144,7 @@ void LoginScreen::slotHelpdirect(){
     QLineEdit* le1 = new QLineEdit();
     le1->setEchoMode(QLineEdit::Password);
     QLineEdit* le2 = new QLineEdit();
-    le1->setEchoMode(QLineEdit::Password);
+    le2->setEchoMode(QLineEdit::Password);
 
     this->passLabels.push_back(le1);
     this->passLabels.push_back(le2);
@@ -221,8 +221,12 @@ void LoginScreen::slotResetVerify(){
                 this->errorLabel1->setStyleSheet("color: green;");
                 this->errorLabel1->setVisible(true);
 
-                QTimer* redirectTimer = new QTimer(); //set the parent later on when applicable
+                QTimer* redirectTimer = new QTimer(this->helpContainer1); //set the parent later on when applicable
+                redirectTimer->setInterval(2500);
+                redirectTimer->setSingleShot(true);
+                redirectTimer->start();
 
+                QObject::connect(redirectTimer, &QTimer::timeout, this, &LoginScreen::slotLoginDirect);
             }
 
         }
