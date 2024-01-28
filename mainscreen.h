@@ -18,6 +18,7 @@
 #include <vector>
 #include <QPushButton>
 #include <QToolButton>
+#include <QToolTip>
 #include <QLayoutItem>
 #include <QIcon>
 #include <QColor>
@@ -48,6 +49,8 @@ private:
     vector<QToolButton*> toolButtons;
     QToolButton* btLogout = nullptr; //add widget
     QToolButton* btEditProfile = nullptr;
+
+    vector<string> tooltips = {"Manage expenses", "Track income", "Financial goals", "Debt management", "View reports", "Bank account", "Manage contacts"};
 public:
     MainScreen(User* registeredUser); //invoke when registration has been successfully performed
     MainScreen(string username); //invoke when login is successfully performed

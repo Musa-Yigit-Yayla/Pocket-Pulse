@@ -82,6 +82,7 @@ void MainScreen::setScrollableContent(){
         imgRect.setSize(QSize(TOOL_ICON_LENGTH, TOOL_ICON_LENGTH));
         //img = img.scaled(MainScreen::TOOL_ICON_LENGTH, MainScreen::TOOL_ICON_LENGTH);
         currBt->setIcon(img);
+        currBt->setToolTip(QString::fromStdString(this->tooltips.at(i)));
         this->vboxScrollable->addWidget(currBt);
     }
     QSpacerItem* spacer1 = new QSpacerItem(*spacer0);

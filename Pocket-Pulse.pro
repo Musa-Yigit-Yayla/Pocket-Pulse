@@ -24,6 +24,7 @@ SOURCES += \
     loginscreen.cpp \
     main.cpp \
     maincontroller.cpp \
+    networkcontroller.cpp \
     registerscreen.cpp \
     savecodepane.cpp \
     user.cpp
@@ -34,6 +35,7 @@ HEADERS += \
     loginscreen.h \
     maincontroller.h \
     mainscreen.h \
+    networkcontroller.h \
     registerscreen.h \
     savecodepane.h \
     user.h
