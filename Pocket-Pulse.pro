@@ -1,5 +1,6 @@
 QT       += core gui \
-            sql
+            sql \
+            network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,7 +23,6 @@ SOURCES += \
     animatedlabel.cpp \
     bankpane.cpp \
     circularimage.cpp \
-    genericpane.cpp \
     loginscreen.cpp \
     main.cpp \
     maincontroller.cpp \
@@ -35,7 +35,6 @@ HEADERS += \
     animatedlabel.h \
     bankpane.h \
     circularimage.h \
-    genericpane.h \
     loginscreen.h \
     maincontroller.h \
     mainscreen.h \

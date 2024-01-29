@@ -1,5 +1,6 @@
 #include "networkcontroller.h"
-#include <QNetwork>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 using namespace std;
 
