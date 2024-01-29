@@ -4,6 +4,7 @@
 #include "maincontroller.h"
 #include "circularimage.h"
 #include "animatedlabel.h"
+#include "bankpane.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -62,6 +63,8 @@ public:
     static const int TOOL_ICON_LENGTH = 40;
     static const int LOGOUT_ICON_LENGTH = 50;
     static const int TOP_LEFT_IMG_RADIUS = 30;
+    static const int GENERIC_PANE_WIDTH = 1850;
+    static const int GENERIC_PANE_HEIGHT = 980;
     static const QColor USER_PP_CHAR_COLOR;
     static const string ICONS_FOLDER_PATH; //change these during deployment in the deployment related branch
     static const string BACKGROUND_BLUE_STR;
