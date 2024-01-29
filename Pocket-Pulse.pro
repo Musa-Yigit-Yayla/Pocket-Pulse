@@ -20,6 +20,7 @@ CONFIG += c++17
 
 SOURCES += \
     MainScreen.cpp \
+    abstractpane.cpp \
     animatedlabel.cpp \
     bankpane.cpp \
     circularimage.cpp \
@@ -32,6 +33,7 @@ SOURCES += \
     user.cpp
 
 HEADERS += \
+    abstractpane.h \
     animatedlabel.h \
     bankpane.h \
     circularimage.h \

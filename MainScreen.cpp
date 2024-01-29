@@ -1,7 +1,9 @@
 #include "mainscreen.h"
 #include "user.h"
 #include "bankpane.h"
+#include "abstractpane.h"
 #include <string>
+#include <QList>
 #include <iostream>
 
 using namespace std;
@@ -15,6 +17,7 @@ MainScreen::MainScreen(User* registeredUser){
 
     //ToDo layout management
     this->setLayoutManagement();
+    this->setGenericPanes();
 }
 //invoke when login is successfully performed
 MainScreen::MainScreen(string username){
@@ -192,10 +195,24 @@ void MainScreen::toolVisualReportSlot(){
 
 }
 void MainScreen::toolBankAccSlot(){
-
+    this->removeCurrGenericPane();
+    this->hbox2->addWidget(this->bankPane);
 }
 void MainScreen::toolAddContactSlot(){
 
+}
+inline void MainScreen::removeCurrGenericPane(){
+    QList<QObject*> children = this->hbox2->children();
+
+    for(int i = 0; i < children.size(); i++){
+        QObject* currChild = children.at(i);
+        QWidget* childWidget = nullptr;
+
+        //below if statement ensures that we have the correct widget to remove from the layout
+        if(dynamic_cast<AbstractPane*>(currChild) && (childWidget = dynamic_cast<QWidget*>(currChild))){
+            this->hbox2->removeWidget(childWidget);
+        }
+    }
 }
 void MainScreen::logoutHandler(){
     cout << "Debug: logoutHandler has been invoked" << endl;
