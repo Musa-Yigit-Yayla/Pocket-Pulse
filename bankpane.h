@@ -2,7 +2,6 @@
 #define BANKPANE_H
 
 #include <QWidget>
-#include "mainscreen.h"
 
 class BankPane : public QWidget
 {

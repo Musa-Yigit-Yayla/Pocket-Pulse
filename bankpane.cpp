@@ -1,4 +1,7 @@
 #include "bankpane.h"
+#include "mainscreen.h"
+
+using namespace std;
 
 BankPane::BankPane(QWidget *parent)
     : QWidget{parent}

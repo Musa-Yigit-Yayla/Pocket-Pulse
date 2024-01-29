@@ -51,6 +51,9 @@ private:
     QToolButton* btLogout = nullptr; //add widget
     QToolButton* btEditProfile = nullptr;
 
+    //generic pane datafields
+    BankPane* bankPane = nullptr;
+
     vector<string> tooltips = {"Manage expenses", "Track income", "Financial goals", "Debt management", "View reports", "Bank account", "Manage contacts"};
 public:
     MainScreen(User* registeredUser); //invoke when registration has been successfully performed
@@ -73,6 +76,7 @@ private:
     void setScrollableContent();
     void setProfileGrid();
     void setAnimatedLabel();
+    void setGenericPanes(); //method for initializing the generic pane datafields
 public slots:
     void toolExpenseSlot();
     void toolIncomeSlot();

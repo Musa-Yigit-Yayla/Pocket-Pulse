@@ -1,5 +1,6 @@
 #include "mainscreen.h"
 #include "user.h"
+#include "bankpane.h"
 #include <string>
 #include <iostream>
 
@@ -159,6 +160,9 @@ void MainScreen::setProfileGrid(){
 }
 void MainScreen::setAnimatedLabel(){
     //set the animated label properties and initialize the animation
+}
+void MainScreen::setGenericPanes(){
+    this->bankPane = new BankPane(this->wrapper);
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
