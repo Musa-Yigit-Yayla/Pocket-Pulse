@@ -17,6 +17,7 @@ void BankPane::setFormPane(){
     this->btGetAccount.setText("Submit");
     this->errorLabel.setStyleSheet("color: red;");
     this->errorLabel.setVisible(false);
+    this->tfAccPass.setEchoMode(QLineEdit::Password);
 
     this->formPane.addWidget(&this->accountLabel, 0, 0);
     this->formPane.addWidget(&this->tfAccountID, 1, 0, 1, 4);

@@ -4,18 +4,25 @@
 //Controller class for manipulating and simulating bank related mock data
 
 #include <string>
+#include <QString>
+#include <QSqlQuery>
+#include <QSqlDatabase>
+#include <qDebug>
+#include <iostream>
 
 using namespace std;
 class BankingController{
 public:
     enum ACCOUNT_ATTRIBUTES {ID, FIRST_NAME, LAST_NAME, EMAIL, BANK_PASSWORD, BALANCE};
 private:
-    const string HOST_NAME;
-    const string DB_PASS = "";
-    const string ACCOUNT_TABLE_NAME;
-    const string TRANSACTION_TABLE_NAME;
+    QSqlDatabase db;
 
 
+    const string HOST_NAME = "root";
+    const string DB_PASS = "123456";
+    const string ACCOUNT_TABLE_NAME = "BANK_DATA";
+    const string TRANSACTION_TABLE_NAME = "TRANSACTION_DATA";
+    const string DB_NAME = "BANK_DB";
 public:
     BankingController();
 
