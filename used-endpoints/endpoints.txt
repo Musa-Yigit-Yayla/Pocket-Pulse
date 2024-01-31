@@ -1,0 +1,10 @@
+Mock Bank Name: Pulse Bank
+Bank ID = pulse.26.uk
+
+Available transaction departments (categories): Health, Education, Grocery & Market, Entertainment, Vehicle & Oil,
+Fees, Other
+
+
+
+account schema id: 592578
+Mockaroo API key: cded10a0

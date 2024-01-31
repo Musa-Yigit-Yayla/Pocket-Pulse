@@ -22,6 +22,7 @@ SOURCES += \
     MainScreen.cpp \
     abstractpane.cpp \
     animatedlabel.cpp \
+    bankingcontroller.cpp \
     bankpane.cpp \
     circularimage.cpp \
     loginscreen.cpp \
@@ -35,6 +36,7 @@ SOURCES += \
 HEADERS += \
     abstractpane.h \
     animatedlabel.h \
+    bankingcontroller.h \
     bankpane.h \
     circularimage.h \
     loginscreen.h \

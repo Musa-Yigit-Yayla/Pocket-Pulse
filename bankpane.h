@@ -16,9 +16,9 @@ class BankPane : public AbstractPane{
 private:
     QGridLayout formPane;
     QLineEdit tfAccountID;
-    QLineEdit tfBankID;
+    QLineEdit tfAccPass;
     QLabel accountLabel;
-    QLabel bankLabel;
+    QLabel passLabel;
     QLabel errorLabel;
     QPushButton btGetAccount;
 
