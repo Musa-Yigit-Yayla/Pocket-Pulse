@@ -71,8 +71,11 @@ void BankPane::slotGetAccount(){
                    }
                    else{
                        //provide authorization with the account and add the account
+
+                       int userId =
                        this->errorLabel.setVisible(false);
-                       bc.registerAccountToUser(id, this->user->get)
+
+                       bc.registerAccountToUser(id, )
                    }
 
                }

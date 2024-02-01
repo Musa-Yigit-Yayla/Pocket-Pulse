@@ -180,6 +180,9 @@ void MainScreen::close(){
 User* MainScreen::getUser() const{
     return this->user;
 }
+MainController* MainScreen::getMainController() const{
+    return this->controller;
+}
 //public slots
 void MainScreen::toolExpenseSlot(){
 

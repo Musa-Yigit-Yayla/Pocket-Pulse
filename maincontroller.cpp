@@ -141,11 +141,22 @@ int MainController::getUserCount(){
 }
 bool MainController::updatePassword(string username, string password){
     QSqlQuery query(this->db);
-    query.prepare(QString::fromStdString("UPDATE " + USER_TABLE_NAME + " SET password = :passvalue WHERE name = :uservalue"));
+    query.prepare(QString::fromStdString("UPDATE " + USER_TABLE_NAME + " SET password = :passvalue WHERE name = :uservalue;"));
     query.bindValue(":passvalue", QString::fromStdString(password));
     query.bindValue(":uservalue", QString::fromStdString(username));
 
     return query.exec();
+}
+int MainController::getUserId(string username){
+    int result = -1;
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT id FROM " + USER_TABLE_NAME + " WHERE name = :username;"));
+    sq.bindValue(":username", QString::fromStdString(username));
+
+    if(sq.exec() && sq.next()){
+        result = sq.value(0).toInt();
+    }
+    return result;
 }
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";

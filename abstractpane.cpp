@@ -1,7 +1,7 @@
 #include "abstractpane.h"
 
-AbstractPane::AbstractPane(QWidget* parent): QWidget{parent}{
-
+AbstractPane::AbstractPane(User* user, QWidget* parent): QWidget{parent}{
+    this->user = user;
 }
 AbstractPane::~AbstractPane(){
 

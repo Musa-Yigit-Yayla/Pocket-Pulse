@@ -8,6 +8,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <qDebug>
+#include <QVariant>
 
 class User;
 using namespace std;
@@ -30,6 +31,7 @@ public:
     bool userExists(string username);
     string getPassword(string username);
     string getSavecode(string username);
+    int getUserId(string username);
     bool updatePassword(string username, string password);
     vector<string> getUsernames();
     int getUserCount();
