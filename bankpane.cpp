@@ -3,12 +3,12 @@
 
 using namespace std;
 
-BankPane::BankPane(QWidget *parent)
-    : AbstractPane{parent}{
+BankPane::BankPane(User* user, QWidget *parent)
+    : AbstractPane{user, parent}{
 
     this->setFormPane();
-
-    this->setLayout(&this->formPane);
+    this->setLayoutManagement();
+    //this->setLayout(&this->formPane);
 }
 
 void BankPane::setFormPane(){
@@ -29,6 +29,13 @@ void BankPane::setFormPane(){
     QObject::connect(&this->btGetAccount, &QPushButton::clicked, this, &BankPane::slotGetAccount);
 }
 void BankPane::setLayoutManagement(){
+    this->pane = new QHBoxLayout(this);
+    this->accountBox = new QVBoxLayout(this);
+
+
+
+    this->pane->addLayout(this->accountBox);
+    this->pane->addLayout(&this->formPane);
 
 }
 //Slot to initiate interaction with the OBP by attempting to get account details
@@ -57,8 +64,17 @@ void BankPane::slotGetAccount(){
            if(bc.accountExists(id)){
                string password = bc.getAccountAttribute(id, BankingController::ACCOUNT_ATTRIBUTES::BANK_PASSWORD);
                if(givenPass == password){
-                   //provide authorization with the account and add the account
-                   this->errorLabel.setVisible(false);
+                   //check whether specified account id is already in use by some user
+                   if(bc.accountRegistered(id)){
+                       this->errorLabel.setText(QString::fromStdString("Specified account with id " + givenAccId + " is in use"));
+                       this->errorLabel.setVisible(true);
+                   }
+                   else{
+                       //provide authorization with the account and add the account
+                       this->errorLabel.setVisible(false);
+                       bc.registerAccountToUser(id, this->user->get)
+                   }
+
                }
                else{
                    this->errorLabel.setText("Given password is invalid");

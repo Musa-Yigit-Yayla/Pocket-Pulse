@@ -16,7 +16,7 @@ BankingController::BankingController(){
 }
 bool BankingController::accountExists(int accountId){
     QSqlQuery sq(this->db);
-    sq.prepare(QString::fromStdString("SELECT * FROM " + this->ACCOUNT_TABLE_NAME + " WHERE account_id = :givenId"));
+    sq.prepare(QString::fromStdString("SELECT * FROM " + this->ACCOUNT_TABLE_NAME + " WHERE account_id = :givenId;"));
     sq.bindValue(":givenId", accountId);
 
     bool success = sq.exec();
@@ -39,7 +39,7 @@ string BankingController::getAccountAttribute(int accountId, BankingController::
         case BankingController::ACCOUNT_ATTRIBUTES::BALANCE: columnName = "balance"; break;
     }
     QSqlQuery sq(this->db);
-    sq.prepare(QString::fromStdString("SELECT " + columnName + " FROM " + this->ACCOUNT_TABLE_NAME + " WHERE account_id = :givenId"));
+    sq.prepare(QString::fromStdString("SELECT " + columnName + " FROM " + this->ACCOUNT_TABLE_NAME + " WHERE account_id = :givenId;"));
     sq.bindValue(":givenId", accountId);
 
     if(sq.exec() && sq.next()){
@@ -47,4 +47,37 @@ string BankingController::getAccountAttribute(int accountId, BankingController::
     }
     qDebug() << "Debug: returned value from getAccountAttribute is " << result;
     return result;
+}
+//Returns the accounts of the user (if any) with respect to relational table
+vector<int> BankingController::getAccountsOfUser(int userId){
+    QSqlQuery sq(this->db);
+    vector<int> result;
+
+    sq.prepare(QString::fromStdString("SELECT account_id FROM " + this->USER_ACCOUNT_TABLE_NAME + " WHERE user_id = :userId;"));
+    sq.bindValue(":userId", userId);
+
+    if(sq.exec()){
+        //iterate over yielded query values and push them into the result vector
+        int counter = 0;
+        while(sq.next()){
+            string currStr = ((sq.value(counter++)).toString()).toStdString();
+            result.push_back(stoi(currStr));
+        }
+    }
+    return result;
+}
+//Checks whether a given account is registered to any user
+bool BankingController::accountRegistered(int accountId){
+    QSqlQuery sq(this->db);
+    bool found = false;
+
+    sq.prepare(QString::fromStdString("SELECT user_id FROM " + this->USER_ACCOUNT_TABLE_NAME + " WHERE account_id = :accountId"));
+    sq.bindValue(":accountId", accountId);
+
+    found = sq.exec();
+    found = found & sq.next();
+    return found;
+}
+bool registerAccountToUser(int accountId, int userId){
+
 }

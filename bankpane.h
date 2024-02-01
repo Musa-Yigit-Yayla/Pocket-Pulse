@@ -26,11 +26,12 @@ private:
     QLabel errorLabel;
     QPushButton btGetAccount;
 
+    QHBoxLayout* pane; //high level container
     QScrollArea sa;
     QVBoxLayout* accountBox = nullptr;
 
 public:
-    explicit BankPane(QWidget *parent = nullptr);
+    explicit BankPane(User* user, QWidget *parent = nullptr);
 
 private:
     void setFormPane();

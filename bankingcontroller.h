@@ -23,11 +23,15 @@ private:
     const string ACCOUNT_TABLE_NAME = "BANK_DATA";
     const string TRANSACTION_TABLE_NAME = "TRANSACTION_DATA";
     const string DB_NAME = "mock_banking.db";
+    const string USER_ACCOUNT_TABLE_NAME = "user_has_account";
 public:
     BankingController();
 
     bool accountExists(int accountId);
     string getAccountAttribute(int accountId, ACCOUNT_ATTRIBUTES attribute);
+    vector<int> getAccountsOfUser(int userId);
+    bool accountRegistered(int accountId);
+    bool registerAccountToUser(int accountId, int userId);
 
 
 };

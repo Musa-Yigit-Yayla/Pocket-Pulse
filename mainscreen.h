@@ -62,6 +62,7 @@ public:
 
     void show(); //show the mainscreen
     void close(); //set the visiblity to false
+    User* getUser() const;
 
     static const int TOOL_ICON_LENGTH = 40;
     static const int LOGOUT_ICON_LENGTH = 50;

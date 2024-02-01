@@ -165,7 +165,7 @@ void MainScreen::setAnimatedLabel(){
     //set the animated label properties and initialize the animation
 }
 void MainScreen::setGenericPanes(){
-    this->bankPane = new BankPane(this->wrapper);
+    this->bankPane = new BankPane(this->user, this->wrapper);
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
@@ -177,7 +177,9 @@ void MainScreen::show(){
 void MainScreen::close(){
     this->wrapper->setVisible(false);
 }
-
+User* MainScreen::getUser() const{
+    return this->user;
+}
 //public slots
 void MainScreen::toolExpenseSlot(){
 
