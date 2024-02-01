@@ -71,13 +71,21 @@ bool BankingController::accountRegistered(int accountId){
     QSqlQuery sq(this->db);
     bool found = false;
 
-    sq.prepare(QString::fromStdString("SELECT user_id FROM " + this->USER_ACCOUNT_TABLE_NAME + " WHERE account_id = :accountId"));
+    sq.prepare(QString::fromStdString("SELECT user_id FROM " + this->USER_ACCOUNT_TABLE_NAME + " WHERE account_id = :accountId;"));
     sq.bindValue(":accountId", accountId);
 
     found = sq.exec();
     found = found & sq.next();
     return found;
 }
-bool registerAccountToUser(int accountId, int userId){
-
+bool BankingController::registerAccountToUser(int accountId, int userId){
+    bool success = false;
+    if(!this->accountRegistered(accountId)){
+        QSqlQuery sq(this->db);
+        sq.prepare(QString::fromStdString("INSERT INTO " + this->USER_ACCOUNT_TABLE_NAME + " (account_id, user_id) VALUES (:accountId, :userId);"));
+        sq.bindValue(":accountId", accountId);
+        sq.bindValue(":userId", userId);
+        success = sq.exec();
+    }
+    return success;
 }

@@ -1,5 +1,6 @@
 #include "bankpane.h"
 #include "bankingcontroller.h"
+#include "mainscreen.h"
 
 using namespace std;
 
@@ -71,11 +72,28 @@ void BankPane::slotGetAccount(){
                    }
                    else{
                        //provide authorization with the account and add the account
-
-                       int userId =
-                       this->errorLabel.setVisible(false);
-
-                       bc.registerAccountToUser(id, )
+                       QWidget* mainScreenWrapper = qobject_cast<QWidget*>(this->parent());
+                       MainScreen* ms = nullptr;
+                       MainController* mainController = nullptr;
+                       int userId = -1;
+                       if(mainScreenWrapper != NULL){
+                           ms = reinterpret_cast<MainScreen*>(mainScreenWrapper->layout());
+                       }
+                       if(ms != NULL){
+                           mainController = ms->getMainController();
+                       }
+                       if(mainController != NULL){
+                           userId = mainController->getUserId(ms->getUser()->getUserName());
+                       }
+                       else{
+                           qDebug() << "Debug: error occured during casting of mainscreen and its wrapper at function BankPane::slotAccount";
+                       }
+                       if(userId != -1){
+                           //register the account to the relational table for user has a relation
+                           bool registered = bc.registerAccountToUser(id, userId);
+                           qDebug() << "Debug: user account registration yielded " << registered;
+                           this->errorLabel.setVisible(false);
+                       }
                    }
 
                }
