@@ -15,11 +15,12 @@ BankingController::BankingController(){
 
 }
 bool BankingController::accountExists(int accountId){
-    QSqlQuery sq;
+    QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("SELECT * FROM " + this->ACCOUNT_TABLE_NAME + " WHERE account_id = :givenId"));
     sq.bindValue(":givenId", accountId);
 
-    bool success = sq.exec() && sq.next();
+    bool success = sq.exec();
+    success = success && sq.next();
     qDebug() << "Debug: account with id " << accountId << " found state is " << success;
     return success;
 }
@@ -37,7 +38,7 @@ string BankingController::getAccountAttribute(int accountId, BankingController::
         case BankingController::ACCOUNT_ATTRIBUTES::BANK_PASSWORD: columnName = "bank_password"; break;
         case BankingController::ACCOUNT_ATTRIBUTES::BALANCE: columnName = "balance"; break;
     }
-    QSqlQuery sq;
+    QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("SELECT " + columnName + " FROM " + this->ACCOUNT_TABLE_NAME + " WHERE account_id = :givenId"));
     sq.bindValue(":givenId", accountId);
 

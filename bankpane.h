@@ -6,7 +6,11 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QScrollArea>
 #include "abstractpane.h"
+#include <cstddef>
 
 using namespace std;
 
@@ -22,16 +26,21 @@ private:
     QLabel errorLabel;
     QPushButton btGetAccount;
 
+    QScrollArea sa;
+    QVBoxLayout* accountBox = nullptr;
+
 public:
     explicit BankPane(QWidget *parent = nullptr);
 
 private:
     void setFormPane();
+    void setLayoutManagement();
 
 signals:
 
 public slots:
     void slotGetAccount();
+    void viewTransactions();
 };
 
 #endif // BANKPANE_H

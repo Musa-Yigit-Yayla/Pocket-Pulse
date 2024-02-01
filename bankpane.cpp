@@ -28,7 +28,9 @@ void BankPane::setFormPane(){
 
     QObject::connect(&this->btGetAccount, &QPushButton::clicked, this, &BankPane::slotGetAccount);
 }
+void BankPane::setLayoutManagement(){
 
+}
 //Slot to initiate interaction with the OBP by attempting to get account details
 void BankPane::slotGetAccount(){
     string givenAccId = this->tfAccountID.text().toStdString();
@@ -55,7 +57,7 @@ void BankPane::slotGetAccount(){
            if(bc.accountExists(id)){
                string password = bc.getAccountAttribute(id, BankingController::ACCOUNT_ATTRIBUTES::BANK_PASSWORD);
                if(givenPass == password){
-                   //provide authorizationwith the account
+                   //provide authorization with the account and add the account
                    this->errorLabel.setVisible(false);
                }
                else{
@@ -69,4 +71,7 @@ void BankPane::slotGetAccount(){
            }
         }
     }
+}
+void BankPane::viewTransactions(){
+
 }
