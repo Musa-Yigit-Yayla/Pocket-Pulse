@@ -22,7 +22,7 @@ private:
     const string DB_PASS = "123456";
     const string ACCOUNT_TABLE_NAME = "BANK_DATA";
     const string TRANSACTION_TABLE_NAME = "TRANSACTION_DATA";
-    const string DB_NAME = "BANK_DB";
+    const string DB_NAME = "mock_banking.db";
 public:
     BankingController();
 

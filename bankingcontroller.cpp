@@ -19,18 +19,31 @@ bool BankingController::accountExists(int accountId){
     sq.prepare(QString::fromStdString("SELECT * FROM " + this->ACCOUNT_TABLE_NAME + " WHERE account_id = :givenId"));
     sq.bindValue(":givenId", accountId);
 
-    return sq.exec() && sq.next();
+    bool success = sq.exec() && sq.next();
+    qDebug() << "Debug: account with id " << accountId << " found state is " << success;
+    return success;
 }
+//If the specified account attribute is id, an empty string is returned
+//Otherwise, an attempt to retrieve the corresponding field is made and result is returned
 string BankingController::getAccountAttribute(int accountId, BankingController::ACCOUNT_ATTRIBUTES attribute){
     string columnName;
+    string result = "";
 
     switch(attribute){
-        case BankingController::ACCOUNT_ATTRIBUTES::ID: columnName = "account_id"; break;
+        case BankingController::ACCOUNT_ATTRIBUTES::ID: return result; break;
         case BankingController::ACCOUNT_ATTRIBUTES::FIRST_NAME: columnName = "first_name"; break;
         case BankingController::ACCOUNT_ATTRIBUTES::LAST_NAME: columnName = "last_name"; break;
         case BankingController::ACCOUNT_ATTRIBUTES::EMAIL: columnName = "email"; break;
         case BankingController::ACCOUNT_ATTRIBUTES::BANK_PASSWORD: columnName = "bank_password"; break;
         case BankingController::ACCOUNT_ATTRIBUTES::BALANCE: columnName = "balance"; break;
     }
+    QSqlQuery sq;
+    sq.prepare(QString::fromStdString("SELECT " + columnName + " FROM " + this->ACCOUNT_TABLE_NAME + " WHERE account_id = :givenId"));
+    sq.bindValue(":givenId", accountId);
 
+    if(sq.exec() && sq.next()){
+        result = sq.value(0).toString().toStdString();
+    }
+    qDebug() << "Debug: returned value from getAccountAttribute is " << result;
+    return result;
 }
