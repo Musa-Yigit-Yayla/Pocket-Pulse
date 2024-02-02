@@ -1,6 +1,7 @@
 #include "bankpane.h"
 #include "bankingcontroller.h"
 #include "mainscreen.h"
+#include <iostream>
 
 using namespace std;
 
@@ -40,7 +41,7 @@ void BankPane::setLayoutManagement(){
     QLabel lastNameLabel("Last Name");
     QLabel balanceLabel("Account balance");
 
-    this->totalSumLabel.setText("$0.0");
+    //this->totalSumLabel.setText("$0.0");
     this->descriptionGrid->addWidget(&sumLabel, 0, 0);
     this->descriptionGrid->addWidget(&this->totalSumLabel, 0, 3);
     this->descriptionGrid->addWidget(&idLabel, 1, 0);
@@ -61,15 +62,23 @@ void BankPane::setLayoutManagement(){
         string lastName = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::LAST_NAME);
         string balance = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::BALANCE);
 
-        QVBoxLayout accountRowBox(this);
+        QHBoxLayout accountRowBox(this);
         QLabel currIdLabel(this);
         currIdLabel.setText(QString::fromStdString("" + currId));
         QLabel currNameLabel(this);
         currNameLabel.setText(QString::fromStdString(lastName));
+        QLabel currBalanceLabel(this);
+        currBalanceLabel.setText(QString::fromStdString(balance));
+
+        accountRowBox.addWidget(&currIdLabel);
+        accountRowBox.addWidget(&currNameLabel);
+        accountRowBox.addWidget(&currBalanceLabel);
+
+        this->accountsBox->addLayout(&accountRowBox);
         totalBalance += stod(balance.substr(1));
     }
 
-
+    this->totalSumLabel.setText(QString::fromStdString("$" + to_string(totalBalance)));
     this->pane->addLayout(this->accountsBox);
     this->pane->addLayout(&this->formPane);
 
