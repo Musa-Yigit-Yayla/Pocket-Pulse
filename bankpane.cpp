@@ -33,16 +33,40 @@ void BankPane::setLayoutManagement(){
     this->pane = new QHBoxLayout(this);
     this->accountsBox = new QVBoxLayout(this);
 
+    //initialize the description grid
+    this->descriptionGrid = new QGridLayout(this);
+    QLabel sumLabel("Total balance:          ");
+    QLabel idLabel("Account id");
+    QLabel lastNameLabel("Last Name");
+    QLabel balanceLabel("Account balance");
+
+    this->totalSumLabel.setText("$0.0");
+    this->descriptionGrid->addWidget(&sumLabel, 0, 0);
+    this->descriptionGrid->addWidget(&this->totalSumLabel, 0, 3);
+    this->descriptionGrid->addWidget(&idLabel, 1, 0);
+    this->descriptionGrid->addWidget(&lastNameLabel, 1, 1);
+    this->descriptionGrid->addWidget(&balanceLabel, 1, 2);
+
+    this->accountsBox->addLayout(this->descriptionGrid);
+
     //fetch the already registered accounts of the user if any exists
     BankingController bc;
     int userId = this->getCurrentUserId();
     vector<int> registeredAccounts = bc.getAccountsOfUser(userId);
 
+    double totalBalance = 0;
     for(int i = 0; i < registeredAccounts.size(); i++){
         int currId = registeredAccounts.at(i);
         //the hbox will contain data types id, last name and balance
         string lastName = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::LAST_NAME);
-        string balance = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::ID);
+        string balance = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::BALANCE);
+
+        QVBoxLayout accountRowBox(this);
+        QLabel currIdLabel(this);
+        currIdLabel.setText(QString::fromStdString("" + currId));
+        QLabel currNameLabel(this);
+        currNameLabel.setText(QString::fromStdString(lastName));
+        totalBalance += stod(balance.substr(1));
     }
 
 

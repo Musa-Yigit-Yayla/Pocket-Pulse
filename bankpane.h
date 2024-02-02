@@ -29,6 +29,8 @@ private:
     QHBoxLayout* pane; //high level container
     QScrollArea sa;
     QVBoxLayout* accountsBox = nullptr;
+    QGridLayout* descriptionGrid = nullptr;
+    QLabel totalSumLabel;
 
 public:
     explicit BankPane(User* user, QWidget *parent = nullptr);
