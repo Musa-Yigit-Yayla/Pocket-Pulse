@@ -28,10 +28,11 @@ private:
 
     QHBoxLayout* pane; //high level container
     QScrollArea sa;
-    QVBoxLayout* accountBox = nullptr;
+    QVBoxLayout* accountsBox = nullptr;
 
 public:
     explicit BankPane(User* user, QWidget *parent = nullptr);
+    int getCurrentUserId() const;
 
 private:
     void setFormPane();

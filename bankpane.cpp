@@ -31,11 +31,22 @@ void BankPane::setFormPane(){
 }
 void BankPane::setLayoutManagement(){
     this->pane = new QHBoxLayout(this);
-    this->accountBox = new QVBoxLayout(this);
+    this->accountsBox = new QVBoxLayout(this);
+
+    //fetch the already registered accounts of the user if any exists
+    BankingController bc;
+    int userId = this->getCurrentUserId();
+    vector<int> registeredAccounts = bc.getAccountsOfUser(userId);
+
+    for(int i = 0; i < registeredAccounts.size(); i++){
+        int currId = registeredAccounts.at(i);
+        //the hbox will contain data types id, last name and balance
+        string lastName = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::LAST_NAME);
+        string balance = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::ID);
+    }
 
 
-
-    this->pane->addLayout(this->accountBox);
+    this->pane->addLayout(this->accountsBox);
     this->pane->addLayout(&this->formPane);
 
 }
@@ -71,23 +82,7 @@ void BankPane::slotGetAccount(){
                        this->errorLabel.setVisible(true);
                    }
                    else{
-                       //provide authorization with the account and add the account
-                       QWidget* mainScreenWrapper = qobject_cast<QWidget*>(this->parent());
-                       MainScreen* ms = nullptr;
-                       MainController* mainController = nullptr;
-                       int userId = -1;
-                       if(mainScreenWrapper != NULL){
-                           ms = reinterpret_cast<MainScreen*>(mainScreenWrapper->layout());
-                       }
-                       if(ms != NULL){
-                           mainController = ms->getMainController();
-                       }
-                       if(mainController != NULL){
-                           userId = mainController->getUserId(ms->getUser()->getUserName());
-                       }
-                       else{
-                           qDebug() << "Debug: error occured during casting of mainscreen and its wrapper at function BankPane::slotAccount";
-                       }
+                       int userId = this->getCurrentUserId();
                        if(userId != -1){
                            //register the account to the relational table for user has a relation
                            bool registered = bc.registerAccountToUser(id, userId);
@@ -111,4 +106,21 @@ void BankPane::slotGetAccount(){
 }
 void BankPane::viewTransactions(){
 
+}
+int BankPane::getCurrentUserId() const{
+    //provide authorization with the account and add the account
+    QWidget* mainScreenWrapper = qobject_cast<QWidget*>(this->parent());
+    MainScreen* ms = nullptr;
+    MainController* mainController = nullptr;
+    int result = -1;
+    if(mainScreenWrapper != NULL){
+        ms = reinterpret_cast<MainScreen*>(mainScreenWrapper->layout());
+    }
+    if(ms != NULL){
+        mainController = ms->getMainController();
+    }
+    if(mainController != NULL){
+        result = mainController->getUserId(ms->getUser()->getUserName());
+    }
+    return result;
 }
