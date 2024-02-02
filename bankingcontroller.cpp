@@ -60,7 +60,7 @@ vector<int> BankingController::getAccountsOfUser(int userId){
         //iterate over yielded query values and push them into the result vector
         int counter = 0;
         while(sq.next()){
-            string currStr = ((sq.value(counter++)).toString()).toStdString();
+            string currStr = ((sq.value(0)).toString()).toStdString();
             result.push_back(stoi(currStr));
         }
     }

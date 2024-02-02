@@ -11,6 +11,7 @@ BankPane::BankPane(User* user, QWidget *parent)
     this->setFormPane();
     this->setLayoutManagement();
     //this->setLayout(&this->formPane);
+    this->setLayout(this->pane);
 }
 
 void BankPane::setFormPane(){
@@ -62,19 +63,19 @@ void BankPane::setLayoutManagement(){
         string lastName = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::LAST_NAME);
         string balance = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::BALANCE);
 
-        QHBoxLayout accountRowBox(this);
-        QLabel currIdLabel(this);
-        currIdLabel.setText(QString::fromStdString("" + currId));
-        QLabel currNameLabel(this);
-        currNameLabel.setText(QString::fromStdString(lastName));
-        QLabel currBalanceLabel(this);
-        currBalanceLabel.setText(QString::fromStdString(balance));
+        QHBoxLayout* accountRowBox = new QHBoxLayout(this);
+        QLabel* currIdLabel = new QLabel(this);
+        currIdLabel->setText(QString::fromStdString("" + currId));
+        QLabel* currNameLabel = new QLabel(this);
+        currNameLabel->setText(QString::fromStdString(lastName));
+        QLabel* currBalanceLabel = new QLabel(this);
+        currBalanceLabel->setText(QString::fromStdString(balance));
 
-        accountRowBox.addWidget(&currIdLabel);
-        accountRowBox.addWidget(&currNameLabel);
-        accountRowBox.addWidget(&currBalanceLabel);
+        accountRowBox->addWidget(currIdLabel);
+        accountRowBox->addWidget(currNameLabel);
+        accountRowBox->addWidget(currBalanceLabel);
 
-        this->accountsBox->addLayout(&accountRowBox);
+        this->accountsBox->addLayout(accountRowBox);
         totalBalance += stod(balance.substr(1));
     }
 
