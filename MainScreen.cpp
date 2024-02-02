@@ -46,6 +46,8 @@ void MainScreen::setLayoutManagement(){
     this->hbox1 = new QHBoxLayout(this->wrapper);
     this->hbox2 = new QHBoxLayout(this->wrapper);
     this->hbox1Widget->setStyleSheet(QString::fromStdString(MainScreen::BACKGROUND_BLUE_STR));
+    this->hbox2->setSpacing(5); //5 pixel spacing
+    this->hbox2->setAlignment(Qt::AlignLeft);
 
     this->vboxSide = new QVBoxLayout(this->wrapper);
     this->vboxScrollable = new QVBoxLayout(this->wrapper);
@@ -112,6 +114,8 @@ void MainScreen::setScrollableContent(){
     this->qsa->setLayout(this->vboxScrollable);
     this->qsa->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->qsa->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    const int SCROLL_GAP_OFFSET = 10;
+    this->qsa->setFixedWidth(LOGOUT_ICON_LENGTH + SCROLL_GAP_OFFSET);
 
     this->vboxSide->addWidget(this->qsa);
     //set the btLogout's properties after instantiating it

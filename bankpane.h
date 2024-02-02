@@ -36,6 +36,8 @@ public:
     explicit BankPane(User* user, QWidget *parent = nullptr);
     int getCurrentUserId() const;
 
+    static const int GRID_HOR_SPACING = 20;
+
 private:
     void setFormPane();
     void setLayoutManagement();

@@ -37,17 +37,23 @@ void BankPane::setLayoutManagement(){
 
     //initialize the description grid
     this->descriptionGrid = new QGridLayout(this);
-    QLabel sumLabel("Total balance:          ");
-    QLabel idLabel("Account id");
-    QLabel lastNameLabel("Last Name");
-    QLabel balanceLabel("Account balance");
+    this->descriptionGrid->setHorizontalSpacing(BankPane::GRID_HOR_SPACING);
+
+    QLabel* sumLabel = new QLabel(this);
+    sumLabel->setText("Total balance:          ");
+    QLabel* idLabel = new QLabel(this);
+    idLabel->setText("Account id");
+    QLabel* lastNameLabel = new QLabel(this);
+    lastNameLabel->setText("Last Name");
+    QLabel* balanceLabel = new QLabel(this);
+    balanceLabel->setText("Account balance");
 
     //this->totalSumLabel.setText("$0.0");
-    this->descriptionGrid->addWidget(&sumLabel, 0, 0);
+    this->descriptionGrid->addWidget(sumLabel, 0, 0);
     this->descriptionGrid->addWidget(&this->totalSumLabel, 0, 3);
-    this->descriptionGrid->addWidget(&idLabel, 1, 0);
-    this->descriptionGrid->addWidget(&lastNameLabel, 1, 1);
-    this->descriptionGrid->addWidget(&balanceLabel, 1, 2);
+    this->descriptionGrid->addWidget(idLabel, 1, 0);
+    this->descriptionGrid->addWidget(lastNameLabel, 1, 1);
+    this->descriptionGrid->addWidget(balanceLabel, 1, 2);
 
     this->accountsBox->addLayout(this->descriptionGrid);
 
@@ -64,8 +70,9 @@ void BankPane::setLayoutManagement(){
         string balance = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::BALANCE);
 
         QHBoxLayout* accountRowBox = new QHBoxLayout(this);
+        accountRowBox->setSpacing(BankPane::GRID_HOR_SPACING);
         QLabel* currIdLabel = new QLabel(this);
-        currIdLabel->setText(QString::fromStdString("" + currId));
+        currIdLabel->setText(QString::fromStdString(to_string(currId)));
         QLabel* currNameLabel = new QLabel(this);
         currNameLabel->setText(QString::fromStdString(lastName));
         QLabel* currBalanceLabel = new QLabel(this);
