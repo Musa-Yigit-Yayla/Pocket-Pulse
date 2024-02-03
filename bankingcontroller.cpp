@@ -42,10 +42,12 @@ string BankingController::getAccountAttribute(int accountId, BankingController::
     sq.prepare(QString::fromStdString("SELECT " + columnName + " FROM " + this->ACCOUNT_TABLE_NAME + " WHERE account_id = :givenId;"));
     sq.bindValue(":givenId", accountId);
 
-    if(sq.exec() && sq.next()){
+    bool executed = sq.exec();
+    bool iteratedNext = sq.next();
+    if(executed && iteratedNext){
         result = sq.value(0).toString().toStdString();
     }
-    qDebug() << "Debug: returned value from getAccountAttribute is " << result;
+    qDebug() << "Debug: returned value from getAccountAttribute is " << result << " and executed and iteratedNext are respectively " << executed << " and " << iteratedNext;
     return result;
 }
 //Returns the accounts of the user (if any) with respect to relational table

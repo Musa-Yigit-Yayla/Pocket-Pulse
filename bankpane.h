@@ -10,6 +10,7 @@
 #include <QHBoxLayout>
 #include <QScrollArea>
 #include "abstractpane.h"
+#include "bankingcontroller.h"
 #include <cstddef>
 
 using namespace std;
@@ -44,6 +45,7 @@ public:
 private:
     void setFormPane();
     void setLayoutManagement();
+    QHBoxLayout* getAccountsRowBox(int id, BankingController& bc);
 
 signals:
 

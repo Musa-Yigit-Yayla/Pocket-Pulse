@@ -76,25 +76,13 @@ void BankPane::setLayoutManagement(){
     double totalBalance = 0;
     for(int i = 0; i < registeredAccounts.size(); i++){
         int currId = registeredAccounts.at(i);
-        //the hbox will contain data types id, last name and balance
-        string lastName = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::LAST_NAME);
-        string balance = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::BALANCE);
+        QHBoxLayout* accountBox = this->getAccountsRowBox(currId, bc);
+        this->accountsBox->addLayout(accountBox);
 
-        QHBoxLayout* accountRowBox = new QHBoxLayout(this);
-        accountRowBox->setSpacing(BankPane::GRID_HOR_SPACING);
-        QLabel* currIdLabel = new QLabel(this);
-        currIdLabel->setText(QString::fromStdString(to_string(currId)));
-        QLabel* currNameLabel = new QLabel(this);
-        currNameLabel->setText(QString::fromStdString(lastName));
-        QLabel* currBalanceLabel = new QLabel(this);
-        currBalanceLabel->setText(QString::fromStdString(balance));
-
-        accountRowBox->addWidget(currIdLabel);
-        accountRowBox->addWidget(currNameLabel);
-        accountRowBox->addWidget(currBalanceLabel);
-
-        this->accountsBox->addLayout(accountRowBox);
-        totalBalance += stod(balance.substr(1));
+        //update the total balance
+        string balanceStr = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::BALANCE);
+        double balance = stod(balanceStr.substr(1));
+        totalBalance += balance;
     }
 
     this->totalSumLabel.setText(QString::fromStdString("$" + to_string(totalBalance)));
@@ -105,6 +93,7 @@ void BankPane::setLayoutManagement(){
     this->totalSumLabel.setStyleSheet(QString::fromStdString("color: rgb(" + to_string(r) + ", " + to_string(g) + ", " + to_string(b) + ");"));
 
     this->sa.setLayout(this->accountsBox);
+    this->sa.setFrameStyle(QFrame::NoFrame);
     //this->sa.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->sa.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->pane->addWidget(&this->sa);
@@ -119,6 +108,27 @@ void BankPane::setLayoutManagement(){
     formPaneWrapper->setLayout(&this->formPane);
     this->pane->addWidget(formPaneWrapper);
 
+}
+QHBoxLayout* BankPane::getAccountsRowBox(int currId, BankingController& bc){
+
+    //the hbox will contain data types id, last name and balance
+    string lastName = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::LAST_NAME);
+    string balance = bc.getAccountAttribute(currId, BankingController::ACCOUNT_ATTRIBUTES::BALANCE);
+
+    QHBoxLayout* accountRowBox = new QHBoxLayout(this);
+    accountRowBox->setSpacing(BankPane::GRID_HOR_SPACING);
+    QLabel* currIdLabel = new QLabel(this);
+    currIdLabel->setText(QString::fromStdString(to_string(currId)));
+    QLabel* currNameLabel = new QLabel(this);
+    currNameLabel->setText(QString::fromStdString(lastName));
+    QLabel* currBalanceLabel = new QLabel(this);
+    currBalanceLabel->setText(QString::fromStdString(balance));
+
+    accountRowBox->addWidget(currIdLabel);
+    accountRowBox->addWidget(currNameLabel);
+    accountRowBox->addWidget(currBalanceLabel);
+
+    return accountRowBox;
 }
 //Slot to register a bank account
 void BankPane::slotGetAccount(){
@@ -158,7 +168,34 @@ void BankPane::slotGetAccount(){
                            bool registered = bc.registerAccountToUser(id, userId);
                            qDebug() << "Debug: user account registration yielded " << registered;
                            if(registered){
-                               //display the newly eegistered account on the accountsBox
+                               bool inserted = false;
+                               //display the newly registered account on the accountsBox
+
+                               //Apply linear search (since we will have other layout types) on children of accountsBox
+                               QObjectList children = this->accountsBox->children();
+                               QHBoxLayout* newAccountRow = this->getAccountsRowBox(id, bc);
+
+                               for(int i = 0; i < children.size(); i++){
+                                   QObject* currChild = children.at(i);
+
+                                   QHBoxLayout* hboxPtr = qobject_cast<QHBoxLayout*>(currChild);
+                                   if(hboxPtr != NULL){
+
+                                       QObject* currAccRowChild = hboxPtr->children().at(0);
+                                       int childId = stoi(qobject_cast<QLabel*>(currAccRowChild)->text().toStdString());
+                                       if(childId > id){
+
+                                           //insert the new account row right before the current one
+                                           children.insert(i, newAccountRow);
+                                           inserted = true;
+                                       }
+                                   }
+                               }
+                               if(!inserted){
+                                   //append to the end
+                                   children.append(newAccountRow);
+                               }
+
                            }
                            this->errorLabel.setVisible(false);
                        }
