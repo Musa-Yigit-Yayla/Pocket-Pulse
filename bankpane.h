@@ -37,6 +37,9 @@ public:
     int getCurrentUserId() const;
 
     static const int GRID_HOR_SPACING = 20;
+    static const int MID_POINT_SIZE = 16;
+    static const int LARGE_POINT_SIZE = 20;
+    static const QColor GOLDEN_COLOR;
 
 private:
     void setFormPane();
@@ -48,5 +51,4 @@ public slots:
     void slotGetAccount();
     void viewTransactions();
 };
-
 #endif // BANKPANE_H

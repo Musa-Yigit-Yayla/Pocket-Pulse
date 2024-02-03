@@ -40,17 +40,26 @@ void BankPane::setLayoutManagement(){
     this->descriptionGrid->setHorizontalSpacing(BankPane::GRID_HOR_SPACING);
 
     QLabel* sumLabel = new QLabel(this);
-    sumLabel->setText("Total balance:          ");
+    sumLabel->setText("<u>Total balance:          </u>"); //underline the text with HTML
     QLabel* idLabel = new QLabel(this);
-    idLabel->setText("Account id");
+    idLabel->setText("<u>Account id</u>");
     QLabel* lastNameLabel = new QLabel(this);
-    lastNameLabel->setText("Last Name");
+    lastNameLabel->setText("<u>Last Name</u>");
     QLabel* balanceLabel = new QLabel(this);
-    balanceLabel->setText("Account balance");
+    balanceLabel->setText("<u>Account balance</u>");
+
+    QFont midFont;
+    QFont largeFont;
+    midFont.setPointSize(MID_POINT_SIZE);
+    largeFont.setPointSize(LARGE_POINT_SIZE);
+    sumLabel->setFont(largeFont);
+    idLabel->setFont(midFont);
+    lastNameLabel->setFont(midFont);
+    balanceLabel->setFont(midFont);
 
     //this->totalSumLabel.setText("$0.0");
     this->descriptionGrid->addWidget(sumLabel, 0, 0);
-    this->descriptionGrid->addWidget(&this->totalSumLabel, 0, 3);
+    this->descriptionGrid->addWidget(&this->totalSumLabel, 0, 2);
     this->descriptionGrid->addWidget(idLabel, 1, 0);
     this->descriptionGrid->addWidget(lastNameLabel, 1, 1);
     this->descriptionGrid->addWidget(balanceLabel, 1, 2);
@@ -87,8 +96,21 @@ void BankPane::setLayoutManagement(){
     }
 
     this->totalSumLabel.setText(QString::fromStdString("$" + to_string(totalBalance)));
+    QFont fontTotal = this->totalSumLabel.font();
+    fontTotal.setPointSize(BankPane::LARGE_POINT_SIZE);
+    this->totalSumLabel.setFont(fontTotal);
+    int r = GOLDEN_COLOR.red(), g = GOLDEN_COLOR.green(), b = GOLDEN_COLOR.blue();
+    this->totalSumLabel.setStyleSheet(QString::fromStdString("color: rgb(" + to_string(r) + ", " + to_string(g) + ", " + to_string(b) + ");"));
+
     this->pane->addLayout(this->accountsBox);
-    this->pane->addLayout(&this->formPane);
+
+    QWidget* formPaneWrapper = new QWidget(this);
+    /*QPalette palette = formPaneWrapper->palette();
+    palette.setColor(QPalette::Window, QColor::fromRgb(50, 205, 50));
+    formPaneWrapper->setPalette(palette);*/
+    formPaneWrapper->setStyleSheet("color: rgb(50, 205, 50);");
+    formPaneWrapper->setLayout(&this->formPane);
+    this->pane->addWidget(formPaneWrapper);
 
 }
 //Slot to initiate interaction with the OBP by attempting to get account details
@@ -165,3 +187,4 @@ int BankPane::getCurrentUserId() const{
     }
     return result;
 }
+const QColor BankPane::GOLDEN_COLOR = QColor(212, 175, 55);
