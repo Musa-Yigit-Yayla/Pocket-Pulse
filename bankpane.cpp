@@ -21,6 +21,7 @@ void BankPane::setFormPane(){
     this->errorLabel.setStyleSheet("color: red;");
     this->errorLabel.setVisible(false);
     this->tfAccPass.setEchoMode(QLineEdit::Password);
+    this->formPane.setContentsMargins(550, 100, 60, 400);
 
     this->formPane.addWidget(&this->accountLabel, 0, 0);
     this->formPane.addWidget(&this->tfAccountID, 1, 0, 1, 4);
@@ -34,6 +35,7 @@ void BankPane::setFormPane(){
 void BankPane::setLayoutManagement(){
     this->pane = new QHBoxLayout(this);
     this->accountsBox = new QVBoxLayout(this);
+    this->accountsBox->setContentsMargins(75, 25, 25, 25);
 
     //initialize the description grid
     this->descriptionGrid = new QGridLayout(this);
@@ -102,7 +104,12 @@ void BankPane::setLayoutManagement(){
     int r = GOLDEN_COLOR.red(), g = GOLDEN_COLOR.green(), b = GOLDEN_COLOR.blue();
     this->totalSumLabel.setStyleSheet(QString::fromStdString("color: rgb(" + to_string(r) + ", " + to_string(g) + ", " + to_string(b) + ");"));
 
-    this->pane->addLayout(this->accountsBox);
+    this->sa.setLayout(this->accountsBox);
+    //this->sa.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->sa.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->pane->addWidget(&this->sa);
+
+
 
     QWidget* formPaneWrapper = new QWidget(this);
     /*QPalette palette = formPaneWrapper->palette();
@@ -113,7 +120,7 @@ void BankPane::setLayoutManagement(){
     this->pane->addWidget(formPaneWrapper);
 
 }
-//Slot to initiate interaction with the OBP by attempting to get account details
+//Slot to register a bank account
 void BankPane::slotGetAccount(){
     string givenAccId = this->tfAccountID.text().toStdString();
     string givenPass = this->tfAccPass.text().toStdString();
@@ -150,6 +157,9 @@ void BankPane::slotGetAccount(){
                            //register the account to the relational table for user has a relation
                            bool registered = bc.registerAccountToUser(id, userId);
                            qDebug() << "Debug: user account registration yielded " << registered;
+                           if(registered){
+                               //display the newly eegistered account on the accountsBox
+                           }
                            this->errorLabel.setVisible(false);
                        }
                    }
