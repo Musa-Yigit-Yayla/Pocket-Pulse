@@ -36,8 +36,8 @@ private:
     QLabel totalSumLabel;
     vector<int> accountIndexes;
 
-    unordered_map<QHBoxLayout*, QPushButton*> inspectMap;
-    unordered_map<QHBoxLayout*, QPushButton*> closeMap;
+    unordered_map<QPushButton*, QHBoxLayout*> inspectMap;
+    unordered_map<QPushButton*, QHBoxLayout*> closeMap;
 
 public:
     explicit BankPane(User* user, QWidget *parent = nullptr);

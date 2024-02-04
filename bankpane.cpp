@@ -161,6 +161,10 @@ QHBoxLayout* BankPane::getAccountsRowBox(int currId, BankingController& bc){
 
     this->accountIndexes.push_back(currId);
 
+    //map the buttons with the corresponding accountRowBox
+    this->inspectMap.insert(make_pair(btViewTransaction, accountRowBox));
+    this->closeMap.insert(make_pair(btCloseTransaction, accountRowBox));
+
     QObject::connect(btViewTransaction, &QPushButton::clicked, this, &BankPane::viewTransactions);
     QObject::connect(btCloseTransaction, &QPushButton::clicked, this, &BankPane::closeTransactions);
     return accountRowBox;
@@ -252,20 +256,35 @@ void BankPane::slotGetAccount(){
 void BankPane::viewTransactions(){
     //first retrieve the proper insertion index of the transactions pane
     QObject* eventSource = QObject::sender();
-
     QPushButton* senderButton = qobject_cast<QPushButton*>(eventSource);
+    QHBoxLayout* targetRow = this->inspectMap.at(senderButton);
+    int insertionIndex = -1;
 
     QObjectList children = this->accountsBox->children();
     //iterate over the elements of accountsBox, then for each element check whether the hbox contains the buttonWrapper widget with the child as the event source
     //if so you have found the insertion index as i + 1
-    for(int i = 0; children.size(); i++){
+    for(int i = 0; i < children.size(); i++){
         QHBoxLayout* currAccRow = qobject_cast<QHBoxLayout*>(children.at(i));
 
-        if(currAccRow != NULL){
-            //now, the buttonWrapper widget should be visible in the children of currAccRow
-           QObjectList currChildren = currAccRow->children();
+        if(currAccRow != NULL && targetRow == currAccRow){
+           insertionIndex = i + 1;
+           break;
         }
     }
+    if(insertionIndex != -1){
+        //make the corresponding closeButton visible
+        for(auto& it: this->closeMap){
+           if(it.second == targetRow){
+               it.first->setVisible(true); //set the close button's visibility to true
+           }
+        }
+
+        //instantiate the transactionsPane and insert at the insertionındex
+    }
+    else{
+        qDebug() << "Debug: insertion index could not be retrieved by BankPane::viewTransactions";
+    }
+
 }
 void BankPane::closeTransactions(){
 
