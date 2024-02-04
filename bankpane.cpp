@@ -40,6 +40,7 @@ void BankPane::setLayoutManagement(){
     //initialize the description grid
     this->descriptionGrid = new QGridLayout(this);
     this->descriptionGrid->setHorizontalSpacing(BankPane::GRID_HOR_SPACING);
+    this->descriptionGrid->setSizeConstraint(QGridLayout::SetMaximumSize);
 
     QLabel* sumLabel = new QLabel(this);
     sumLabel->setText("<u>Total balance:          </u>"); //underline the text with HTML
@@ -124,8 +125,10 @@ QHBoxLayout* BankPane::getAccountsRowBox(int currId, BankingController& bc){
     QLabel* currBalanceLabel = new QLabel(this);
     currBalanceLabel->setText(QString::fromStdString(balance));
 
-    QPushButton* btViewTransaction = new QPushButton(this);
-    QPushButton* btCloseTransaction = new QPushButton(this);
+
+    QWidget* buttonsWrapper = new QWidget(this);
+    QPushButton* btViewTransaction = new QPushButton(buttonsWrapper);
+    QPushButton* btCloseTransaction = new QPushButton(buttonsWrapper);
 
     btViewTransaction->setFixedSize(TOOL_INSPECT_LENGTH, TOOL_INSPECT_LENGTH);
     QString viewPath = QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + "\\inspecticon.png");
@@ -142,17 +145,19 @@ QHBoxLayout* BankPane::getAccountsRowBox(int currId, BankingController& bc){
     btCloseTransaction->setIcon(closeImg);
 
 
-    QVBoxLayout* buttonContainer = new QVBoxLayout(this);
+    QHBoxLayout* buttonContainer = new QHBoxLayout(buttonsWrapper);
     buttonContainer->addWidget(btViewTransaction);
     buttonContainer->addWidget(btCloseTransaction);
-    buttonContainer->setSizeConstraint(QBoxLayout::SizeConstraint::SetFixedSize);
+    //buttonContainer->setSizeConstraint(QBoxLayout::SizeConstraint::SetFixedSize);
     btCloseTransaction->setVisible(false);
+    buttonsWrapper->setLayout(buttonContainer);
+    buttonsWrapper->setFixedSize(TOOL_INSPECT_LENGTH * 2 + 5, TOOL_INSPECT_LENGTH);
 
 
     accountRowBox->addWidget(currIdLabel);
     accountRowBox->addWidget(currNameLabel);
     accountRowBox->addWidget(currBalanceLabel);
-    accountRowBox->addLayout(buttonContainer);
+    accountRowBox->addWidget(buttonsWrapper);
 
     this->accountIndexes.push_back(currId);
 
@@ -245,7 +250,22 @@ void BankPane::slotGetAccount(){
     }
 }
 void BankPane::viewTransactions(){
+    //first retrieve the proper insertion index of the transactions pane
+    QObject* eventSource = QObject::sender();
 
+    QPushButton* senderButton = qobject_cast<QPushButton*>(eventSource);
+
+    QObjectList children = this->accountsBox->children();
+    //iterate over the elements of accountsBox, then for each element check whether the hbox contains the buttonWrapper widget with the child as the event source
+    //if so you have found the insertion index as i + 1
+    for(int i = 0; children.size(); i++){
+        QHBoxLayout* currAccRow = qobject_cast<QHBoxLayout*>(children.at(i));
+
+        if(currAccRow != NULL){
+            //now, the buttonWrapper widget should be visible in the children of currAccRow
+           QObjectList currChildren = currAccRow->children();
+        }
+    }
 }
 void BankPane::closeTransactions(){
 

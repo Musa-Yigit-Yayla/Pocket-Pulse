@@ -13,6 +13,7 @@
 #include "bankingcontroller.h"
 #include <cstddef>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -34,6 +35,9 @@ private:
     QGridLayout* descriptionGrid = nullptr;
     QLabel totalSumLabel;
     vector<int> accountIndexes;
+
+    unordered_map<QHBoxLayout*, QPushButton*> inspectMap;
+    unordered_map<QHBoxLayout*, QPushButton*> closeMap;
 
 public:
     explicit BankPane(User* user, QWidget *parent = nullptr);
