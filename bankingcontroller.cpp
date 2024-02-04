@@ -1,4 +1,5 @@
 #include "bankingcontroller.h"
+#include "qsqlerror.h"
 
 using namespace std;
 
@@ -82,12 +83,19 @@ bool BankingController::accountRegistered(int accountId){
 }
 bool BankingController::registerAccountToUser(int accountId, int userId){
     bool success = false;
+    qDebug() << "Debug: Database connection open status in BankingController::registerAccountToUser is " << this->db.isOpen();
     if(!this->accountRegistered(accountId)){
         QSqlQuery sq(this->db);
         sq.prepare(QString::fromStdString("INSERT INTO " + this->USER_ACCOUNT_TABLE_NAME + " (account_id, user_id) VALUES (:accountId, :userId);"));
         sq.bindValue(":accountId", accountId);
         sq.bindValue(":userId", userId);
         success = sq.exec();
+
+        if(!success){
+            //display errors
+            QSqlError error = sq.lastError();
+            qDebug() << "Debug: error is: " << error.text();
+        }
     }
     return success;
 }

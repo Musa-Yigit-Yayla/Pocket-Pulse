@@ -14,6 +14,8 @@ using namespace std;
 class BankingController{
 public:
     enum ACCOUNT_ATTRIBUTES {ID, FIRST_NAME, LAST_NAME, EMAIL, BANK_PASSWORD, BALANCE};
+    enum TRANSACTION_CATEGORIES {Health, Education, Grocery_Market, Entertainment, Vehicle_Oil, Fees, Other};
+
 private:
     QSqlDatabase db;
 
@@ -21,7 +23,7 @@ private:
     const string HOST_NAME = "root";
     const string DB_PASS = "123456";
     const string ACCOUNT_TABLE_NAME = "BANK_DATA";
-    const string TRANSACTION_TABLE_NAME = "TRANSACTION_DATA";
+    const string TRANSACTION_TABLE_NAME = "TRANSACTION_DATA2";
     const string DB_NAME = "mock_banking.db";
     const string USER_ACCOUNT_TABLE_NAME = "user_has_account";
 public:

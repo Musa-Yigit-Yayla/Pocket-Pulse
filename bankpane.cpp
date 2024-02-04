@@ -279,7 +279,12 @@ void BankPane::viewTransactions(){
            }
         }
 
-        //instantiate the transactionsPane and insert at the insertionındex
+        //instantiate the transactionsPane and after wrapping it into QSA, insert QSA at the insertionındex
+        const int TPANE_MAX_HEIGHT = 150;
+        QScrollArea* transactionWrapper = new QScrollArea(this);
+        transactionWrapper->setMaximumHeight(150);
+        transactionWrapper->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        QGridLayout* transactionsPane = new QGridLayout(this);
     }
     else{
         qDebug() << "Debug: insertion index could not be retrieved by BankPane::viewTransactions";
