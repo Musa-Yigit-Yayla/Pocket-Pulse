@@ -128,6 +128,8 @@ QHBoxLayout* BankPane::getAccountsRowBox(int currId, BankingController& bc){
     accountRowBox->addWidget(currNameLabel);
     accountRowBox->addWidget(currBalanceLabel);
 
+    this->accountIndexes.push_back(currId);
+
     return accountRowBox;
 }
 //Slot to register a bank account
@@ -174,26 +176,26 @@ void BankPane::slotGetAccount(){
                                //Apply linear search (since we will have other layout types) on children of accountsBox
                                QObjectList children = this->accountsBox->children();
                                QHBoxLayout* newAccountRow = this->getAccountsRowBox(id, bc);
+                               //int childId = stoi(qobject_cast<QLabel*>(accLabels.at(accLabels.size() - 1))->text().toStdString());
 
-                               for(int i = 0; i < children.size(); i++){
+                               int currHboxIndex = 0;
+                               for(int i = 1; i < children.size(); i++){ //start the iteration from index 1 as first index is descriptionGrid
                                    QObject* currChild = children.at(i);
 
                                    QHBoxLayout* hboxPtr = qobject_cast<QHBoxLayout*>(currChild);
                                    if(hboxPtr != NULL){
-
-                                       QObject* currAccRowChild = hboxPtr->children().at(0);
-                                       int childId = stoi(qobject_cast<QLabel*>(currAccRowChild)->text().toStdString());
+                                       int childId = this->accountIndexes.at(currHboxIndex++);
                                        if(childId > id){
-
                                            //insert the new account row right before the current one
-                                           children.insert(i, newAccountRow);
+                                           this->accountsBox->insertLayout(i, newAccountRow);
                                            inserted = true;
                                        }
+
                                    }
                                }
                                if(!inserted){
                                    //append to the end
-                                   children.append(newAccountRow);
+                                   this->accountsBox->addLayout(newAccountRow);
                                }
 
                            }

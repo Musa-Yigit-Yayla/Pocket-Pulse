@@ -12,6 +12,7 @@
 #include "abstractpane.h"
 #include "bankingcontroller.h"
 #include <cstddef>
+#include <vector>
 
 using namespace std;
 
@@ -32,6 +33,7 @@ private:
     QVBoxLayout* accountsBox = nullptr;
     QGridLayout* descriptionGrid = nullptr;
     QLabel totalSumLabel;
+    vector<int> accountIndexes;
 
 public:
     explicit BankPane(User* user, QWidget *parent = nullptr);
