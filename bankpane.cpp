@@ -124,12 +124,40 @@ QHBoxLayout* BankPane::getAccountsRowBox(int currId, BankingController& bc){
     QLabel* currBalanceLabel = new QLabel(this);
     currBalanceLabel->setText(QString::fromStdString(balance));
 
+    QPushButton* btViewTransaction = new QPushButton(this);
+    QPushButton* btCloseTransaction = new QPushButton(this);
+
+    btViewTransaction->setFixedSize(TOOL_INSPECT_LENGTH, TOOL_INSPECT_LENGTH);
+    QString viewPath = QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + "\\inspecticon.png");
+    QPixmap viewImg(viewPath);
+    QRect rect = viewImg.rect();
+    rect.setSize(QSize(TOOL_INSPECT_LENGTH, TOOL_INSPECT_LENGTH));
+    btViewTransaction->setIcon(viewImg);
+
+    btCloseTransaction->setFixedSize(TOOL_INSPECT_LENGTH, TOOL_INSPECT_LENGTH);
+    QString closePath = QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + "\\iconclose.png");
+    QPixmap closeImg(closePath);
+    rect = closeImg.rect();
+    rect.setSize(QSize(TOOL_INSPECT_LENGTH, TOOL_INSPECT_LENGTH));
+    btCloseTransaction->setIcon(closeImg);
+
+
+    QVBoxLayout* buttonContainer = new QVBoxLayout(this);
+    buttonContainer->addWidget(btViewTransaction);
+    buttonContainer->addWidget(btCloseTransaction);
+    buttonContainer->setSizeConstraint(QBoxLayout::SizeConstraint::SetFixedSize);
+    btCloseTransaction->setVisible(false);
+
+
     accountRowBox->addWidget(currIdLabel);
     accountRowBox->addWidget(currNameLabel);
     accountRowBox->addWidget(currBalanceLabel);
+    accountRowBox->addLayout(buttonContainer);
 
     this->accountIndexes.push_back(currId);
 
+    QObject::connect(btViewTransaction, &QPushButton::clicked, this, &BankPane::viewTransactions);
+    QObject::connect(btCloseTransaction, &QPushButton::clicked, this, &BankPane::closeTransactions);
     return accountRowBox;
 }
 //Slot to register a bank account
@@ -217,6 +245,9 @@ void BankPane::slotGetAccount(){
     }
 }
 void BankPane::viewTransactions(){
+
+}
+void BankPane::closeTransactions(){
 
 }
 int BankPane::getCurrentUserId() const{

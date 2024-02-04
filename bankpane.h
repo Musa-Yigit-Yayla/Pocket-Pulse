@@ -43,6 +43,7 @@ public:
     static const int MID_POINT_SIZE = 16;
     static const int LARGE_POINT_SIZE = 20;
     static const QColor GOLDEN_COLOR;
+    static const int TOOL_INSPECT_LENGTH = 25;
 
 private:
     void setFormPane();
@@ -54,5 +55,6 @@ signals:
 public slots:
     void slotGetAccount();
     void viewTransactions();
+    void closeTransactions();
 };
 #endif // BANKPANE_H
