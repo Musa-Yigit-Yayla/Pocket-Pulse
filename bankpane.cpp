@@ -324,24 +324,88 @@ void BankPane::sortTransactions(vector<vector<string>>& transactions){
 }
 //high index is inclusive
 void BankPane::sortTransactionsHelper(vector<vector<string>>& transactions, int low, int high){
-
+    if(low < high){
+        int index = partitionTransactions(transactions, low, high);
+        sortTransactionsHelper(transactions, low, index);
+        sortTransactionsHelper(transactions, index + 1, high);
+    }
 }
 int BankPane::partitionTransactions(vector<vector<string>>& transactions, int low, int high){
     //take index low as the partition index
     string partitionElt = transactions.at(low).at(4);
+    int partitionIndex = low;
     low += 1;
 
     while(low < high){
         string lowElt = transactions.at(low).at(4);
-        while(dateCompare(lowElt, partitionElt) < 0){
+        while(dateCompare(lowElt, partitionElt) < 0 && low < high){
            low++;
            lowElt = transactions.at(low).at(4);
         }
+        string highElt = transactions.at(high).at(4);
+        while(dateCompare(highElt, partitionElt) > 0 && low < high){
+           high--;
+           highElt = transactions.at(high).at(4);
+        }
+        if(low < high){
+           //swap the high index with low index
+           vector<string> temp = transactions.at(low);
+           transactions.at(low) = transactions.at(high);
+           transactions.at(high) = temp;
+        }
     }
+    //swap high with partition index
+    vector<string> temp = transactions.at(partitionIndex);
+    transactions.at(partitionIndex) = transactions.at(high);
+    transactions.at(high) = temp;
+
+    partitionIndex = high;
+    return partitionIndex ;
 }
 //Compares two dates with m/d/y format, first string parameter is compared with the second given parameter
-//Returns -1 if compared date has occured BEFORE the comparedTo date, 0 if they are the same, 1 if it occured after the comparedTo
+//Returns -x if compared date has occured BEFORE the comparedTo date, 0 if they are the same, x if it occured after the comparedTo where x is positive integer
 int BankPane::dateCompare(string compared, string comparedTo){
+    vector<int> comparedVec = splitDate(compared);
+    vector<int> comparedToVec = splitDate(comparedTo);
 
+    int y0 = comparedVec.at(2), m0 = comparedVec.at(1), d0 = comparedVec.at(0);
+    int y1 = comparedToVec.at(2), m1 = comparedToVec.at(1), d1 = comparedToVec.at(0);
+    int result;
+
+    if(y0 == y1 && m0 == m1 && d0 == d1){
+        result = 0;
+    }
+    else if(y0 != y1){
+        result = y0 - y1;
+    }
+    else if(m0 != m1){
+        result = m0 - m1;
+    }
+    else{
+        //days differ
+        result = d0 - d1;
+    }
+    return result;
+}
+//Expects a date string in m/d/y format
+//Returns a vector containing the {month, day, year}
+//Returns an empty vector if the given string does not conform to the format
+inline vector<int> BankPane::splitDate(string date){
+    vector<int> slashIndexes;
+
+    for(int i = 0; i < date.size(); i++){
+        char ch = date.at(i);
+        if(ch == '/'){
+           slashIndexes.push_back(i);
+        }
+    }
+    if(slashIndexes.size() == 2){
+        int s0 = slashIndexes.at(0);
+        int s1 = slashIndexes.at(1);
+        slashIndexes.push_back(stoi(date.substr(0, s0)));
+        slashIndexes.push_back(stoi(date.substr(s0 + 1, s1)));
+        slashIndexes.push_back(stoi(date.substr(s1 + 1)));
+    }
+    return slashIndexes;
 }
 const QColor BankPane::GOLDEN_COLOR = QColor(212, 175, 55);
