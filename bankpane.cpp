@@ -164,6 +164,7 @@ QHBoxLayout* BankPane::getAccountsRowBox(int currId, BankingController& bc){
     //map the buttons with the corresponding accountRowBox
     this->inspectMap.insert(make_pair(btViewTransaction, accountRowBox));
     this->closeMap.insert(make_pair(btCloseTransaction, accountRowBox));
+    this->buttonAccountIdMap.insert(make_pair(btViewTransaction, currId));
 
     QObject::connect(btViewTransaction, &QPushButton::clicked, this, &BankPane::viewTransactions);
     QObject::connect(btCloseTransaction, &QPushButton::clicked, this, &BankPane::closeTransactions);
@@ -285,6 +286,11 @@ void BankPane::viewTransactions(){
         transactionWrapper->setMaximumHeight(150);
         transactionWrapper->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         QGridLayout* transactionsPane = new QGridLayout(this);
+
+        BankingController bc;
+
+        int accountId = this->buttonAccountIdMap.at(senderButton);
+        vector<vector<string>> transactions = bc.getPastTransactions(accountId);
     }
     else{
         qDebug() << "Debug: insertion index could not be retrieved by BankPane::viewTransactions";
@@ -310,5 +316,32 @@ int BankPane::getCurrentUserId() const{
         result = mainController->getUserId(ms->getUser()->getUserName());
     }
     return result;
+}
+//Static method to sort the given transaction 2d vector with respect to transaction dates
+//transaction dates are assumed to be at index 4 of a row
+void BankPane::sortTransactions(vector<vector<string>>& transactions){
+    BankPane::sortTransactionsHelper(transactions, 0, transactions.size() - 1);
+}
+//high index is inclusive
+void BankPane::sortTransactionsHelper(vector<vector<string>>& transactions, int low, int high){
+
+}
+int BankPane::partitionTransactions(vector<vector<string>>& transactions, int low, int high){
+    //take index low as the partition index
+    string partitionElt = transactions.at(low).at(4);
+    low += 1;
+
+    while(low < high){
+        string lowElt = transactions.at(low).at(4);
+        while(dateCompare(lowElt, partitionElt) < 0){
+           low++;
+           lowElt = transactions.at(low).at(4);
+        }
+    }
+}
+//Compares two dates with m/d/y format, first string parameter is compared with the second given parameter
+//Returns -1 if compared date has occured BEFORE the comparedTo date, 0 if they are the same, 1 if it occured after the comparedTo
+int BankPane::dateCompare(string compared, string comparedTo){
+
 }
 const QColor BankPane::GOLDEN_COLOR = QColor(212, 175, 55);

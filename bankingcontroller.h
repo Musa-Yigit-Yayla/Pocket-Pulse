@@ -34,6 +34,7 @@ public:
     vector<int> getAccountsOfUser(int userId);
     bool accountRegistered(int accountId);
     bool registerAccountToUser(int accountId, int userId);
+    vector<vector<string>> getPastTransactions(int accountId);
 
 
 };

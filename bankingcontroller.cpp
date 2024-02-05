@@ -99,3 +99,31 @@ bool BankingController::registerAccountToUser(int accountId, int userId){
     }
     return success;
 }
+/**
+ * @brief BankingController::getPastTransactions retrieves the transactionhistory
+ * @param accountId
+ * @return the past transactions the given account was involved as a 2d string vector with sorted in descending order wrt date
+ * each row contains data about a transaction excluding id (transaction id) and conserving the order of table columns
+ */
+vector<vector<string>> BankingController::getPastTransactions(int accountId){
+    vector<vector<string>> result;
+
+    QSqlQuery sq(this->db);
+    sq.prepare(
+        QString::fromStdString("SELECT sender_id, receiver_id, amount, category, date FROM " + this->TRANSACTION_TABLE_NAME + " WHERE (sender_id = :accountId OR receiver_id = :accountId);")
+        );
+    sq.bindValue(":accountId", accountId);
+
+    if(sq.exec() && sq.next()){
+        //query executed successfully and there is at least one record
+        int relatedColumnCount = 6;
+        do{
+            vector<string> currRow;
+            for(int i = 1; i <= relatedColumnCount; i++){
+                currRow.push_back(sq.value(i).toString().toStdString());
+            }
+            result.push_back(currRow);
+        }while(sq.next());
+    }
+    return result;
+}

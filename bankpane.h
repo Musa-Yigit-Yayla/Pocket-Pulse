@@ -38,10 +38,12 @@ private:
 
     unordered_map<QPushButton*, QHBoxLayout*> inspectMap;
     unordered_map<QPushButton*, QHBoxLayout*> closeMap;
+    unordered_map<QPushButton*, int> buttonAccountIdMap;
 
 public:
     explicit BankPane(User* user, QWidget *parent = nullptr);
     int getCurrentUserId() const;
+    static void sortTransactions(vector<vector<string>>& transactions); //sort wrt date
 
     static const int GRID_HOR_SPACING = 20;
     static const int MID_POINT_SIZE = 16;
@@ -53,6 +55,9 @@ private:
     void setFormPane();
     void setLayoutManagement();
     QHBoxLayout* getAccountsRowBox(int id, BankingController& bc);
+    static void sortTransactionsHelper(vector<vector<string>>& transactions, int low, int high);
+    static int partitionTransactions(vector<vector<string>>& transactions, int low, int high);
+    static bool dateCompare(string compared, string comparedTo);
 
 signals:
 
