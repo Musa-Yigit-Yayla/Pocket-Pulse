@@ -285,12 +285,18 @@ void BankPane::viewTransactions(){
         QScrollArea* transactionWrapper = new QScrollArea(this);
         transactionWrapper->setMaximumHeight(150);
         transactionWrapper->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        QGridLayout* transactionsPane = new QGridLayout(this);
+        transactionWrapper->setStyleSheet("background-color: rgb(145, 224, 255);");
+
+        QGridLayout* transactionsPane = new QGridLayout(transactionWrapper);
+
 
         BankingController bc;
 
         int accountId = this->buttonAccountIdMap.at(senderButton);
         vector<vector<string>> transactions = bc.getPastTransactions(accountId);
+        BankPane::sortTransactions(transactions);
+
+
     }
     else{
         qDebug() << "Debug: insertion index could not be retrieved by BankPane::viewTransactions";
@@ -326,41 +332,56 @@ void BankPane::sortTransactions(vector<vector<string>>& transactions){
 void BankPane::sortTransactionsHelper(vector<vector<string>>& transactions, int low, int high){
     if(low < high){
         int index = partitionTransactions(transactions, low, high);
-        sortTransactionsHelper(transactions, low, index);
+        sortTransactionsHelper(transactions, low, index - 1);
         sortTransactionsHelper(transactions, index + 1, high);
     }
 }
 int BankPane::partitionTransactions(vector<vector<string>>& transactions, int low, int high){
-    //take index low as the partition index
-    string partitionElt = transactions.at(low).at(4);
-    int partitionIndex = low;
-    low += 1;
 
-    while(low < high){
-        string lowElt = transactions.at(low).at(4);
-        while(dateCompare(lowElt, partitionElt) < 0 && low < high){
-           low++;
-           lowElt = transactions.at(low).at(4);
-        }
-        string highElt = transactions.at(high).at(4);
-        while(dateCompare(highElt, partitionElt) > 0 && low < high){
-           high--;
-           highElt = transactions.at(high).at(4);
-        }
-        if(low < high){
-           //swap the high index with low index
+    if(low == high - 1){
+        int index = low;
+        string lowElt = transactions.at(low).at(3);
+        string highElt = transactions.at(high).at(3);
+
+        if(dateCompare(lowElt, highElt) > 0){
            vector<string> temp = transactions.at(low);
            transactions.at(low) = transactions.at(high);
            transactions.at(high) = temp;
         }
+        return index;
     }
-    //swap high with partition index
-    vector<string> temp = transactions.at(partitionIndex);
-    transactions.at(partitionIndex) = transactions.at(high);
-    transactions.at(high) = temp;
+    else{
+        //take index low as the partition index
+        string partitionElt = transactions.at(low).at(3);
+        int partitionIndex = low;
+        low += 1;
 
-    partitionIndex = high;
-    return partitionIndex ;
+        while(low < high){
+            string lowElt = transactions.at(low).at(3);
+           while(dateCompare(lowElt, partitionElt) < 0 && low <= high){
+               low++;
+               lowElt = transactions.at(low).at(3);
+            }
+            string highElt = transactions.at(high).at(3);
+            while(dateCompare(highElt, partitionElt) > 0 && low <= high){
+               high--;
+               highElt = transactions.at(high).at(3);
+            }
+            if(low < high){
+               //swap the high index with low index
+               vector<string> temp = transactions.at(low);
+               transactions.at(low) = transactions.at(high);
+               transactions.at(high) = temp;
+            }
+        }
+        //swap high with partition index
+        vector<string> temp = transactions.at(partitionIndex);
+        transactions.at(partitionIndex) = transactions.at(high);
+        transactions.at(high) = temp;
+
+        partitionIndex = high;
+        return partitionIndex ;
+    }
 }
 //Compares two dates with m/d/y format, first string parameter is compared with the second given parameter
 //Returns -x if compared date has occured BEFORE the comparedTo date, 0 if they are the same, x if it occured after the comparedTo where x is positive integer
