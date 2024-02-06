@@ -166,6 +166,8 @@ QHBoxLayout* BankPane::getAccountsRowBox(int currId, BankingController& bc){
     this->closeMap.insert(make_pair(btCloseTransaction, accountRowBox));
     this->buttonAccountIdMap.insert(make_pair(btViewTransaction, currId));
     this->transactionsVisibleMap.insert(make_pair(btViewTransaction, false));
+    int maxIndex = this->buttonIndexMapMaxValue();
+    this->buttonIndexMap.insert(make_pair(btViewTransaction, maxIndex + 1));
 
     QObject::connect(btViewTransaction, &QPushButton::clicked, this, &BankPane::viewTransactions);
     QObject::connect(btCloseTransaction, &QPushButton::clicked, this, &BankPane::closeTransactions);
@@ -260,19 +262,19 @@ void BankPane::viewTransactions(){
     QObject* eventSource = QObject::sender();
     QPushButton* senderButton = qobject_cast<QPushButton*>(eventSource);
     QHBoxLayout* targetRow = this->inspectMap.at(senderButton);
-    int insertionIndex = -1;
+    int insertionIndex = this->buttonIndexMap.at(senderButton) + 1;
 
     QObjectList children = this->accountsBox->children();
     //iterate over the elements of accountsBox, then for each element check whether the hbox contains the buttonWrapper widget with the child as the event source
     //if so you have found the insertion index as i + 1
-    for(int i = 0; i < children.size(); i++){
+    /*for(int i = 0; i < children.size(); i++){
         QHBoxLayout* currAccRow = qobject_cast<QHBoxLayout*>(children.at(i));
 
         if(currAccRow != NULL && targetRow == currAccRow){
            insertionIndex = i + 1;
            break;
         }
-    }
+    }*/
     if(insertionIndex != -1 && !this->transactionsVisibleMap.at(senderButton)){ //second condition ensures that the transactions pane is not open
         //make the corresponding closeButton visible
         for(auto& it: this->closeMap){
@@ -344,6 +346,8 @@ void BankPane::viewTransactions(){
         //insert the transactionWrapper at the insertionIndex of accountsBox
         this->accountsBox->insertWidget(insertionIndex, transactionWrapper);
         this->transactionsVisibleMap.at(senderButton) = true; //mark the corresponding map entry as true
+        //update the values of buttonIndexMap by incrementing by one
+        this->updateButtonIndexMap(insertionIndex, true);
 
         //increment the buttonIndexes map's entries which are starting from insertionIndex by 1
 
@@ -479,5 +483,28 @@ inline vector<int> BankPane::splitDate(string date){
     }
     return slashIndexes;
 }
-
+//returns the max value of current hashmap regarding button and index mapping
+//returns 0 if map size is 0 (since indexing starts from 1)
+inline int BankPane::buttonIndexMapMaxValue(){
+    int result = 0;
+    for(auto it = this->buttonIndexMap.begin(); it != this->buttonIndexMap.end(); it++){
+        if(it->second > result){
+           result = it->second;
+        }
+    }
+    return result;
+}
+//Starting from values larger or equal than beginIndex, if increment is true increment each value by 1, otherwise decrement each value by 1
+inline void BankPane::updateButtonIndexMap(int beginIndex, bool increment){
+    for(auto it = this->buttonIndexMap.begin(); it != this->buttonIndexMap.end(); it++){
+        int currIndex = it->second;
+        if(currIndex >= beginIndex){
+           int deltaI = 1;
+           if(!increment){
+               deltaI = -1;
+           }
+           it->second += deltaI;
+        }
+    }
+}
 const QColor BankPane::GOLDEN_COLOR = QColor(212, 175, 55);
