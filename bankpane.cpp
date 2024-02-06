@@ -228,7 +228,7 @@ void BankPane::slotGetAccount(){
                                        int childId = this->accountIndexes.at(currHboxIndex++);
                                        if(childId > id){
                                            //insert the new account row right before the current one
-                                           this->accountsBox->insertLayout(i, newAccountRow);
+                                           this->accountsBox->addLayout(newAccountRow);
                                            inserted = true;
                                        }
 
