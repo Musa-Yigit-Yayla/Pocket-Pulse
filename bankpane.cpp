@@ -357,15 +357,15 @@ int BankPane::partitionTransactions(vector<vector<string>>& transactions, int lo
         low += 1;
 
         while(low < high){
-            string lowElt = transactions.at(low).at(3);
+           string lowElt = transactions.at(low).at(3);
            while(dateCompare(lowElt, partitionElt) < 0 && low <= high){
-               low++;
                lowElt = transactions.at(low).at(3);
+               low++;
             }
             string highElt = transactions.at(high).at(3);
             while(dateCompare(highElt, partitionElt) > 0 && low <= high){
-               high--;
                highElt = transactions.at(high).at(3);
+               high--;
             }
             if(low < high){
                //swap the high index with low index
