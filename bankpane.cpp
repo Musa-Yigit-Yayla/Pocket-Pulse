@@ -305,19 +305,36 @@ void BankPane::viewTransactions(){
         vector<vector<string>> transactions = bc.getPastTransactions(accountId);
         BankPane::sortTransactions(transactions);
 
+
         int rowIndex = 1;
         for(int i = transactions.size() - 1; i >= 0; i--){
            int currAccId;
+           QLabel* sentStatusLabel = new QLabel(transactionWrapper);
            if(transactions.at(i).at(0) != to_string(accountId)){
                currAccId = stoi(transactions.at(i).at(0)); // contact id is receiver id
+               sentStatusLabel->setText("Sent");
+               sentStatusLabel->setStyleSheet("color: rgb(255, 0, 0);");
            }
            else{
-               currAccId = stoi(transactions.at(i).at(1)); //contact id is sender id
+               currAccId = stoi(transactions.at(i).at(2)); //contact id is sender id
+               sentStatusLabel->setText("Received");
+               sentStatusLabel->setStyleSheet("color: rgb(0, 255, 0);");
            }
            vector<string> contactName = bc.getFullNameByAccId(currAccId);
            QLabel* nameLabel = new QLabel(transactionWrapper);
            nameLabel->setText(QString::fromStdString(to_string(contactName.at(0).at(0)) + " " + contactName.at(1)));
 
+           QLabel* balanceLabel = new QLabel(transactionWrapper);
+           string balanceStr = transactions.at(i).at(1);
+           balanceLabel->setText(QString::fromStdString(balanceStr));
+
+           QLabel* dateLabel = new QLabel(transactionWrapper);
+           dateLabel->setText(QString::fromStdString(transactions.at(i).at(3)));
+
+           transactionsPane->addWidget(nameLabel, rowIndex, 0);
+           transactionsPane->addWidget(balanceLabel, rowIndex, 1);
+           transactionsPane->addWidget(dateLabel, rowIndex, 2);
+           transactionsPane->addWidget(sentStatusLabel, rowIndex, 3);
 
            rowIndex++;
         }
