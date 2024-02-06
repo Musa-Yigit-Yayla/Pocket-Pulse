@@ -272,7 +272,7 @@ void BankPane::viewTransactions(){
            break;
         }
     }
-    if(insertionIndex != -1){
+    if(insertionIndex != -1){ //second condition ensures that the transactions pane is not open
         //make the corresponding closeButton visible
         for(auto& it: this->closeMap){
            if(it.second == targetRow){
@@ -288,18 +288,35 @@ void BankPane::viewTransactions(){
         transactionWrapper->setStyleSheet("background-color: rgb(145, 224, 255);");
 
         QGridLayout* transactionsPane = new QGridLayout(transactionWrapper);
-
+        QLabel* contactLabel = new QLabel(transactionWrapper);
+        QLabel* amountLabel = new QLabel(transactionWrapper);
+        QLabel* dateLabel = new QLabel(transactionWrapper);
 
         BankingController bc;
+        contactLabel->setText("Contact name");
+        amountLabel->setText("Amount");
+        dateLabel->setText("Date");
+
+        transactionsPane->addWidget(contactLabel, 0, 0);
+        transactionsPane->addWidget(amountLabel, 0, 1);
+        transactionsPane->addWidget(dateLabel, 0, 2);
 
         int accountId = this->buttonAccountIdMap.at(senderButton);
         vector<vector<string>> transactions = bc.getPastTransactions(accountId);
         BankPane::sortTransactions(transactions);
 
+        int rowIndex = 1;
+        for(int i = transactions.size() - 1; i >= 0; i--){
 
+           rowIndex++;
+        }
+        transactionWrapper->setLayout(transactionsPane);
+
+        //insert the transactionWrapper at the insertionIndex of accountsBox
+        this->accountsBox->insertWidget(insertionIndex, transactionWrapper);
     }
     else{
-        qDebug() << "Debug: insertion index could not be retrieved by BankPane::viewTransactions";
+        qDebug() << "Debug: insertion index could not be retrieved by BankPane::viewTransactions or the transaction pane is already open";
     }
 
 }
