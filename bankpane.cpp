@@ -307,6 +307,17 @@ void BankPane::viewTransactions(){
 
         int rowIndex = 1;
         for(int i = transactions.size() - 1; i >= 0; i--){
+           int currAccId;
+           if(transactions.at(i).at(0) != to_string(accountId)){
+               currAccId = stoi(transactions.at(i).at(0)); // contact id is receiver id
+           }
+           else{
+               currAccId = stoi(transactions.at(i).at(1)); //contact id is sender id
+           }
+           vector<string> contactName = bc.getFullNameByAccId(currAccId);
+           QLabel* nameLabel = new QLabel(transactionWrapper);
+           nameLabel->setText(QString::fromStdString(to_string(contactName.at(0).at(0)) + " " + contactName.at(1)));
+
 
            rowIndex++;
         }

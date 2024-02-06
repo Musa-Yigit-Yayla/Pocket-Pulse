@@ -127,3 +127,17 @@ vector<vector<string>> BankingController::getPastTransactions(int accountId){
     }
     return result;
 }
+//Returns a string vector which has the first name at the 0th index, and last name at 1th index
+//Returns empty vector if no match is obtained
+vector<string> BankingController::getFullNameByAccId(int accountId){
+    vector<string> result;
+    QSqlQuery query(this->db);
+    query.prepare(QString::fromStdString("SELECT first_name, last_name FROM " + this->ACCOUNT_TABLE_NAME + " WHERE account_id = :accountId;"));
+    query.bindValue(":accountId", accountId);
+
+    if(query.exec() && query.next()){
+        result.push_back((query.value(0).toString()).toStdString());
+        result.push_back(query.value(1).toString().toStdString());
+    }
+    return result;
+}
