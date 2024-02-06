@@ -165,6 +165,7 @@ QHBoxLayout* BankPane::getAccountsRowBox(int currId, BankingController& bc){
     this->inspectMap.insert(make_pair(btViewTransaction, accountRowBox));
     this->closeMap.insert(make_pair(btCloseTransaction, accountRowBox));
     this->buttonAccountIdMap.insert(make_pair(btViewTransaction, currId));
+    this->transactionsVisibleMap.insert(make_pair(btViewTransaction, false));
 
     QObject::connect(btViewTransaction, &QPushButton::clicked, this, &BankPane::viewTransactions);
     QObject::connect(btCloseTransaction, &QPushButton::clicked, this, &BankPane::closeTransactions);
@@ -272,7 +273,7 @@ void BankPane::viewTransactions(){
            break;
         }
     }
-    if(insertionIndex != -1){ //second condition ensures that the transactions pane is not open
+    if(insertionIndex != -1 && !this->transactionsVisibleMap.at(senderButton)){ //second condition ensures that the transactions pane is not open
         //make the corresponding closeButton visible
         for(auto& it: this->closeMap){
            if(it.second == targetRow){
@@ -342,6 +343,10 @@ void BankPane::viewTransactions(){
 
         //insert the transactionWrapper at the insertionIndex of accountsBox
         this->accountsBox->insertWidget(insertionIndex, transactionWrapper);
+        this->transactionsVisibleMap.at(senderButton) = true; //mark the corresponding map entry as true
+
+        //increment the buttonIndexes map's entries which are starting from insertionIndex by 1
+
     }
     else{
         qDebug() << "Debug: insertion index could not be retrieved by BankPane::viewTransactions or the transaction pane is already open";
@@ -474,4 +479,5 @@ inline vector<int> BankPane::splitDate(string date){
     }
     return slashIndexes;
 }
+
 const QColor BankPane::GOLDEN_COLOR = QColor(212, 175, 55);

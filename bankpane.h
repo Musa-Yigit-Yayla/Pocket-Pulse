@@ -39,6 +39,8 @@ private:
     unordered_map<QPushButton*, QHBoxLayout*> inspectMap;
     unordered_map<QPushButton*, QHBoxLayout*> closeMap;
     unordered_map<QPushButton*, int> buttonAccountIdMap;
+    unordered_map<QPushButton*, bool> transactionsVisibleMap;
+    unordered_map<QPushButton*, int> buttonIndexMap; //map tracking insertion indexes of view transaction buttons
 
 public:
     explicit BankPane(User* user, QWidget *parent = nullptr);
@@ -59,6 +61,7 @@ private:
     static void sortTransactionsHelper(vector<vector<string>>& transactions, int low, int high);
     static int partitionTransactions(vector<vector<string>>& transactions, int low, int high);
     inline static vector<int> splitDate(string date);
+
 
 signals:
 
