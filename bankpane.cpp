@@ -97,6 +97,7 @@ void BankPane::setLayoutManagement(){
     this->sa.setFrameStyle(QFrame::NoFrame);
     //this->sa.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->sa.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->sa.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     this->pane->addWidget(&this->sa);
 
 
@@ -321,7 +322,7 @@ void BankPane::viewTransactions(){
            else{
                currAccId = stoi(transactions.at(i).at(2)); //contact id is sender id
                sentStatusLabel->setText("Received");
-               sentStatusLabel->setStyleSheet("color: rgb(0, 255, 0);");
+               sentStatusLabel->setStyleSheet("color: rgb(5, 120, 72);");
            }
            vector<string> contactName = bc.getFullNameByAccId(currAccId);
            QLabel* nameLabel = new QLabel(transactionWrapper);
@@ -341,7 +342,9 @@ void BankPane::viewTransactions(){
 
            rowIndex++;
         }
+        transactionWrapper->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         transactionWrapper->setLayout(transactionsPane);
+
 
         //insert the transactionWrapper at the insertionIndex of accountsBox
         this->accountsBox->insertWidget(insertionIndex, transactionWrapper);
@@ -358,7 +361,28 @@ void BankPane::viewTransactions(){
 
 }
 void BankPane::closeTransactions(){
+    QObject* sender = QObject::sender();
+    QPushButton* btSender = qobject_cast<QPushButton*>(sender);
+    QPushButton* btView = this->getViewByCloseButton(btSender);
 
+    int panelIndex = this->buttonIndexMap.at(btView) + 1;
+    //close the corresponding transactionspane (delete it)
+    delete this->accountsBox->children().at(panelIndex);
+    btSender->setVisible(false);
+    //update the map indexes
+    this->updateButtonIndexMap(panelIndex, false);
+}
+//given a close button will return the corresponding view button contained within the same layout
+inline QPushButton* BankPane::getViewByCloseButton(QPushButton* btClose){
+    QHBoxLayout* container = this->closeMap.at(btClose);
+    QPushButton* result = nullptr;
+
+    for(auto it = this->inspectMap.begin(); it != this->inspectMap.end(); it++){
+        if(it->second == container){
+           result = it->first;
+        }
+    }
+    return result;
 }
 int BankPane::getCurrentUserId() const{
     //provide authorization with the account and add the account

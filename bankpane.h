@@ -63,6 +63,7 @@ private:
     static void sortTransactionsHelper(vector<vector<string>>& transactions, int low, int high);
     static int partitionTransactions(vector<vector<string>>& transactions, int low, int high);
     inline static vector<int> splitDate(string date);
+    inline QPushButton* getViewByCloseButton(QPushButton* btClose);
 
 signals:
 
