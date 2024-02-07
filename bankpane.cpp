@@ -371,6 +371,7 @@ void BankPane::closeTransactions(){
     btSender->setVisible(false);
     //update the map indexes
     this->updateButtonIndexMap(panelIndex, false);
+    this->transactionsVisibleMap.at(btView) = false;
 }
 //given a close button will return the corresponding view button contained within the same layout
 inline QPushButton* BankPane::getViewByCloseButton(QPushButton* btClose){
