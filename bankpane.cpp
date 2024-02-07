@@ -36,6 +36,7 @@ void BankPane::setLayoutManagement(){
     this->pane = new QHBoxLayout(this);
     this->accountsBox = new QVBoxLayout(this);
     this->accountsBox->setContentsMargins(75, 25, 25, 25);
+    this->accountsBox->setSpacing(5);
 
     //initialize the description grid
     this->descriptionGrid = new QGridLayout(this);
@@ -93,7 +94,9 @@ void BankPane::setLayoutManagement(){
     int r = GOLDEN_COLOR.red(), g = GOLDEN_COLOR.green(), b = GOLDEN_COLOR.blue();
     this->totalSumLabel.setStyleSheet(QString::fromStdString("color: rgb(" + to_string(r) + ", " + to_string(g) + ", " + to_string(b) + ");"));
 
-    this->sa.setLayout(this->accountsBox);
+    QWidget* intermediateWrapper = new QWidget(&this->sa);
+    intermediateWrapper->setLayout(this->accountsBox);
+    this->sa.setWidget(intermediateWrapper);
     this->sa.setFrameStyle(QFrame::NoFrame);
     //this->sa.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->sa.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -287,7 +290,7 @@ void BankPane::viewTransactions(){
         //instantiate the transactionsPane and after wrapping it into QSA, insert QSA at the insertionındex
         const int TPANE_MAX_HEIGHT = 150;
         QScrollArea* transactionWrapper = new QScrollArea(this);
-        transactionWrapper->setMaximumHeight(150);
+        transactionWrapper->setMinimumHeight(150);
         transactionWrapper->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         transactionWrapper->setStyleSheet("background-color: rgb(145, 224, 255);");
 
@@ -343,7 +346,9 @@ void BankPane::viewTransactions(){
            rowIndex++;
         }
         transactionWrapper->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        transactionWrapper->setLayout(transactionsPane);
+        QWidget* midWrapper = new QWidget(transactionWrapper);
+        midWrapper->setLayout(transactionsPane);
+        transactionWrapper->setWidget(midWrapper);
 
 
         //insert the transactionWrapper at the insertionIndex of accountsBox
