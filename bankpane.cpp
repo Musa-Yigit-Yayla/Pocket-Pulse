@@ -96,11 +96,12 @@ void BankPane::setLayoutManagement(){
 
     QWidget* intermediateWrapper = new QWidget(&this->sa);
     intermediateWrapper->setLayout(this->accountsBox);
-    this->sa.setWidget(intermediateWrapper);
     this->sa.setFrameStyle(QFrame::NoFrame);
     //this->sa.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->sa.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->sa.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    this->sa.setWidgetResizable(true);
+    this->sa.setWidget(intermediateWrapper);
     this->pane->addWidget(&this->sa);
 
 
@@ -268,7 +269,6 @@ void BankPane::viewTransactions(){
     QHBoxLayout* targetRow = this->inspectMap.at(senderButton);
     int insertionIndex = this->buttonIndexMap.at(senderButton) + 1;
 
-    QObjectList children = this->accountsBox->children();
     //iterate over the elements of accountsBox, then for each element check whether the hbox contains the buttonWrapper widget with the child as the event source
     //if so you have found the insertion index as i + 1
     /*for(int i = 0; i < children.size(); i++){
@@ -353,15 +353,53 @@ void BankPane::viewTransactions(){
 
         //insert the transactionWrapper at the insertionIndex of accountsBox
         this->accountsBox->insertWidget(insertionIndex, transactionWrapper);
+        //this->updateAccountsBox();
+        //this->accountsBox->insertStretch(insertionIndex + 1, 1);
         this->transactionsVisibleMap.at(senderButton) = true; //mark the corresponding map entry as true
         //update the values of buttonIndexMap by incrementing by one
         this->updateButtonIndexMap(insertionIndex, true);
 
-        //increment the buttonIndexes map's entries which are starting from insertionIndex by 1
+        /*//iterate through each widget after insertionIndex to adjust their height programmatically
+        for(int i = insertionIndex + 1; i < this->accountsBox->count(); i++){
+
+        }*/
+
+        qDebug() << "Debug: count of children of accountsBox is " << this->accountsBox->count();
+
 
     }
     else{
         qDebug() << "Debug: insertion index could not be retrieved by BankPane::viewTransactions or the transaction pane is already open";
+    }
+
+}
+void BankPane::updateAccountsBox(){
+    vector<QLayoutItem*> layoutItems;
+
+    for(int i = 1; i < this->accountsBox->count(); i++){
+        layoutItems.push_back(this->accountsBox->takeAt(i));
+    }
+    this->accountsBox->setSpacing(10);
+    for(QLayoutItem* it: layoutItems){
+        if(QWidget* widget = it->widget()){
+           this->accountsBox->addWidget(widget);
+        }
+        else if(QLayout* layout = it->layout()){
+           this->accountsBox->addLayout(layout);
+        }
+    }
+}
+//startIndex is inclusive
+void BankPane::shiftAccountsBoxContent(int insertedHeight, int startIndex){
+
+    if(insertedHeight > 0){
+        for(int i =  startIndex; i < this->accountsBox->count(); i++){
+           QLayoutItem* item = this->accountsBox->itemAt(i);
+
+        }
+    }
+    else if(insertedHeight != 0){
+
     }
 
 }

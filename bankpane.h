@@ -58,12 +58,14 @@ private:
     void setFormPane();
     void setLayoutManagement();
     QHBoxLayout* getAccountsRowBox(int id, BankingController& bc);
+    void updateAccountsBox();
     inline int buttonIndexMapMaxValue();
     inline void updateButtonIndexMap(int beginIndex, bool increment);
     static void sortTransactionsHelper(vector<vector<string>>& transactions, int low, int high);
     static int partitionTransactions(vector<vector<string>>& transactions, int low, int high);
     inline static vector<int> splitDate(string date);
     inline QPushButton* getViewByCloseButton(QPushButton* btClose);
+    void shiftAccountsBoxContent(int insertedHeight, int insertedIndex);
 
 signals:
 
