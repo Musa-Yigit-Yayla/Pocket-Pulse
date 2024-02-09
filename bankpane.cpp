@@ -410,7 +410,18 @@ void BankPane::closeTransactions(){
 
     int panelIndex = this->buttonIndexMap.at(btView) + 1;
     //close the corresponding transactionspane (delete it)
-    delete this->accountsBox->children().at(panelIndex);
+    QLayoutItem* item = this->accountsBox->takeAt(panelIndex);
+
+
+    if(item->layout()){
+        qDebug() << "Debug: item to be removed from accountsBox is of QLayout";
+    }
+    else if(item->widget()){
+        bool isScrollArea = qobject_cast<QScrollArea*>(item->widget()) != NULL;
+        qDebug() << "Debug: item to be removed from accountsBox is of QWidget and is of QScrollArea is " << isScrollArea;
+        delete item->widget(); //delete manually since it is not linked to the layout item as layout item's child
+    }
+    delete item;
     btSender->setVisible(false);
     //update the map indexes
     this->updateButtonIndexMap(panelIndex, false);
