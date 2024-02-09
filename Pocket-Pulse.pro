@@ -25,6 +25,7 @@ SOURCES += \
     bankingcontroller.cpp \
     bankpane.cpp \
     circularimage.cpp \
+    expensepane.cpp \
     loginscreen.cpp \
     main.cpp \
     maincontroller.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     bankingcontroller.h \
     bankpane.h \
     circularimage.h \
+    expensepane.h \
     loginscreen.h \
     maincontroller.h \
     mainscreen.h \
