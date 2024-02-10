@@ -1,5 +1,6 @@
 #include "maincontroller.h"
 #include "user.h"
+#include "expensepane.h"
 #include <iostream>
 
 using namespace std;
@@ -157,6 +158,26 @@ int MainController::getUserId(string username){
         result = sq.value(0).toInt();
     }
     return result;
+}
+void MainController::createMonthlyExpenseGoalsTable(){
+    if(!this->tableExists(ExpensePane::MONTHLY_GOALS_TABLENAME)){
+        //create the corresponding table
+        QSqlQuery sq(this->db);
+        sq.prepare(QString::fromStdString("CREATE TABLE " + ExpensePane::MONTHLY_GOALS_TABLENAME + " (id INTEGER PRIMARY KEY, user_name TEXT, month INTEGER, year INTEGER, health INTEGER, education INTEGER, market_grocery INTEGER, entertainment INTEGER, vehicle INTEGER, fees INTEGER, other INTEGER);"));
+        sq.exec();
+    }
+
+}
+//Returns a bool value indicating whether a match in the monthly expense goals table has found with the given userid
+bool MainController::monthlyExpenseGoalsExist(string userName){
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT * FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME + " WHERE user_name = :userName;"));
+    sq.bindValue(":userName", QString::fromStdString(userName));
+
+    bool success = sq.exec();
+    bool found = success && sq.next();
+
+    return found;
 }
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";

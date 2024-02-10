@@ -23,6 +23,8 @@ private:
     static const string DB_NAME; //change the name when the app is deployed and ensure it matches the created db file
     static const string DB_PASSWORD;
     static const string DB_USERNAME;
+
+
 public:
     MainController();
     ~MainController();
@@ -35,6 +37,8 @@ public:
     bool updatePassword(string username, string password);
     vector<string> getUsernames();
     int getUserCount();
+    bool monthlyExpenseGoalsExist(string username);
+    void createMonthlyExpenseGoalsTable();
 
     static const string USER_TABLE_NAME;
 };
