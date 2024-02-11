@@ -179,6 +179,7 @@ bool MainController::monthlyExpenseGoalsExist(string userName){
 
     return found;
 }
+//values vector will expectedly have monthly goal values specified by the user, sentinel -1 denotes that no goal has been specified for that category
 void MainController::registerUserMonthlyGoals(string username, int month, int year, vector<int> values){
     //if a tuple with the primary keys username, month, and year do not exist, create one
     QSqlQuery sq(this->db);
@@ -190,6 +191,50 @@ void MainController::registerUserMonthlyGoals(string username, int month, int ye
     bool entryFound = sq.exec() && sq.next();
     if(entryFound){
         //update the entry
+        string updateSubstr = "";
+        for(int i = 0; i < values.size(); i++){
+            if(values.at(i) != -1){
+                string currStr = monthly_goal_categories_columns.at(i) + " = " + to_string(values.at(i));
+                if(i != values.size() - 1){
+                    currStr += ", ";
+                }
+                updateSubstr += currStr;
+            }
+        }
+        if(updateSubstr != ""){
+            sq.prepare(QString::fromStdString("UPDATE " + ExpensePane::MONTHLY_GOALS_TABLENAME + " SET (" + updateSubstr + ") WHERE (user_name = :userName AND month = :month AND year = :year);"));
+            sq.bindValue(":userName", QString::fromStdString(username));
+            sq.bindValue(":month", month);
+            sq.bindValue(":year", year);
+
+            bool success = sq.exec();
+            qDebug() << "Debug: registerUserMonthlyGoals UPDATE query has been executed with success " << success;
+        }
+    }
+    else{
+        string columnsSubstr = "";
+        string valuesSubstr = "";
+        for(int i = 0; i < values.size(); i++){
+            if(values.at(i) != -1){
+                columnsSubstr += monthly_goal_categories_columns.at(i);
+                valuesSubstr += to_string(values.at(i));
+
+                if(i != values.size() - 1){
+                    columnsSubstr += ", ";
+                    valuesSubstr += ", ";
+                }
+            }
+        }
+        if(columnsSubstr != "" && valuesSubstr != ""){
+            sq.prepare(QString::fromStdString("INSERT INTO " + ExpensePane::MONTHLY_GOALS_TABLENAME + " (user_name, month, year, " + columnsSubstr + ") VALUES (:username, :month, :year" + valuesSubstr + ");"));
+            sq.bindValue(":userName", QString::fromStdString(username));
+            sq.bindValue(":month", month);
+            sq.bindValue(":year", year);
+
+            bool success = sq.exec();
+            qDebug() << "Debug: registerUserMonthlyGoals INSERT INTO query has been executed with success " << success;
+        }
+
     }
 }
 const string MainController::DB_NAME = "PocketPulseDB";
@@ -197,3 +242,4 @@ const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";
 
 const string MainController::USER_TABLE_NAME = "User";
+const vector<string> MainController::monthly_goal_categories_columns = {"health", "education", "market_grocery", "entertainment", "vehicle", "fees", "other"};

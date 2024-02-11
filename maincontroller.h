@@ -42,6 +42,7 @@ public:
     void registerUserMonthlyGoals(string username, int month, int year, vector<int> values);
 
     static const string USER_TABLE_NAME;
+    static const vector<string> monthly_goal_categories_columns;
 };
 
 #endif // MAINCONTROLLER_H
