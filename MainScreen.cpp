@@ -218,15 +218,13 @@ void MainScreen::toolAddContactSlot(){
 
 }
 inline void MainScreen::removeCurrGenericPane(){
-    QList<QObject*> children = this->hbox2->children();
+    //QList<QObject*> children = this->hbox2->children();
 
-    for(int i = 0; i < children.size(); i++){
-        QObject* currChild = children.at(i);
-        QWidget* childWidget = nullptr;
-
-        //below if statement ensures that we have the correct widget to remove from the layout
-        if(dynamic_cast<AbstractPane*>(currChild) && (childWidget = dynamic_cast<QWidget*>(currChild))){
-            this->hbox2->removeWidget(childWidget);
+    qDebug() << "Debug: hbox2 item count is " << this->hbox2->count();
+    if(this->hbox2->count() == 2){
+        QLayoutItem* childItem = this->hbox2->takeAt(1);
+        QWidget* childWidget = childItem->widget();
+        if(childWidget != NULL){
             childWidget->setVisible(false);
         }
     }
