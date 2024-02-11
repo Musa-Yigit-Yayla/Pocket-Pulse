@@ -32,10 +32,10 @@ ExpensePane::ExpensePane(User* user, QWidget* parent): AbstractPane{user, parent
 void ExpensePane::setLayoutManagement(){
     this->gridLayout = new QGridLayout(this);
     QLabel* categoryLabel = new QLabel("Category", this);
-    QLabel* amountLabel = new QLabel("Amount ($)", this);
+    QLabel* amountLabel = new QLabel("          Amount ($)          ", this);
     categoryLabel->setStyleSheet("text-decoration: underline;");
     amountLabel->setStyleSheet("text-decoration: underline;");
-    this->gridLayout->addWidget(this->dateSelector, 0, 4);
+    this->gridLayout->addWidget(this->dateSelector, 0, 3);
     this->gridLayout->addWidget(categoryLabel, 1, 0);
     this->gridLayout->addWidget(amountLabel, 1, 1);
 
@@ -44,13 +44,18 @@ void ExpensePane::setLayoutManagement(){
     for(int i = 0; i < categoryLength; i++){
         int rowIndex = i + 2;
         QLineEdit* currTf = this->textfields.at(i);
+        int textFieldWidth = 200;
+        currTf->setMaximumWidth(textFieldWidth);
         QIntValidator* validator = new QIntValidator(currTf); //make the lineEdit only accept integer values
         currTf->setValidator(validator);
         this->gridLayout->addWidget(this->categoryLabels.at(i), rowIndex, 0);
-        this->gridLayout->addWidget(currTf, rowIndex, 1);
+        this->gridLayout->addWidget(currTf, rowIndex, 1, 1, 1);
     }
-    this->gridLayout->addWidget(this->btUpdate, categoryLength + 2, 3);
+    this->btUpdate->setMaximumWidth(120);
+    this->gridLayout->addWidget(this->btUpdate, categoryLength + 2, 2);
     this->gridLayout->addWidget(this->headerLabel, categoryLength + 3, 0, 1, 4);
+
+    this->gridLayout->setContentsMargins(100, 25, 400, 25);
     //set the layout of this pane as the gridLayout
     this->setLayout(this->gridLayout);
 }
@@ -81,7 +86,12 @@ void ExpensePane::setCombobox(){
 
 }
 void ExpensePane::btUpdateSlot(){
+    //retrieve the combobx selectionand convert it to corresponding integers
+    string dateStr = this->dateSelector->currentText().toStdString();
+    int blankIndex = dateStr.find(" ");
 
+    int currMonth = getMonthInteger(dateStr.substr(0, blankIndex));
+    int currYear = stoi(dateStr.substr(blankIndex + 1));
 }
 inline string ExpensePane::getMonthString(int month){
     string result = "";
@@ -101,5 +111,32 @@ inline string ExpensePane::getMonthString(int month){
     }
     return result;
 }
+//Given string should match the month names provided by the getMonthString method
+//1 based indexing
+//Otherwise 0 is returned
+inline int ExpensePane::getMonthInteger(string month){
+    int result = -1;
+
+    if(monthMap.empty()){
+        //initialize the map
+        monthMap.insert(make_pair("Jan", 1));
+        monthMap.insert(make_pair("Feb", 2));
+        monthMap.insert(make_pair("March", 3));
+        monthMap.insert(make_pair("Apr", 4));
+        monthMap.insert(make_pair("May", 5));
+        monthMap.insert(make_pair("June", 6));
+        monthMap.insert(make_pair("July", 7));
+        monthMap.insert(make_pair("Aug", 8));
+        monthMap.insert(make_pair("Sept", 9));
+        monthMap.insert(make_pair("Oct", 10));
+        monthMap.insert(make_pair("Nov", 11));
+        monthMap.insert(make_pair("Dec", 12));
+    }
+    if(monthMap.count(month) != 0){
+        result = monthMap.at(month);
+    }
+    return result;
+}
 const vector<string> ExpensePane::CATEGORY_LABEL_STRINGS = {"Health", "Education", "Grocery & Market", "Entertainment", "Vehicle & Oil", "Fees", "Other"};
 const string ExpensePane::MONTHLY_GOALS_TABLENAME = "MONTHLY_EXPENSE_GOALS";
+unordered_map<string, int> ExpensePane::monthMap;

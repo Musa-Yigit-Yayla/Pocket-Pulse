@@ -9,6 +9,7 @@
 #include <QString>
 #include <cstddef>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 #ifndef EXPENSEPANE_H
@@ -25,10 +26,12 @@ private:
     QGridLayout* gridLayout = nullptr;
 
     static const vector<string> CATEGORY_LABEL_STRINGS;
+    static unordered_map<string, int> monthMap;
 
 public:
     ExpensePane(User* user, QWidget* parent = nullptr);
     static inline string getMonthString(int month);
+    static inline int getMonthInteger(string month);
 
     static const string MONTHLY_GOALS_TABLENAME;
     enum class EXPENSE_CATEGORIES{HEALTH, EDUCATION, GROCERY_MARKET, ENTERTAINMENT, VEHICLE, FEES, OTHER, count}; //count stores the length of enum class
