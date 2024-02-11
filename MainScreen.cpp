@@ -170,6 +170,10 @@ void MainScreen::setAnimatedLabel(){
 }
 void MainScreen::setGenericPanes(){
     this->bankPane = new BankPane(this->user, this->wrapper);
+    this->expensePane = new ExpensePane(this->user, this->wrapper);
+
+    this->bankPane->setVisible(false);
+    this->expensePane->setVisible(false); //modify the visibility later on
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
@@ -189,7 +193,9 @@ MainController* MainScreen::getMainController() const{
 }
 //public slots
 void MainScreen::toolExpenseSlot(){
-
+    this->removeCurrGenericPane();
+    this->expensePane->setVisible(true);
+    this->hbox2->addWidget(this->expensePane);
 }
 void MainScreen::toolIncomeSlot(){
 
@@ -205,6 +211,7 @@ void MainScreen::toolVisualReportSlot(){
 }
 void MainScreen::toolBankAccSlot(){
     this->removeCurrGenericPane();
+    this->bankPane->setVisible(true);
     this->hbox2->addWidget(this->bankPane);
 }
 void MainScreen::toolAddContactSlot(){
@@ -220,6 +227,7 @@ inline void MainScreen::removeCurrGenericPane(){
         //below if statement ensures that we have the correct widget to remove from the layout
         if(dynamic_cast<AbstractPane*>(currChild) && (childWidget = dynamic_cast<QWidget*>(currChild))){
             this->hbox2->removeWidget(childWidget);
+            childWidget->setVisible(false);
         }
     }
 }

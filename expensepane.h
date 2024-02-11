@@ -28,6 +28,7 @@ private:
 
 public:
     ExpensePane(User* user, QWidget* parent = nullptr);
+    static inline string getMonthString(int month);
 
     static const string MONTHLY_GOALS_TABLENAME;
     enum class EXPENSE_CATEGORIES{HEALTH, EDUCATION, GROCERY_MARKET, ENTERTAINMENT, VEHICLE, FEES, OTHER, count}; //count stores the length of enum class

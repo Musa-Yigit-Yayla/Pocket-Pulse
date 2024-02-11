@@ -179,6 +179,19 @@ bool MainController::monthlyExpenseGoalsExist(string userName){
 
     return found;
 }
+void MainController::registerUserMonthlyGoals(string username, int month, int year, vector<int> values){
+    //if a tuple with the primary keys username, month, and year do not exist, create one
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT * FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME + " WHERE (user_name = :userName AND month = :month AND year = :year);"));
+    sq.bindValue(":userName", QString::fromStdString(username));
+    sq.bindValue(":month", month);
+    sq.bindValue(":year", year);
+
+    bool entryFound = sq.exec() && sq.next();
+    if(entryFound){
+        //update the entry
+    }
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";
