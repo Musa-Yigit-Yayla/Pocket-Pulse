@@ -163,7 +163,7 @@ void MainController::createMonthlyExpenseGoalsTable(){
     if(!this->tableExists(ExpensePane::MONTHLY_GOALS_TABLENAME)){
         //create the corresponding table
         QSqlQuery sq(this->db);
-        sq.prepare(QString::fromStdString("CREATE TABLE " + ExpensePane::MONTHLY_GOALS_TABLENAME + " (id INTEGER PRIMARY KEY, user_name TEXT, month INTEGER, year INTEGER, health INTEGER, education INTEGER, market_grocery INTEGER, entertainment INTEGER, vehicle INTEGER, fees INTEGER, other INTEGER);"));
+        sq.prepare(QString::fromStdString("CREATE TABLE " + ExpensePane::MONTHLY_GOALS_TABLENAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, user_name TEXT, month INTEGER, year INTEGER, health INTEGER, education INTEGER, market_grocery INTEGER, entertainment INTEGER, vehicle INTEGER, fees INTEGER, other INTEGER);"));
         sq.exec();
     }
 
@@ -180,7 +180,7 @@ bool MainController::monthlyExpenseGoalsExist(string userName){
     return found;
 }
 //values vector will expectedly have monthly goal values specified by the user, sentinel -1 denotes that no goal has been specified for that category
-void MainController::registerUserMonthlyGoals(string username, int month, int year, vector<int> values){
+void MainController::registerUserMonthlyGoals(string username, int month, int year, vector<int>& values){
     //if a tuple with the primary keys username, month, and year do not exist, create one
     QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("SELECT * FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME + " WHERE (user_name = :userName AND month = :month AND year = :year);"));
@@ -194,7 +194,7 @@ void MainController::registerUserMonthlyGoals(string username, int month, int ye
         string updateSubstr = "";
         for(int i = 0; i < values.size(); i++){
             if(values.at(i) != -1){
-                string currStr = monthly_goal_categories_columns.at(i) + " = " + to_string(values.at(i));
+                string currStr = monthly_goal_categories_columns.at(i) + " = :value" + to_string(i);
                 if(i != values.size() - 1){
                     currStr += ", ";
                 }
@@ -202,10 +202,14 @@ void MainController::registerUserMonthlyGoals(string username, int month, int ye
             }
         }
         if(updateSubstr != ""){
-            sq.prepare(QString::fromStdString("UPDATE " + ExpensePane::MONTHLY_GOALS_TABLENAME + " SET (" + updateSubstr + ") WHERE (user_name = :userName AND month = :month AND year = :year);"));
+            sq.prepare(QString::fromStdString("UPDATE " + ExpensePane::MONTHLY_GOALS_TABLENAME + " SET " + updateSubstr + " WHERE user_name = :userName AND month = :month AND year = :year;"));
             sq.bindValue(":userName", QString::fromStdString(username));
             sq.bindValue(":month", month);
             sq.bindValue(":year", year);
+
+            for(int i = 0; i < values.size(); i++){
+                sq.bindValue(QString::fromStdString(":value" + to_string(i)), values.at(i));
+            }
 
             bool success = sq.exec();
             qDebug() << "Debug: registerUserMonthlyGoals UPDATE query has been executed with success " << success;
@@ -217,7 +221,7 @@ void MainController::registerUserMonthlyGoals(string username, int month, int ye
         for(int i = 0; i < values.size(); i++){
             if(values.at(i) != -1){
                 columnsSubstr += monthly_goal_categories_columns.at(i);
-                valuesSubstr += to_string(values.at(i));
+                valuesSubstr += ":value" + to_string(i);
 
                 if(i != values.size() - 1){
                     columnsSubstr += ", ";
@@ -226,13 +230,19 @@ void MainController::registerUserMonthlyGoals(string username, int month, int ye
             }
         }
         if(columnsSubstr != "" && valuesSubstr != ""){
-            sq.prepare(QString::fromStdString("INSERT INTO " + ExpensePane::MONTHLY_GOALS_TABLENAME + " (user_name, month, year, " + columnsSubstr + ") VALUES (:username, :month, :year" + valuesSubstr + ");"));
-            sq.bindValue(":userName", QString::fromStdString(username));
+            sq.prepare(QString::fromStdString("INSERT INTO " + ExpensePane::MONTHLY_GOALS_TABLENAME + " (user_name, month, year, " + columnsSubstr + ") VALUES (:username, :month, :year, " + valuesSubstr + ");"));
+            sq.bindValue(":username", QString::fromStdString(username));
             sq.bindValue(":month", month);
             sq.bindValue(":year", year);
 
+            for(int i = 0; i < values.size(); i++){
+                QString placeholder = QString::fromStdString(":value" + to_string(i));
+                sq.bindValue(placeholder, values.at(i));
+            }
+
             bool success = sq.exec();
             qDebug() << "Debug: registerUserMonthlyGoals INSERT INTO query has been executed with success " << success;
+            qDebug() << "Debug: lastError in the query is: " << sq.lastError();
         }
 
     }

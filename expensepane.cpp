@@ -86,12 +86,23 @@ void ExpensePane::setCombobox(){
 
 }
 void ExpensePane::btUpdateSlot(){
-    //retrieve the combobx selectionand convert it to corresponding integers
+    //retrieve the combobx selection and convert it to corresponding integers
     string dateStr = this->dateSelector->currentText().toStdString();
     int blankIndex = dateStr.find(" ");
 
     int currMonth = getMonthInteger(dateStr.substr(0, blankIndex));
     int currYear = stoi(dateStr.substr(blankIndex + 1));
+
+    vector<int> values;
+    int categoryLength =  static_cast<int>(EXPENSE_CATEGORIES::count);
+    for(int i = 0; i < categoryLength; i++){
+        string currText = this->textfields.at(i)->text().toStdString();
+        if(currText != ""){
+            values.push_back(stoi(currText));
+        }
+    }
+    MainController mc;
+    mc.registerUserMonthlyGoals(this->user->getUserName(), currMonth, currYear, values);
 }
 inline string ExpensePane::getMonthString(int month){
     string result = "";
