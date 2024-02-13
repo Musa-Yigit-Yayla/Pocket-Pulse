@@ -39,7 +39,7 @@ public:
     int getUserCount();
     bool monthlyExpenseGoalsExist(string username);
     void createMonthlyExpenseGoalsTable();
-    void registerUserMonthlyGoals(string username, int month, int year, vector<int>& values);
+    bool registerUserMonthlyGoals(string username, int month, int year, vector<int>& values);
 
     static const string USER_TABLE_NAME;
     static const vector<string> monthly_goal_categories_columns;

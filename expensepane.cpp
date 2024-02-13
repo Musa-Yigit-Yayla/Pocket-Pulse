@@ -21,6 +21,8 @@ ExpensePane::ExpensePane(User* user, QWidget* parent): AbstractPane{user, parent
     this->setCombobox();
     this->btUpdate = new QPushButton("update", this);
     this->headerLabel = new QLabel("Set your spenditure goals by specifying limits for each category for the selected month of the selected year.", this);
+    this->confirmationLabel = new QLabel(this);
+    this->confirmationLabel->setVisible(false);
 
     QFont font = this->headerLabel->font();
     font.setPointSize(8);
@@ -28,6 +30,7 @@ ExpensePane::ExpensePane(User* user, QWidget* parent): AbstractPane{user, parent
 
     this->setLayoutManagement();
     QObject::connect(this->btUpdate, &QPushButton::clicked, this, &ExpensePane::btUpdateSlot);
+    QObject::connect(this, &ExpensePane::displayConfirmationLabel, this, &ExpensePane::confirmationLabelSlot);
 }
 void ExpensePane::setLayoutManagement(){
     this->gridLayout = new QGridLayout(this);
@@ -52,8 +55,10 @@ void ExpensePane::setLayoutManagement(){
         this->gridLayout->addWidget(currTf, rowIndex, 1, 1, 1);
     }
     this->btUpdate->setMaximumWidth(120);
-    this->gridLayout->addWidget(this->btUpdate, categoryLength + 2, 2);
-    this->gridLayout->addWidget(this->headerLabel, categoryLength + 3, 0, 1, 4);
+    this->gridLayout->addWidget(this->btUpdate, categoryLength + 2, 1);
+    this->gridLayout->addWidget(this->confirmationLabel, categoryLength + 3, 1);
+    this->gridLayout->addWidget(this->headerLabel, categoryLength + 4, 0, 1, 4);
+
 
     this->gridLayout->setContentsMargins(100, 25, 400, 25);
     //set the layout of this pane as the gridLayout
@@ -102,7 +107,32 @@ void ExpensePane::btUpdateSlot(){
         }
     }
     MainController mc;
-    mc.registerUserMonthlyGoals(this->user->getUserName(), currMonth, currYear, values);
+    bool confirmSuccess = mc.registerUserMonthlyGoals(this->user->getUserName(), currMonth, currYear, values);
+    emit displayConfirmationLabel(confirmSuccess);
+}
+void ExpensePane::confirmationLabelSlot(bool confirmed){
+    QString text;
+    QString colorStr;
+    if(confirmed){
+        text = this->confirmSuccessStr;
+        colorStr = "color: rgb(0, 128, 0);";
+    }
+    else{
+        text = this->confirmFailStr;
+        colorStr = "color: rgb(255, 95, 5);";
+    }
+    this->confirmationLabel->setText(text);
+    this->confirmationLabel->setStyleSheet(colorStr);
+
+    this->confirmationLabel->setVisible(true);
+    QTimer* timer = new QTimer(this);
+    timer->setSingleShot(true);
+    timer->setInterval(4000);
+    QObject::connect(timer, &QTimer::timeout, this, &ExpensePane::confirmTimerSlot);
+    timer->start();
+}
+void ExpensePane::confirmTimerSlot(){
+    this->confirmationLabel->setVisible(false);
 }
 inline string ExpensePane::getMonthString(int month){
     string result = "";

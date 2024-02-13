@@ -180,7 +180,7 @@ bool MainController::monthlyExpenseGoalsExist(string userName){
     return found;
 }
 //values vector will expectedly have monthly goal values specified by the user, sentinel -1 denotes that no goal has been specified for that category
-void MainController::registerUserMonthlyGoals(string username, int month, int year, vector<int>& values){
+bool MainController::registerUserMonthlyGoals(string username, int month, int year, vector<int>& values){
     //if a tuple with the primary keys username, month, and year do not exist, create one
     QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("SELECT * FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME + " WHERE (user_name = :userName AND month = :month AND year = :year);"));
@@ -189,6 +189,7 @@ void MainController::registerUserMonthlyGoals(string username, int month, int ye
     sq.bindValue(":year", year);
 
     bool entryFound = sq.exec() && sq.next();
+    bool success = false;
     if(entryFound){
         //update the entry
         string updateSubstr = "";
@@ -211,7 +212,7 @@ void MainController::registerUserMonthlyGoals(string username, int month, int ye
                 sq.bindValue(QString::fromStdString(":value" + to_string(i)), values.at(i));
             }
 
-            bool success = sq.exec();
+            success = sq.exec();
             qDebug() << "Debug: registerUserMonthlyGoals UPDATE query has been executed with success " << success;
         }
     }
@@ -240,12 +241,12 @@ void MainController::registerUserMonthlyGoals(string username, int month, int ye
                 sq.bindValue(placeholder, values.at(i));
             }
 
-            bool success = sq.exec();
+            success = sq.exec();
             qDebug() << "Debug: registerUserMonthlyGoals INSERT INTO query has been executed with success " << success;
             qDebug() << "Debug: lastError in the query is: " << sq.lastError();
         }
-
     }
+    return success;
 }
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
