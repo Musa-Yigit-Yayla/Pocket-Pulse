@@ -105,6 +105,9 @@ void ExpensePane::btUpdateSlot(){
         if(currText != ""){
             values.push_back(stoi(currText));
         }
+        else{
+            values.push_back(0);
+        }
     }
     MainController mc;
     bool confirmSuccess = mc.registerUserMonthlyGoals(this->user->getUserName(), currMonth, currYear, values);
