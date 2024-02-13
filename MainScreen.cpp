@@ -171,9 +171,11 @@ void MainScreen::setAnimatedLabel(){
 void MainScreen::setGenericPanes(){
     this->bankPane = new BankPane(this->user, this->wrapper);
     this->expensePane = new ExpensePane(this->user, this->wrapper);
+    this->contactsPane = new ContactsPane(this->user, this->wrapper);
 
     this->bankPane->setVisible(false);
     this->expensePane->setVisible(false); //modify the visibility later on
+    this->contactsPane->setVisible(false);
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
@@ -215,7 +217,9 @@ void MainScreen::toolBankAccSlot(){
     this->hbox2->addWidget(this->bankPane);
 }
 void MainScreen::toolAddContactSlot(){
-
+    this->removeCurrGenericPane();
+    this->contactsPane->setVisible(true);
+    this->hbox2->addWidget(this->contactsPane);
 }
 inline void MainScreen::removeCurrGenericPane(){
     //QList<QObject*> children = this->hbox2->children();
