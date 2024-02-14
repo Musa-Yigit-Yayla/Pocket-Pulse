@@ -11,6 +11,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSpacerItem>
+#include <QComboBox>
+#include <QTextEdit>
 #include <vector>
 #include <cstddef>
 
@@ -24,11 +26,19 @@ private:
     QScrollArea* scrollArea = nullptr;
     QGridLayout* gridPane = nullptr;
     QVBoxLayout* vbox = nullptr;
+    QVBoxLayout* addPane = nullptr;
 
     QLabel* expLabel = nullptr;
     QPushButton* btAddContact = nullptr;
     QCheckBox* checkBoxDelete = nullptr;
     QLabel* imgLabel = nullptr;
+
+    QLabel* cnameLabel = nullptr;
+    QLineEdit* tfCname = nullptr;
+    QLabel* categoryLabel = nullptr;
+    QComboBox* categoryBox = nullptr;
+    QLabel* textAreaLabel = nullptr;
+    QTextEdit* textAreaExp = nullptr;
 
     vector<QToolButton*> deleteButtons;
 

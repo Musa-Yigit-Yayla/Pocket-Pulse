@@ -27,6 +27,7 @@ ContactsPane::ContactsPane(User* user, QWidget* parent): AbstractPane{user, pare
     this->setLayoutManagement();
 
     QObject::connect(this->checkBoxDelete, &QCheckBox::stateChanged, this, &ContactsPane::cbDeleteEnableSlot);
+    QObject::connect(this->btAddContact, &QPushButton::clicked, this, &ContactsPane::addContactSlot);
 }
 void ContactsPane::setLayoutManagement(){
     //set the vbox for containing the handshake image and expLabel
@@ -54,6 +55,10 @@ void ContactsPane::setLayoutManagement(){
     hbox->addWidget(this->btAddContact);
     hbox->addItem(spacerCopy);
 
+    //set the addPane
+    this->addPane = new QVBoxLayout(this);
+
+
     this->highLevelGrid->addLayout(this->vbox, 0, 0);
     this->highLevelGrid->addWidget(this->scrollArea, 1, 0);
     this->highLevelGrid->addLayout(hbox, 2, 1);
@@ -64,7 +69,8 @@ void ContactsPane::initializeGridContent(){
     mc.createUserContactsTable();
 
     const int NAME_PSIZE = 15;
-    vector<vector<QString>> contactsInformation = mc.retrieveContacts(this->user->getUserName()); //contains 3 labels on each row specifying cname, category, explanation
+    string userName = this->user->getUserName();
+    vector<vector<QString>> contactsInformation = mc.retrieveContacts(userName); //contains 3 labels on each row specifying cname, category, explanation
     for(int i = 0; i < contactsInformation.size(); i++){
         QLabel* currName = new QLabel(contactsInformation.at(i).at(0), this);
         QLabel* currCategory = new QLabel(contactsInformation.at(i).at(1), this);
