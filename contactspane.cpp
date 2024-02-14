@@ -52,14 +52,42 @@ void ContactsPane::setLayoutManagement(){
     QHBoxLayout* hbox = new QHBoxLayout(this); //hbox to contain button add and checkbox delete
     QSpacerItem* spacerCopy = new QSpacerItem(*spacer);
     hbox->addWidget(this->checkBoxDelete);
-    hbox->addWidget(this->btAddContact);
     hbox->addItem(spacerCopy);
 
-    //set the addPane
+    //set the addPane and its contents
     this->addPane = new QVBoxLayout(this);
+    this->cnameLabel = new QLabel("Contact name:", this);
+    this->tfCname = new QLineEdit(this);
+    this->categoryLabel = new QLabel("Category:", this);
+    this->categoryBox = new QComboBox(this);
+    this->textAreaExp = new QTextEdit(this);
+    this->textAreaLabel = new QLabel("Description:", this);
 
+    int taLineSpacing = this->textAreaExp->fontMetrics().lineSpacing();
+    this->textAreaExp->setMaximumHeight(taLineSpacing);
+
+
+    for(int i = 0; i < CONTACT_CATEGORIES.size(); i++){
+        string currStr = CONTACT_CATEGORIES.at(i);
+        this->categoryBox->addItem(QString::fromStdString(currStr));
+    }
+
+    this->addPane->addWidget(cnameLabel);
+    this->addPane->addWidget(tfCname);
+    this->addPane->addWidget(categoryLabel);
+    this->addPane->addWidget(this->categoryBox);
+    this->addPane->addWidget(this->textAreaLabel);
+    this->addPane->addWidget(this->textAreaExp);
+
+    QHBoxLayout* btAddWrapper = new QHBoxLayout(this);
+    QSpacerItem* newSpacer = new QSpacerItem(30, 30);
+    btAddWrapper->addItem(newSpacer);
+    btAddWrapper->addWidget(this->btAddContact);
+
+    this->addPane->addLayout(btAddWrapper);
 
     this->highLevelGrid->addLayout(this->vbox, 0, 0);
+    this->highLevelGrid->addLayout(this->addPane, 0, 2);
     this->highLevelGrid->addWidget(this->scrollArea, 1, 0);
     this->highLevelGrid->addLayout(hbox, 2, 1);
 
@@ -90,3 +118,4 @@ void ContactsPane::addContactSlot(){
 void ContactsPane::cbDeleteEnableSlot(int checked){
 
 }
+const vector<string> ContactsPane::CONTACT_CATEGORIES = {"person", "group", "corporation", "family member"};

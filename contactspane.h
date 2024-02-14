@@ -44,6 +44,8 @@ private:
 
 public:
     ContactsPane(User* user, QWidget* parent = nullptr);
+
+    static const vector<string> CONTACT_CATEGORIES;
 private:
     void setLayoutManagement();
     void initializeGridContent();
