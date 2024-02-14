@@ -1,12 +1,15 @@
 #include "contactspane.h"
+#include "maincontroller.h"
 #include "mainscreen.h"
 
 ContactsPane::ContactsPane(User* user, QWidget* parent): AbstractPane{user, parent}{
     this->highLevelGrid = new QGridLayout(this);
 
-    const int SCROLL_AREA_MIN_SIZE = 550;
+    //const int SCROLL_AREA_MIN_SIZE = 550;
+    const int SCROLL_AREA_MAX_HEIGHT = 850;
     this->scrollArea = new QScrollArea(this);
-    this->scrollArea->setMinimumSize(SCROLL_AREA_MIN_SIZE, SCROLL_AREA_MIN_SIZE);
+    //this->scrollArea->setMinimumSize(SCROLL_AREA_MIN_SIZE, SCROLL_AREA_MIN_SIZE);
+    this->scrollArea->setMaximumHeight(SCROLL_AREA_MAX_HEIGHT);
     this->scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->scrollArea->setWidgetResizable(true);
@@ -41,6 +44,7 @@ void ContactsPane::setLayoutManagement(){
     this->vbox->addWidget(this->expLabel);
     this->vbox->addSpacerItem(spacer);
 
+    this->initializeGridContent();
     //add the gridPane into the scrollArea via setLayout
     this->scrollArea->setLayout(this->gridPane);
 
@@ -53,6 +57,28 @@ void ContactsPane::setLayoutManagement(){
     this->highLevelGrid->addLayout(this->vbox, 0, 0);
     this->highLevelGrid->addWidget(this->scrollArea, 1, 0);
     this->highLevelGrid->addLayout(hbox, 2, 1);
+
+}
+void ContactsPane::initializeGridContent(){
+    MainController mc;
+    mc.createUserContactsTable();
+
+    const int NAME_PSIZE = 15;
+    vector<vector<QString>> contactsInformation = mc.retrieveContacts(this->user->getUserName()); //contains 3 labels on each row specifying cname, category, explanation
+    for(int i = 0; i < contactsInformation.size(); i++){
+        QLabel* currName = new QLabel(contactsInformation.at(i).at(0), this);
+        QLabel* currCategory = new QLabel(contactsInformation.at(i).at(1), this);
+        QLabel* currExp = new QLabel(contactsInformation.at(i).at(2), this);
+
+        currName->setStyleSheet(QString::fromStdString("font-size: " + to_string(NAME_PSIZE) + ";"));
+
+        this->gridPane->addWidget(currName);
+        this->gridPane->addWidget(currCategory);
+        this->gridPane->addWidget(currExp);
+    }
+
+}
+void ContactsPane::addContactSlot(){
 
 }
 void ContactsPane::cbDeleteEnableSlot(int checked){

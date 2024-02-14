@@ -248,9 +248,38 @@ bool MainController::registerUserMonthlyGoals(string username, int month, int ye
     }
     return success;
 }
+bool MainController::createUserContactsTable(){
+    bool success = false;
+
+    if(!this->tableExists(USER_CONTACTS_TABLE_NAME)){
+        QSqlQuery sq(this->db);
+        sq.prepare(QString::fromStdString("CREATE TABLE " + USER_CONTACTS_TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, user_name, contact_name, category, explanation);"));
+        success = sq.exec();
+    }
+    return success;
+}
+vector<vector<QString>> MainController::retrieveContacts(string& username){
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT contact_name, category, explanation WHERE user_name = :username;"));
+    sq.bindValue(":username", QString::fromStdString(username));
+
+    vector<vector<QString>> result;
+    if(sq.exec()){
+        int columnCount = 3;
+        while(sq.next()){
+            vector<QString> currRow;
+            for(int i = 0; i < columnCount; i++){
+                currRow.push_back(sq.value(i).toString());
+            }
+            result.push_back(currRow);
+        }
+    }
+    return result;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";
 
 const string MainController::USER_TABLE_NAME = "User";
+const string MainController::USER_CONTACTS_TABLE_NAME = "user_contacts";
 const vector<string> MainController::monthly_goal_categories_columns = {"health", "education", "market_grocery", "entertainment", "vehicle", "fees", "other"};

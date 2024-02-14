@@ -36,8 +36,10 @@ public:
     ContactsPane(User* user, QWidget* parent = nullptr);
 private:
     void setLayoutManagement();
+    void initializeGridContent();
 public slots:
     void cbDeleteEnableSlot(int checked);
+    void addContactSlot();
 };
 
 #endif // CONTACTSPANE_H

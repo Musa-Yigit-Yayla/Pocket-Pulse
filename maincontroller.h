@@ -9,6 +9,8 @@
 #include <QSqlError>
 #include <qDebug>
 #include <QVariant>
+#include <QString>
+#include <vector>
 
 class User;
 using namespace std;
@@ -40,8 +42,11 @@ public:
     bool monthlyExpenseGoalsExist(string username);
     void createMonthlyExpenseGoalsTable();
     bool registerUserMonthlyGoals(string username, int month, int year, vector<int>& values);
+    bool createUserContactsTable();
+    vector<vector<QString>> retrieveContacts(string& username);
 
     static const string USER_TABLE_NAME;
+    static const string USER_CONTACTS_TABLE_NAME;
     static const vector<string> monthly_goal_categories_columns;
 };
 
