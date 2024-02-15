@@ -64,6 +64,8 @@ private:
 public slots:
     void cbEnableSlot(int checked);
     void addContactSlot();
+    void deleteContactSlot();
+    void editContactSlot();
 };
 
 #endif // CONTACTSPANE_H

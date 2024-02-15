@@ -124,12 +124,54 @@ void ContactsPane::initializeGridContent(){
         this->gridPane->addWidget(currCategory, i, 1);
         this->gridPane->addWidget(currExp, i, 2);
 
-        QToolButton* btDelete = new QToolButton(this);
-        QToolButton* btEdit = new QToolButton(this);
+
 
     }
     this->gridRowCount = contactsInformation.size();
     qDebug() << "Debug: gridRowCount after loop execution in ContactsPane is " << this->gridRowCount;
+}
+/**
+ * Adds edit and delete buttons into the gridPane
+ *Buttons are visible or invisible wrt curr checkbox selections
+ *Makes the mapping with the given rowIndex
+ *rowIndex indexing starts from 0
+*/
+void ContactsPane::addToolButtons(int rowIndex){
+    QToolButton* btDelete = new QToolButton(this);
+    QToolButton* btEdit = new QToolButton(this);
+
+    QImage deleteImg(QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + "//icondelete.png"));
+    deleteImg = deleteImg.scaled(ContactsPane::ICON_LENGTH, ContactsPane::ICON_LENGTH);
+    btDelete->setIcon(QPixmap::fromImage(deleteImg));
+
+    QImage editImg(QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + "//icondelete.png"));
+    editImg = editImg.scaled(ContactsPane::ICON_LENGTH, ContactsPane::ICON_LENGTH);
+    btEdit->setIcon(QPixmap::fromImage(editImg));
+
+    QHBoxLayout* hbox = new QHBoxLayout(this);
+    hbox->addWidget(btEdit);
+    hbox->addWidget(btDelete);
+    QSpacerItem* spacer = new QSpacerItem(30, 30);
+    hbox->addSpacerItem(spacer);
+
+    //insert the hbox into the designated gridpane position
+    int insertionColumn = 3;
+    this->gridPane->addLayout(hbox, rowIndex, insertionColumn);
+
+    //adjust visibility
+    bool deleteVisible = this->checkBoxDelete->isChecked();
+    bool editVisible = this->checkBoxEdit->isChecked();
+
+    btDelete->setVisible(deleteVisible);
+    btEdit->setVisible(editVisible);
+
+    //map the buttons with the rowIndex
+    this->deleteRowMap.insert(make_pair(btDelete, rowIndex));
+    this->editRowMap.insert(make_pair(btEdit, rowIndex));
+
+    //set event handling signal slot connections
+    QObject::connect(btDelete, &QToolButton::clicked, this, &ContactsPane::deleteContactSlot);
+    QObject::connect(btEdit, &QToolButton::clicked, this, &ContactsPane::editContactSlot);
 }
 void ContactsPane::addContactSlot(){
     string cname = this->tfCname->text().toStdString();
@@ -162,6 +204,37 @@ void ContactsPane::addContactSlot(){
 
         }
     }
+}
+void ContactsPane::deleteContactSlot(){
+
+}
+void ContactsPane::editContactSlot(){
+    //display a popup screen
+    QWidget* screen = new QWidget(this);
+
+    QLabel* descLabel = new QLabel("Edit contact", screen);
+    QPushButton* btUpdate = new QPushButton("update", screen);
+    QLabel* errLabel = new QLabel("Name cannot be empty!", screen);
+    errLabel->setStyleSheet("color: rgb(255, 0, 0);");
+
+    int rowIndex = this->editRowMap.at(qobject_cast<QToolButton*>(QObject::sender()));
+    QLabel* nameLabel = reinterpret_cast<QLabel*>(this->gridPane->itemAtPosition(rowIndex, 0));
+    QLineEdit* leName = new QLineEdit(nameLabel->text(), screen);
+
+    QComboBox* cb = new QComboBox(screen);
+    int currIndex = 0;
+    string currSelection = reinterpret_cast<QLabel*>(this->gridPane->itemAtPosition(rowIndex, 1))->text().toStdString();
+    for(int i = 0; i < CONTACT_CATEGORIES.size(); i++){
+        string currStr = CONTACT_CATEGORIES.at(i);
+        cb->addItem(QString::fromStdString(currStr));
+
+        if(currStr == currSelection){
+            currIndex = i;
+        }
+    }
+    cb->setCurrentIndex(currIndex);
+
+    QLineEdit* leExp = new QLineEdit(reinterpret_cast<QLabel*>(this->gridPane->itemAtPosition(rowIndex, 2)));
 }
 void ContactsPane::cbEnableSlot(int checked){
     QObject* sender = QObject::sender();
