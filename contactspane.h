@@ -38,7 +38,8 @@ private:
     QLabel* categoryLabel = nullptr;
     QComboBox* categoryBox = nullptr;
     QLabel* textAreaLabel = nullptr;
-    QTextEdit* textAreaExp = nullptr;
+    QLineEdit* textAreaExp = nullptr;
+    QLabel* errorLabel = nullptr;
 
     vector<QToolButton*> deleteButtons;
 

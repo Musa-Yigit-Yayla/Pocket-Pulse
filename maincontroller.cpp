@@ -276,6 +276,9 @@ vector<vector<QString>> MainController::retrieveContacts(string& username){
     }
     return result;
 }
+bool MainController::addContact(string username, string contactName, string category, string explanation){
+
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

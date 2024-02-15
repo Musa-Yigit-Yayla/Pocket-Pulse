@@ -24,6 +24,8 @@ ContactsPane::ContactsPane(User* user, QWidget* parent): AbstractPane{user, pare
     this->checkBoxDelete = new QCheckBox("Delete enabled", this);
     this->checkBoxDelete->setChecked(false);
 
+    this->errorLabel = new QLabel(this);
+    this->errorLabel->setVisible(false);
     this->setLayoutManagement();
 
     QObject::connect(this->checkBoxDelete, &QCheckBox::stateChanged, this, &ContactsPane::cbDeleteEnableSlot);
@@ -60,7 +62,7 @@ void ContactsPane::setLayoutManagement(){
     this->tfCname = new QLineEdit(this);
     this->categoryLabel = new QLabel("Category:", this);
     this->categoryBox = new QComboBox(this);
-    this->textAreaExp = new QTextEdit(this);
+    this->textAreaExp = new QLineEdit(this);
     this->textAreaLabel = new QLabel("Description:", this);
 
     const int ADD_PANE_MAXWIDTH = 400;
@@ -68,7 +70,6 @@ void ContactsPane::setLayoutManagement(){
     this->tfCname->setMaximumWidth(ADD_PANE_MAXWIDTH);
     this->categoryBox->setMaximumWidth(ADD_PANE_MAXWIDTH);
     this->textAreaExp->setMaximumWidth(ADD_PANE_MAXWIDTH);
-    this->textAreaExp->setLineWidth(this->textAreaExp->fontMetrics().lineSpacing() * 2);
     this->btAddContact->setFixedWidth(100);
 
     int taLineSpacing = this->textAreaExp->fontMetrics().lineSpacing();
@@ -93,6 +94,7 @@ void ContactsPane::setLayoutManagement(){
     btAddWrapper->addWidget(this->btAddContact);
 
     this->addPane->addLayout(btAddWrapper);
+    this->addPane->addWidget(this->errorLabel);
 
     this->highLevelGrid->addLayout(this->vbox, 0, 0);
     this->highLevelGrid->addLayout(this->addPane, 0, 2);
@@ -121,7 +123,26 @@ void ContactsPane::initializeGridContent(){
 
 }
 void ContactsPane::addContactSlot(){
+    string cname = this->tfCname->text().toStdString();
+    string category = this->categoryBox->currentText().toStdString();
+    string explanation = this->textAreaExp->text().toStdString();
 
+    if(cname == ""){
+        this->errorLabel->setText("Contact name cannot be empty");
+        this->errorLabel->setStyleSheet("color: rgb(255, 0, 0);");
+        this->errorLabel->setVisible(true);
+    }
+    else{
+        MainController mc;
+        bool success = mc.addContact(this->user->getUserName(), cname, category, explanation);
+        if(success){
+            this->errorLabel->setVisible(false);
+            //display the newly added contact on the gridPane
+        }
+        else{
+            this->errorLabel->setText("Issue while adding");
+        }
+    }
 }
 void ContactsPane::cbDeleteEnableSlot(int checked){
 

@@ -44,6 +44,7 @@ public:
     bool registerUserMonthlyGoals(string username, int month, int year, vector<int>& values);
     bool createUserContactsTable();
     vector<vector<QString>> retrieveContacts(string& username);
+    bool addContact(string username, string contactName, string category, string explanation);
 
     static const string USER_TABLE_NAME;
     static const string USER_CONTACTS_TABLE_NAME;
