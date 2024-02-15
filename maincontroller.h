@@ -45,6 +45,7 @@ public:
     bool createUserContactsTable();
     vector<vector<QString>> retrieveContacts(string& username);
     bool addContact(string username, string contactName, string category, string explanation);
+    bool userHasContact(string username, string contactName);
 
     static const string USER_TABLE_NAME;
     static const string USER_CONTACTS_TABLE_NAME;

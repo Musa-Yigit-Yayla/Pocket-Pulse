@@ -28,6 +28,8 @@ private:
     QVBoxLayout* vbox = nullptr;
     QVBoxLayout* addPane = nullptr;
 
+    int gridRowCount = 0;
+
     QLabel* expLabel = nullptr;
     QPushButton* btAddContact = nullptr;
     QCheckBox* checkBoxDelete = nullptr;

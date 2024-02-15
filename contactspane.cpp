@@ -120,7 +120,7 @@ void ContactsPane::initializeGridContent(){
         this->gridPane->addWidget(currCategory);
         this->gridPane->addWidget(currExp);
     }
-
+    this->gridRowCount = contactsInformation.size();
 }
 void ContactsPane::addContactSlot(){
     string cname = this->tfCname->text().toStdString();
@@ -138,9 +138,19 @@ void ContactsPane::addContactSlot(){
         if(success){
             this->errorLabel->setVisible(false);
             //display the newly added contact on the gridPane
+            QLabel* currName = new QLabel(QString::fromStdString(cname), this);
+            QLabel* currCategory = new QLabel(QString::fromStdString(category), this);
+            QLabel* currExp = new QLabel(QString::fromStdString(explanation), this);
+
+            this->gridPane->addWidget(currName, this->gridRowCount, 0);
+            this->gridPane->addWidget(currCategory, this->gridRowCount, 1);
+            this->gridPane->addWidget(currExp, this->gridRowCount, 2);
+            this->gridRowCount++;
         }
         else{
+            this->errorLabel->setVisible(true);
             this->errorLabel->setText("Issue while adding");
+
         }
     }
 }

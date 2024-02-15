@@ -277,7 +277,26 @@ vector<vector<QString>> MainController::retrieveContacts(string& username){
     return result;
 }
 bool MainController::addContact(string username, string contactName, string category, string explanation){
+    bool success = false;
+    if(!this->userHasContact(username, contactName)){
+        QSqlQuery sq(this->db);
+        sq.prepare(QString::fromStdString("INSERT INTO " + USER_CONTACTS_TABLE_NAME + " (user_name, contact_name, category, explanation) VALUES(:username, :contactName, :category, :explanation);"));
+        sq.bindValue(":username", QString::fromStdString(username));
+        sq.bindValue(":contactName", QString::fromStdString(contactName));
+        sq.bindValue(":category", QString::fromStdString(category));
+        sq.bindValue(":explanation", QString::fromStdString(explanation));
+        success = sq.exec();
+    }
+    return success;
+}
+bool MainController::userHasContact(string username, string contactName){
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT * FROM " + USER_CONTACTS_TABLE_NAME + " WHERE (user_name = :username AND contact_name = :contactName);"));
+    sq.bindValue(":username", QString::fromStdString(username));
+    sq.bindValue(":contactName", QString::fromStdString(contactName));
 
+    bool success = sq.exec() && sq.next();
+    return success;
 }
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
