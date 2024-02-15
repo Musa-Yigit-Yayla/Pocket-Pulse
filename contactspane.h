@@ -14,6 +14,8 @@
 #include <QComboBox>
 #include <QTextEdit>
 #include <vector>
+#include <unordered_map>
+#include <qDebug>
 #include <cstddef>
 
 #ifndef CONTACTSPANE_H
@@ -33,6 +35,7 @@ private:
     QLabel* expLabel = nullptr;
     QPushButton* btAddContact = nullptr;
     QCheckBox* checkBoxDelete = nullptr;
+    QCheckBox* checkBoxEdit = nullptr;
     QLabel* imgLabel = nullptr;
 
     QLabel* cnameLabel = nullptr;
@@ -44,16 +47,22 @@ private:
     QLabel* errorLabel = nullptr;
 
     vector<QToolButton*> deleteButtons;
+    vector<QToolButton*> editButtons;
+
+    unordered_map<QToolButton*, int> deleteRowMap;
+    unordered_map<QToolButton*, int> editRowMap;
 
 public:
     ContactsPane(User* user, QWidget* parent = nullptr);
 
     static const vector<string> CONTACT_CATEGORIES;
+    static const int ICON_LENGTH = 20;
 private:
     void setLayoutManagement();
     void initializeGridContent();
+    void addToolButtons(int rowIndex);
 public slots:
-    void cbDeleteEnableSlot(int checked);
+    void cbEnableSlot(int checked);
     void addContactSlot();
 };
 

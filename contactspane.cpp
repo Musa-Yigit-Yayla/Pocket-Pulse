@@ -23,12 +23,15 @@ ContactsPane::ContactsPane(User* user, QWidget* parent): AbstractPane{user, pare
 
     this->checkBoxDelete = new QCheckBox("Delete enabled", this);
     this->checkBoxDelete->setChecked(false);
+    this->checkBoxEdit = new QCheckBox("Edit enabled", this);
+    this->checkBoxEdit->setChecked(false);
 
     this->errorLabel = new QLabel(this);
     this->errorLabel->setVisible(false);
     this->setLayoutManagement();
 
-    QObject::connect(this->checkBoxDelete, &QCheckBox::stateChanged, this, &ContactsPane::cbDeleteEnableSlot);
+    QObject::connect(this->checkBoxDelete, &QCheckBox::stateChanged, this, &ContactsPane::cbEnableSlot);
+    QObject::connect(this->checkBoxEdit, &QCheckBox::stateChanged, this, &ContactsPane::cbEnableSlot);
     QObject::connect(this->btAddContact, &QPushButton::clicked, this, &ContactsPane::addContactSlot);
 }
 void ContactsPane::setLayoutManagement(){
@@ -54,6 +57,7 @@ void ContactsPane::setLayoutManagement(){
     QHBoxLayout* hbox = new QHBoxLayout(this); //hbox to contain button add and checkbox delete
     QSpacerItem* spacerCopy = new QSpacerItem(*spacer);
     hbox->addWidget(this->checkBoxDelete);
+    hbox->addWidget(this->checkBoxEdit);
     hbox->addItem(spacerCopy);
 
     //set the addPane and its contents
@@ -116,11 +120,16 @@ void ContactsPane::initializeGridContent(){
 
         currName->setStyleSheet(QString::fromStdString("font-size: " + to_string(NAME_PSIZE) + ";"));
 
-        this->gridPane->addWidget(currName);
-        this->gridPane->addWidget(currCategory);
-        this->gridPane->addWidget(currExp);
+        this->gridPane->addWidget(currName, i, 0);
+        this->gridPane->addWidget(currCategory, i, 1);
+        this->gridPane->addWidget(currExp, i, 2);
+
+        QToolButton* btDelete = new QToolButton(this);
+        QToolButton* btEdit = new QToolButton(this);
+
     }
     this->gridRowCount = contactsInformation.size();
+    qDebug() << "Debug: gridRowCount after loop execution in ContactsPane is " << this->gridRowCount;
 }
 void ContactsPane::addContactSlot(){
     string cname = this->tfCname->text().toStdString();
@@ -154,7 +163,19 @@ void ContactsPane::addContactSlot(){
         }
     }
 }
-void ContactsPane::cbDeleteEnableSlot(int checked){
+void ContactsPane::cbEnableSlot(int checked){
+    QObject* sender = QObject::sender();
 
+    vector<QToolButton*> temp;
+    vector<QToolButton*>& buttons = temp;
+    if(sender == this->checkBoxDelete){
+        buttons = this->deleteButtons;
+    }
+    else if(sender == this->checkBoxEdit){
+        buttons = this->editButtons;
+    }
+    for(QToolButton* bt: buttons){
+        bt->setVisible(true);
+    }
 }
 const vector<string> ContactsPane::CONTACT_CATEGORIES = {"person", "group", "corporation", "family member"};

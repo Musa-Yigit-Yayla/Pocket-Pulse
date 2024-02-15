@@ -260,7 +260,7 @@ bool MainController::createUserContactsTable(){
 }
 vector<vector<QString>> MainController::retrieveContacts(string& username){
     QSqlQuery sq(this->db);
-    sq.prepare(QString::fromStdString("SELECT contact_name, category, explanation WHERE user_name = :username;"));
+    sq.prepare(QString::fromStdString("SELECT contact_name, category, explanation FROM " + USER_CONTACTS_TABLE_NAME + " WHERE (user_name = :username);"));
     sq.bindValue(":username", QString::fromStdString(username));
 
     vector<vector<QString>> result;
@@ -273,6 +273,9 @@ vector<vector<QString>> MainController::retrieveContacts(string& username){
             }
             result.push_back(currRow);
         }
+    }
+    else{
+        qDebug() << "Debug: latest retrieveContacts query error is: " << sq.lastError();
     }
     return result;
 }
