@@ -63,6 +63,14 @@ void ContactsPane::setLayoutManagement(){
     this->textAreaExp = new QTextEdit(this);
     this->textAreaLabel = new QLabel("Description:", this);
 
+    const int ADD_PANE_MAXWIDTH = 400;
+    //this->setMaximumWidth(ADD_PANE_MAXWIDTH);
+    this->tfCname->setMaximumWidth(ADD_PANE_MAXWIDTH);
+    this->categoryBox->setMaximumWidth(ADD_PANE_MAXWIDTH);
+    this->textAreaExp->setMaximumWidth(ADD_PANE_MAXWIDTH);
+    this->textAreaExp->setLineWidth(this->textAreaExp->fontMetrics().lineSpacing() * 2);
+    this->btAddContact->setFixedWidth(100);
+
     int taLineSpacing = this->textAreaExp->fontMetrics().lineSpacing();
     this->textAreaExp->setMaximumHeight(taLineSpacing);
 
