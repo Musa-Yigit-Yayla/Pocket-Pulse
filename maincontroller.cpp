@@ -301,6 +301,11 @@ bool MainController::userHasContact(string username, string contactName){
     bool success = sq.exec() && sq.next();
     return success;
 }
+bool MainController::updateContact(string username, string contactName, string newContactName, string category, string explanation){
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("UPDATE " + USER_CONTACTS_TABLE_NAME + " SET contact_name = :newCname, category = :category, explanation = :explanation WHERE (user_name = :username AND contact_name = :oldCname);"));
+
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

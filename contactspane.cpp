@@ -213,13 +213,16 @@ void ContactsPane::editContactSlot(){
     QWidget* screen = new QWidget(this);
 
     QLabel* descLabel = new QLabel("Edit contact", screen);
+    descLabel->setStyleSheet("font-size: 14px; color: rgb(189, 90, 5);");
     QPushButton* btUpdate = new QPushButton("update", screen);
     QLabel* errLabel = new QLabel("Name cannot be empty!", screen);
     errLabel->setStyleSheet("color: rgb(255, 0, 0);");
+    errLabel->setVisible(false);
 
     int rowIndex = this->editRowMap.at(qobject_cast<QToolButton*>(QObject::sender()));
     QLabel* nameLabel = reinterpret_cast<QLabel*>(this->gridPane->itemAtPosition(rowIndex, 0));
     QLineEdit* leName = new QLineEdit(nameLabel->text(), screen);
+    const string initialName = nameLabel->text().toStdString();
 
     QComboBox* cb = new QComboBox(screen);
     int currIndex = 0;
@@ -235,6 +238,43 @@ void ContactsPane::editContactSlot(){
     cb->setCurrentIndex(currIndex);
 
     QLineEdit* leExp = new QLineEdit(reinterpret_cast<QLabel*>(this->gridPane->itemAtPosition(rowIndex, 2)));
+    string username = this->user->getUserName();
+
+    QGridLayout* pane = new QGridLayout(this);
+
+    pane->addWidget(descLabel, 0, 0);
+    pane->addWidget(leName, 1, 0);
+    pane->addWidget(leExp, 1, 1);
+    pane->addWidget(cb, 2, 0);
+    pane->addWidget(errLabel, 3, 0);
+    pane->addWidget(btUpdate, 3, 1);
+    screen->setLayout(pane);
+    screen->show();
+
+    QObject::connect(btUpdate, &QPushButton::clicked, [&](){
+        string cname = leName->text().toStdString();
+        if(isEmpty(cname)){
+            errLabel->setVisible(true);
+        }
+        else{
+            //update the contact entity
+            string newCategory = cb->currentText().toStdString();
+            string newExp = leExp->text().toStdString();
+
+            MainController mc;
+            mc.updateContact(username, initialName, cname, newCategory, newExp);
+        }
+    });
+}
+inline bool ContactsPane::isEmpty(string& str){
+    bool isEmpty = true;
+    for(int i = 0; i < str.size(); i++){
+        if(str.at(i) != ' '){
+            isEmpty = false;
+            break;
+        }
+    }
+    return isEmpty;
 }
 void ContactsPane::cbEnableSlot(int checked){
     QObject* sender = QObject::sender();
