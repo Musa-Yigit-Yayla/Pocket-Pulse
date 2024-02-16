@@ -124,7 +124,7 @@ void ContactsPane::initializeGridContent(){
         this->gridPane->addWidget(currCategory, i, 1);
         this->gridPane->addWidget(currExp, i, 2);
 
-
+        this->addToolButtons(i);
 
     }
     this->gridRowCount = contactsInformation.size();
@@ -168,6 +168,9 @@ void ContactsPane::addToolButtons(int rowIndex){
     //map the buttons with the rowIndex
     this->deleteRowMap.insert(make_pair(btDelete, rowIndex));
     this->editRowMap.insert(make_pair(btEdit, rowIndex));
+
+    this->deleteButtons.push_back(btDelete);
+    this->editButtons.push_back(btEdit);
 
     //set event handling signal slot connections
     QObject::connect(btDelete, &QToolButton::clicked, this, &ContactsPane::deleteContactSlot);
@@ -262,7 +265,11 @@ void ContactsPane::editContactSlot(){
             string newExp = leExp->text().toStdString();
 
             MainController mc;
-            mc.updateContact(username, initialName, cname, newCategory, newExp);
+            bool updated = mc.updateContact(username, initialName, cname, newCategory, newExp);
+            if(updated){
+                //update the contents in the contacts gridPane
+                //ToDo
+            }
         }
     });
 }
@@ -277,6 +284,7 @@ inline bool ContactsPane::isEmpty(string& str){
     return isEmpty;
 }
 void ContactsPane::cbEnableSlot(int checked){
+    qDebug() << "Debug: ContactsPane::cbEnableSlot has been invoked with checked " << checked;
     QObject* sender = QObject::sender();
 
     vector<QToolButton*> temp;
@@ -288,7 +296,8 @@ void ContactsPane::cbEnableSlot(int checked){
         buttons = this->editButtons;
     }
     for(QToolButton* bt: buttons){
-        bt->setVisible(true);
+        bt->setVisible(checked != 0);
     }
+    qDebug() << "Debug: cbEnableSlot buttons size is " << buttons.size();
 }
 const vector<string> ContactsPane::CONTACT_CATEGORIES = {"person", "group", "corporation", "family member"};

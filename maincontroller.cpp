@@ -304,7 +304,14 @@ bool MainController::userHasContact(string username, string contactName){
 bool MainController::updateContact(string username, string contactName, string newContactName, string category, string explanation){
     QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("UPDATE " + USER_CONTACTS_TABLE_NAME + " SET contact_name = :newCname, category = :category, explanation = :explanation WHERE (user_name = :username AND contact_name = :oldCname);"));
+    sq.bindValue(":newCname", QString::fromStdString(newContactName));
+    sq.bindValue(":category", QString::fromStdString(category));
+    sq.bindValue(":explanation", QString::fromStdString(explanation));
+    sq.bindValue(":username", QString::fromStdString(username));
+    sq.bindValue(":oldCname", QString::fromStdString(contactName));
 
+    bool success = sq.exec();
+    return success;
 }
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
