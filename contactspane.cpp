@@ -171,6 +171,8 @@ void ContactsPane::addToolButtons(int rowIndex){
     this->deleteRowMap.insert(make_pair(btDelete, rowIndex));
     this->editRowMap.insert(make_pair(btEdit, rowIndex));
 
+    //this->deleteButtons.insert(this->deleteButtons.begin() + rowIndex, btDelete);
+    //this->editButtons.insert(this->editButtons.begin() + rowIndex, btEdit);
     this->deleteButtons.push_back(btDelete);
     this->editButtons.push_back(btEdit);
 
@@ -212,6 +214,7 @@ void ContactsPane::addContactSlot(){
     }
 }
 void ContactsPane::deleteContactSlot(){
+    qDebug() << "Debug: popup screen being null evaluates to " << (this->screen == NULL);
     if(this->screen == NULL){
         //allow deletion if no edit contact pane is open
 
@@ -249,7 +252,7 @@ void ContactsPane::updateIndexMaps(int deletionIndex){
     QToolButton* btEdit = nullptr;
     for(auto& it: this->deleteRowMap){
         if(it.second > deletionIndex){
-            it.second--;
+            //it.second--;
         }
         else if(it.second == deletionIndex){
             btDelete = it.first;
@@ -257,7 +260,7 @@ void ContactsPane::updateIndexMaps(int deletionIndex){
     }
     for(auto& it: this->editRowMap){
         if(it.second > deletionIndex){
-            it.second--;
+            //it.second--;
         }
         else if(it.second == deletionIndex){
             btEdit = it.first;
@@ -271,6 +274,7 @@ void ContactsPane::updateIndexMaps(int deletionIndex){
         if(this->checkBoxEdit->isChecked()){
             this->gridPane->removeWidget(btEdit);
         }
+
         //erase from the maps
         this->deleteRowMap.erase(btDelete);
         this->editRowMap.erase(btEdit);
@@ -279,11 +283,27 @@ void ContactsPane::updateIndexMaps(int deletionIndex){
             if(this->deleteButtons.at(i) == btDelete && this->editButtons.at(i) == btEdit){
                 this->deleteButtons.erase(this->deleteButtons.begin() + i);
                 this->editButtons.erase(this->editButtons.begin() + i);
+                break;
             }
         }
 
         delete btDelete;
         delete btEdit;
+
+        /*this->gridRowCount--;
+
+
+        //lastly shift the children of the gridPane starting from deletionIndex + 1 by -1 in terms of row index
+        for(int i = deletionIndex + 1; i < this->gridPane->rowCount(); i++){
+            for(int j = 0; j < this->gridPane->columnCount(); j++){
+                QWidget* currWidget = this->gridPane->itemAtPosition(i, j)->widget();
+                if(currWidget != NULL){
+                    //first remove from the current widget then shift it to (i - 1)th index
+                    this->gridPane->removeWidget(currWidget);
+                    this->gridPane->addWidget(currWidget, i - 1, j);
+                }
+            }
+        }*/
     }
 
 
