@@ -219,18 +219,16 @@ void ContactsPane::editContactSlot(){
         QLabel* descLabel = new QLabel("Edit contact", screen);
         descLabel->setStyleSheet("font-size: 14px; color: rgb(189, 90, 5);");
         QPushButton* btUpdate = new QPushButton("update", screen);
-        QLabel* errLabel = new QLabel("Name cannot be empty!", screen);
+        this->errLabel = new QLabel("Name cannot be empty!", screen);
         errLabel->setStyleSheet("color: rgb(255, 0, 0);");
         errLabel->setVisible(false);
 
         int rowIndex = this->editRowMap.at(qobject_cast<QToolButton*>(QObject::sender()));
         QLabel* nameLabel = qobject_cast<QLabel*>(this->gridPane->itemAtPosition(rowIndex, 0)->widget());
         qDebug() << "Debug: nameLabel pointer after reinterpret_cast is null evaluates to " << (nameLabel == 0);
-        QString nameText = nameLabel->text();
-        QLineEdit* leName = new QLineEdit(nameLabel->text(), screen);
-        const string initialName = nameLabel->text().toStdString();
+        this->leName = new QLineEdit(nameLabel->text(), screen);
 
-        QComboBox* cb = new QComboBox(screen);
+        this->cb = new QComboBox(screen);
         int currIndex = 0;
         string currSelection = qobject_cast<QLabel*>(this->gridPane->itemAtPosition(rowIndex, 1)->widget())->text().toStdString();
         for(int i = 0; i < CONTACT_CATEGORIES.size(); i++){
@@ -243,8 +241,8 @@ void ContactsPane::editContactSlot(){
         }
         cb->setCurrentIndex(currIndex);
 
-        QLineEdit* leExp = new QLineEdit(qobject_cast<QLabel*>(this->gridPane->itemAtPosition(rowIndex, 2)->widget())->text(), screen);
-        string username = this->user->getUserName();
+        this->leExp = new QLineEdit(qobject_cast<QLabel*>(this->gridPane->itemAtPosition(rowIndex, 2)->widget())->text(), screen);
+        this->currRowIndex = rowIndex;
 
         QGridLayout* pane = new QGridLayout(screen);
 
@@ -257,9 +255,12 @@ void ContactsPane::editContactSlot(){
                 //update the contact entity
                 string newCategory = cb->currentText().toStdString();
                 string newExp = leExp->text().toStdString();
+                string username = this->user->getUserName();
+                const string initialName = qobject_cast<QLabel*>(this->gridPane->itemAtPosition(this->currRowIndex, 0)->widget())->text().toStdString();
 
                 MainController mc;
                 bool updated = mc.updateContact(username, initialName, cname, newCategory, newExp);
+                qDebug() << "Debug: contact credentials updated evaluated to " << updated;
                 if(updated){
                     //update the contents in the contacts gridPane
                     //ToDo

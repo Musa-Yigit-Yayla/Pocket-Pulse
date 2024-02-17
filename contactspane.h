@@ -46,7 +46,13 @@ private:
     QLineEdit* textAreaExp = nullptr;
     QLabel* errorLabel = nullptr;
 
+    //screen and its event sources for editing contacts pane
     QWidget* screen = nullptr;
+    QLineEdit* leExp = nullptr;
+    QLineEdit* leName = nullptr;
+    QComboBox* cb = nullptr;
+    QLabel* errLabel = nullptr;
+    int currRowIndex; //current rowIndex for the clicked update button
 
     vector<QToolButton*> deleteButtons;
     vector<QToolButton*> editButtons;
