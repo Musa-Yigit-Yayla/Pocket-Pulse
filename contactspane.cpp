@@ -226,7 +226,7 @@ void ContactsPane::deleteContactSlot(){
             //right before deletion update the tool button indexes (ones starting after the deletion index) by decremeting by one
             this->updateIndexMaps(rowIndex);
 
-            int rowEltCount = 5; //number of widgets in a single row of gridPane
+            int rowEltCount = 3; //number of widgets in a single row of gridPane (without edit & delete tool buttons)
             QWidget* arr[rowEltCount];
             for(int i = 0; i < rowEltCount; i++){
                 arr[i] = this->gridPane->itemAtPosition(rowIndex, i)->widget();
@@ -236,6 +236,7 @@ void ContactsPane::deleteContactSlot(){
                 this->gridPane->removeWidget(arr[i]);
                 delete arr[i];
             }
+
         }
         else{
             this->errorLabel->setVisible(true);
@@ -244,16 +245,37 @@ void ContactsPane::deleteContactSlot(){
     }
 }
 void ContactsPane::updateIndexMaps(int deletionIndex){
+    QToolButton* btDelete = nullptr;
+    QToolButton* btEdit = nullptr;
     for(auto& it: this->deleteRowMap){
         if(it.second > deletionIndex){
             it.second--;
+        }
+        else if(it.second == deletionIndex){
+            btDelete = it.first;
         }
     }
     for(auto& it: this->editRowMap){
         if(it.second > deletionIndex){
             it.second--;
         }
+        else if(it.second == deletionIndex){
+            btEdit = it.first;
+        }
     }
+    if(btDelete != NULL && btEdit != NULL){
+        //depending on the visibility of delete and edit buttons, remove the catched tool buttons if applicable
+        if(this->checkBoxDelete->isChecked()){
+            this->gridPane->removeWidget(btDelete);
+        }
+        if(this->checkBoxEdit->isChecked()){
+            this->gridPane->removeWidget(btEdit);
+        }
+        delete btDelete;
+        delete btEdit;
+    }
+
+
 }
 void ContactsPane::editContactSlot(){
     if(this->screen == NULL){
