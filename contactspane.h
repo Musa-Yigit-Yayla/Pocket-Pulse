@@ -46,6 +46,8 @@ private:
     QLineEdit* textAreaExp = nullptr;
     QLabel* errorLabel = nullptr;
 
+    QWidget* screen = nullptr;
+
     vector<QToolButton*> deleteButtons;
     vector<QToolButton*> editButtons;
 
