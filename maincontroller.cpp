@@ -313,6 +313,15 @@ bool MainController::updateContact(string username, string contactName, string n
     bool success = sq.exec();
     return success;
 }
+bool MainController::deleteContact(string username, string contactName){
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("DELETE FROM " + USER_CONTACTS_TABLE_NAME + " WHERE (user_name = :username AND contact_name = :contactName);"));
+    sq.bindValue(":username", QString::fromStdString(username));
+    sq.bindValue(":contactName", QString::fromStdString(contactName));
+
+    bool success = sq.exec();
+    return success;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

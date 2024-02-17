@@ -28,6 +28,8 @@ ContactsPane::ContactsPane(User* user, QWidget* parent): AbstractPane{user, pare
 
     this->errorLabel = new QLabel(this);
     this->errorLabel->setVisible(false);
+    this->errorLabel->setStyleSheet("color: rgb(255, 0, 0);");
+
     this->setLayoutManagement();
 
     QObject::connect(this->checkBoxDelete, &QCheckBox::stateChanged, this, &ContactsPane::cbEnableSlot);
@@ -199,6 +201,7 @@ void ContactsPane::addContactSlot(){
             this->gridPane->addWidget(currName, this->gridRowCount, 0);
             this->gridPane->addWidget(currCategory, this->gridRowCount, 1);
             this->gridPane->addWidget(currExp, this->gridRowCount, 2);
+            this->addToolButtons(this->gridRowCount);
             this->gridRowCount++;
         }
         else{
@@ -209,7 +212,48 @@ void ContactsPane::addContactSlot(){
     }
 }
 void ContactsPane::deleteContactSlot(){
+    if(this->screen == NULL){
+        //allow deletion if no edit contact pane is open
 
+        int rowIndex = this->deleteRowMap.at(qobject_cast<QToolButton*>(QObject::sender()));
+        string contactName = qobject_cast<QLabel*>(this->gridPane->itemAtPosition(rowIndex, 0)->widget())->text().toStdString();
+
+        MainController mc;
+        bool deleted = mc.deleteContact(this->user->getUserName(), contactName);
+        if(deleted){
+            //update the gridPane accordingly
+
+            //right before deletion update the tool button indexes (ones starting after the deletion index) by decremeting by one
+            this->updateIndexMaps(rowIndex);
+
+            int rowEltCount = 5; //number of widgets in a single row of gridPane
+            QWidget* arr[rowEltCount];
+            for(int i = 0; i < rowEltCount; i++){
+                arr[i] = this->gridPane->itemAtPosition(rowIndex, i)->widget();
+            }
+            //remove the widgets programmatically
+            for(int i = 0; i < rowEltCount; i++){
+                this->gridPane->removeWidget(arr[i]);
+                delete arr[i];
+            }
+        }
+        else{
+            this->errorLabel->setVisible(true);
+            this->errorLabel->setText("Error while deleting");
+        }
+    }
+}
+void ContactsPane::updateIndexMaps(int deletionIndex){
+    for(auto& it: this->deleteRowMap){
+        if(it.second > deletionIndex){
+            it.second--;
+        }
+    }
+    for(auto& it: this->editRowMap){
+        if(it.second > deletionIndex){
+            it.second--;
+        }
+    }
 }
 void ContactsPane::editContactSlot(){
     if(this->screen == NULL){
@@ -263,7 +307,13 @@ void ContactsPane::editContactSlot(){
                 qDebug() << "Debug: contact credentials updated evaluated to " << updated;
                 if(updated){
                     //update the contents in the contacts gridPane
-                    //ToDo
+                    qobject_cast<QLabel*>(this->gridPane->itemAtPosition(this->currRowIndex, 0)->widget())->setText(leName->text());
+                    qobject_cast<QLabel*>(this->gridPane->itemAtPosition(this->currRowIndex, 1)->widget())->setText(cb->currentText());
+                    qobject_cast<QLabel*>(this->gridPane->itemAtPosition(this->currRowIndex, 2)->widget())->setText(leExp->text());
+                    //close the screen programatically and deallocate it and assign the pointer to nullptr
+                    this->screen->close();
+                    delete this->screen;
+                    this->screen = nullptr;
                 }
             }
         });

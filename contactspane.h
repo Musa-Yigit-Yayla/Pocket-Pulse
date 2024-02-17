@@ -70,6 +70,7 @@ private:
     void setLayoutManagement();
     void initializeGridContent();
     void addToolButtons(int rowIndex);
+    void updateIndexMaps(int deletionIndex);
 public slots:
     void cbEnableSlot(int checked);
     void addContactSlot();
