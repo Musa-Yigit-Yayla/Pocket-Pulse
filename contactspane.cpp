@@ -271,6 +271,17 @@ void ContactsPane::updateIndexMaps(int deletionIndex){
         if(this->checkBoxEdit->isChecked()){
             this->gridPane->removeWidget(btEdit);
         }
+        //erase from the maps
+        this->deleteRowMap.erase(btDelete);
+        this->editRowMap.erase(btEdit);
+        //remove from the tool button vectors
+        for(int i = 0; i < this->deleteButtons.size(); i++){ //notice delete and edit button vectors' size are equal
+            if(this->deleteButtons.at(i) == btDelete && this->editButtons.at(i) == btEdit){
+                this->deleteButtons.erase(this->deleteButtons.begin() + i);
+                this->editButtons.erase(this->editButtons.begin() + i);
+            }
+        }
+
         delete btDelete;
         delete btEdit;
     }
