@@ -27,6 +27,7 @@ SOURCES += \
     circularimage.cpp \
     contactspane.cpp \
     expensepane.cpp \
+    incomepane.cpp \
     loginscreen.cpp \
     main.cpp \
     maincontroller.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
     circularimage.h \
     contactspane.h \
     expensepane.h \
+    incomepane.h \
     loginscreen.h \
     maincontroller.h \
     mainscreen.h \
