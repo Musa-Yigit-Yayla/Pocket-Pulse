@@ -141,3 +141,7 @@ vector<string> BankingController::getFullNameByAccId(int accountId){
     }
     return result;
 }
+vector<vector<int>> BankingController::retrieveIncome(const string username, const QString& comparedColumn){
+    //First retrieve the data from transactios table and store it in a 2d vector
+    //Each row will contain 3 columns, sender id, sent date in the form of days, and sent amount as an integer
+}

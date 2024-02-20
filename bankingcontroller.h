@@ -36,7 +36,7 @@ public:
     bool registerAccountToUser(int accountId, int userId);
     vector<vector<string>> getPastTransactions(int accountId);
     vector<string> getFullNameByAccId(int accountId);
-
+    vector<vector<int>> retrieveIncome(const string username, const QString& comparedColumn);
 
 };
 
