@@ -1,5 +1,6 @@
 #include "bankpane.h"
 #include "bankingcontroller.h"
+#include "maincontroller.h"
 #include "mainscreen.h"
 #include <iostream>
 
@@ -210,7 +211,10 @@ void BankPane::slotGetAccount(){
                        this->errorLabel.setVisible(true);
                    }
                    else{
-                       int userId = this->getCurrentUserId();
+                       //int userId = this->getCurrentUserId(); //!!!REMOVE THIS FROM COMMENTING IF SOMETHING GOES WRONG
+                       MainController mc;
+                       int result = mc.getUserId(this->user->getUserName());
+                       int userId = result;
                        if(userId != -1){
                            //register the account to the relational table for user has a relation
                            bool registered = bc.registerAccountToUser(id, userId);
