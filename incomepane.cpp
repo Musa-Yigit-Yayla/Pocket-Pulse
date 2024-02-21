@@ -28,5 +28,5 @@ void IncomePane::refreshHandler(){
 }
 vector<vector<int>> IncomePane::getSortedIncome(){
     BankingController bc;
-    vector<vector<int>> result = bc.retrieveIncome(this->user->getUserName(), this->cbSortSelector->currentText());
+    vector<vector<int>> result = bc.retrieveIncome(this->user->getUserName());
 }

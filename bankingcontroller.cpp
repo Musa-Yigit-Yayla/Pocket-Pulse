@@ -1,5 +1,6 @@
 #include "bankingcontroller.h"
 #include "qsqlerror.h"
+#include "maincontroller.h"
 
 using namespace std;
 
@@ -141,7 +142,34 @@ vector<string> BankingController::getFullNameByAccId(int accountId){
     }
     return result;
 }
-vector<vector<int>> BankingController::retrieveIncome(const string username, const QString& comparedColumn){
+//returns the past transactions in which the user has received money, as a 2d int vector containing {senderId, amount, date} for each row
+//(date is in the form of days)
+vector<vector<int>> BankingController::retrieveIncome(const string username){
     //First retrieve the data from transactios table and store it in a 2d vector
     //Each row will contain 3 columns, sender id, sent date in the form of days, and sent amount as an integer
+    vector<vector<int>> result;
+
+    //first retrieve the user id via using maincontroller
+    MainController mc;
+    int userId = mc.getUserId(username);
+
+    if(userId != -1){ //user with the given username exists
+        //now get the user's registered accounts
+        vector<int> accounts = this->getAccountsOfUser(userId);
+        for(int currAccId: accounts){
+            //select each transaction here receiver id matches the currAccId, also apply correct projections
+            QSqlQuery sq(this->db);
+            sq.prepare(QString::fromStdString("SELECT sender_id, amount, date FROM " + TRANSACTION_TABLE_NAME + " WHERE receiver_id = :accountId"));
+            sq.bindValue(":accountId", currAccId);
+            if(sq.exec()){
+                while(sq.next()){
+                    vector<int> currRow;
+                    currRow.push_back(sq.value(0).toInt());
+                    string amount = sq.value(1).toString().toStdString().substr(1);
+                    currRow.push_back(stoi(amount));
+                    //ToDo
+                }
+            }
+        }
+    }
 }
