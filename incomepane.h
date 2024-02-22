@@ -43,6 +43,7 @@ public:
 private:
     void displayIncome();
     vector<vector<int>> getSortedIncome();
+    QHBoxLayout* getIncomeRow(vector<int>& data);
 public slots:
     void refreshHandler();
 };

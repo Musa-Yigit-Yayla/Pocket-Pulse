@@ -36,12 +36,23 @@ void IncomePane::displayIncome(){
     if(this->vbox != NULL && this->sa != NULL){
         delete this->vbox;
         delete this->sa;
+
+        this->vbox = nullptr;
+        this->sa = nullptr;
     }
     this->vbox = new QVBoxLayout(this);
     this->sa = new QScrollArea(this);
     this->sa->setWidgetResizable(true);
 
+
     vector<vector<int>> sortedData = this->getSortedIncome();
+
+    for(int i = 0; i < sortedData.size(); i++){
+        vector<int> dataRow = sortedData.at(i);
+        QHBoxLayout* currRow = this->getIncomeRow(dataRow);
+        this->vbox->addLayout(currRow);
+    }
+    this->sa->setLayout(vbox);
 }
 void IncomePane::refreshHandler(){
     this->displayIncome();
@@ -79,3 +90,23 @@ vector<vector<int>> IncomePane::getSortedIncome(){
 
     return result;
 }
+QHBoxLayout* IncomePane::getIncomeRow(vector<int>& data){
+    QHBoxLayout* hbox = new QHBoxLayout(this->sa);
+
+    BankingController bc;
+    string senderName = bc.getAccountAttribute(data.at(0), BankingController::ACCOUNT_ATTRIBUTES::ID);
+
+    QLabel* senderLabel = new QLabel(QString::fromStdString(senderName), this->sa);
+    QLabel* amountLabel= new QLabel(QString::fromStdString("$" + to_string(data.at(1))), this->sa);
+    QDate date = BankingController::fromDate.addDays(data.at(2));
+    QLabel* dateLabel = new QLabel(date.toString(Qt::DateFormat::ISODate), this->sa);
+
+    hbox->addWidget(senderLabel);
+    hbox->addWidget(amountLabel);
+    hbox->addWidget(dateLabel);
+
+    return hbox;
+}
+
+
+
