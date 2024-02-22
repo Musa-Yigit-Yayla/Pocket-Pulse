@@ -172,10 +172,12 @@ void MainScreen::setGenericPanes(){
     this->bankPane = new BankPane(this->user, this->wrapper);
     this->expensePane = new ExpensePane(this->user, this->wrapper);
     this->contactsPane = new ContactsPane(this->user, this->wrapper);
+    this->incomePane = new IncomePane(this->user, this->wrapper);
 
     this->bankPane->setVisible(false);
     this->expensePane->setVisible(false); //modify the visibility later on
     this->contactsPane->setVisible(false);
+    this->incomePane->setVisible(false);
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
@@ -200,7 +202,9 @@ void MainScreen::toolExpenseSlot(){
     this->hbox2->addWidget(this->expensePane);
 }
 void MainScreen::toolIncomeSlot(){
-
+    this->removeCurrGenericPane();
+    this->incomePane->setVisible(true);
+    this->hbox2->addWidget(this->incomePane);
 }
 void MainScreen::toolFinGoalSlot(){
 

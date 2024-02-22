@@ -39,6 +39,7 @@ public:
     vector<vector<int>> retrieveIncome(const string username);
 
     static inline vector<int> splitDate(const string givenDate);
+    static const QDate fromDate;
 };
 
 #endif // BANKINGCONTROLLER_H

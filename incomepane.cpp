@@ -29,6 +29,10 @@ IncomePane::IncomePane(User* user, QWidget* parent): AbstractPane{user, parent}{
     this->cbIgnoreDate = new QCheckBox("Ignore date boundary", this);
     this->cbIgnoreDate->setChecked(true);
 
+    this->grid->addWidget(this->cbSortSelector);
+    this->displayIncome();
+    this->grid->addWidget(this->btRefresh, 2, 2);
+
     QObject::connect(this->btRefresh, &QPushButton::clicked, this, &IncomePane::refreshHandler);
 }
 //Redraw the vbox by deallocationg and reordering with respect to the combobox selection
@@ -53,6 +57,10 @@ void IncomePane::displayIncome(){
         this->vbox->addLayout(currRow);
     }
     this->sa->setLayout(vbox);
+
+    //!!!The below code might be unnecessary, verify later
+    this->grid->addWidget(this->sa, 1, 0);
+
 }
 void IncomePane::refreshHandler(){
     this->displayIncome();
