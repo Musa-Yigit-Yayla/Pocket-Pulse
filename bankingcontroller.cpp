@@ -1,6 +1,7 @@
 #include "bankingcontroller.h"
 #include "qsqlerror.h"
 #include "maincontroller.h"
+#include <QDate>
 
 using namespace std;
 
@@ -167,9 +168,45 @@ vector<vector<int>> BankingController::retrieveIncome(const string username){
                     currRow.push_back(sq.value(0).toInt());
                     string amount = sq.value(1).toString().toStdString().substr(1);
                     currRow.push_back(stoi(amount));
-                    //ToDo
+
+                    //retrieve the number of elapsed days since 1/1/2020
+                    QDate d1(2020, 1, 1);
+                    vector<int> currDate = splitDate(sq.value(2).toString().toStdString());
+                    QDate transactionDate(currDate.at(2), currDate.at(0), currDate.at(1));
+                    int elapsedDays = d1.daysTo(transactionDate);
+                    currRow.push_back(elapsedDays);
+
+                    result.push_back(currRow);
                 }
             }
         }
     }
+    return result;
+}
+
+//Receives a date string in the format m/d/y
+//Returns a vector containing {month, day, year} as int
+inline vector<int> BankingController::splitDate(const string givenDate){
+    vector<int> result;
+
+    int index1 = -1, index2 = -1;
+    int counter = 0;
+    while(counter < givenDate.size()){
+        if(givenDate.at(counter) == '/'){
+            if(index1 == -1){
+                index1 = counter;
+            }
+            else{
+                index2 = counter;
+            }
+        }
+        counter++;
+    }
+
+    if(index1 != -1 && index2 != -1){
+        result.push_back(stoi(givenDate.substr(0, index1)));
+        result.push_back(stoi(givenDate.substr(index1 + 1, index2)));
+        result.push_back(stoi(givenDate.substr(index2 + 1)));
+    }
+    return result;
 }

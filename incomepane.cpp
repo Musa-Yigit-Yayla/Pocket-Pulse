@@ -29,4 +29,6 @@ void IncomePane::refreshHandler(){
 vector<vector<int>> IncomePane::getSortedIncome(){
     BankingController bc;
     vector<vector<int>> result = bc.retrieveIncome(this->user->getUserName());
+
+    //sort by date which is the index 2 column
 }

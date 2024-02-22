@@ -38,6 +38,7 @@ public:
     vector<string> getFullNameByAccId(int accountId);
     vector<vector<int>> retrieveIncome(const string username);
 
+    static inline vector<int> splitDate(const string givenDate);
 };
 
 #endif // BANKINGCONTROLLER_H
