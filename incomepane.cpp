@@ -44,8 +44,10 @@ void IncomePane::displayIncome(){
         this->vbox = nullptr;
         this->sa = nullptr;
     }
-    this->vbox = new QVBoxLayout(this);
+    this->vbox = new QVBoxLayout();
     this->sa = new QScrollArea(this);
+    this->sa->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->sa->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     this->sa->setWidgetResizable(true);
 
 
@@ -56,7 +58,9 @@ void IncomePane::displayIncome(){
         QHBoxLayout* currRow = this->getIncomeRow(dataRow);
         this->vbox->addLayout(currRow);
     }
-    this->sa->setLayout(vbox);
+    QWidget* vboxWrapper = new QWidget(this->sa);
+    vboxWrapper->setLayout(vbox);
+    this->sa->setWidget(vboxWrapper);
 
     //!!!The below code might be unnecessary, verify later
     this->grid->addWidget(this->sa, 1, 0);
@@ -102,7 +106,7 @@ QHBoxLayout* IncomePane::getIncomeRow(vector<int>& data){
     QHBoxLayout* hbox = new QHBoxLayout();
 
     BankingController bc;
-    string senderName = bc.getAccountAttribute(data.at(0), BankingController::ACCOUNT_ATTRIBUTES::ID);
+    string senderName = bc.getAccountAttribute(data.at(0), BankingController::ACCOUNT_ATTRIBUTES::FIRST_NAME) + " " + bc.getAccountAttribute(data.at(0), BankingController::ACCOUNT_ATTRIBUTES::LAST_NAME);
 
     QLabel* senderLabel = new QLabel(QString::fromStdString(senderName), this->sa);
     QLabel* amountLabel= new QLabel(QString::fromStdString("$" + to_string(data.at(1))), this->sa);
