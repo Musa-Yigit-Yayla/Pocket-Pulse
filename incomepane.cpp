@@ -24,9 +24,9 @@ struct ColumnComparator{
 IncomePane::IncomePane(User* user, QWidget* parent): AbstractPane{user, parent}{
     this->grid = new QGridLayout(this);
     this->btRefresh = new QPushButton("Refresh");
-    this->cbSortSelector = new QComboBox(this);
+    this->cbSortSelector = new QComboBox();
     this->cbSortSelector->addItems(this->sortChoices);
-    this->cbIgnoreDate = new QCheckBox("Ignore date boundary", this);
+    this->cbIgnoreDate = new QCheckBox("Ignore date boundary");
     this->cbIgnoreDate->setChecked(true);
 
     this->grid->addWidget(this->cbSortSelector);
@@ -77,19 +77,19 @@ vector<vector<int>> IncomePane::getSortedIncome(){
     if(currSelection == this->sortChoices.at(0).toStdString()){
         //most recent
         sortColumn = 2;
-        ascending = false;
+        ascending = true;
     }
     else if(currSelection == this->sortChoices.at(1).toStdString()){
         sortColumn = 2;
-        ascending = true;
+        ascending = false;
     }
     else if(currSelection == this->sortChoices.at(2).toStdString()){
         sortColumn = 1;
-        ascending = false;
+        ascending = true;
     }
     else{ //if(currSelection == this->sortChoices.at(3).toStdString()){
         sortColumn = 1;
-        ascending = true;
+        ascending = false;
     }
 
     //apply heap sort
@@ -99,7 +99,7 @@ vector<vector<int>> IncomePane::getSortedIncome(){
     return result;
 }
 QHBoxLayout* IncomePane::getIncomeRow(vector<int>& data){
-    QHBoxLayout* hbox = new QHBoxLayout(this->sa);
+    QHBoxLayout* hbox = new QHBoxLayout();
 
     BankingController bc;
     string senderName = bc.getAccountAttribute(data.at(0), BankingController::ACCOUNT_ATTRIBUTES::ID);
