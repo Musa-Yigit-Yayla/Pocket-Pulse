@@ -5,6 +5,9 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QDateEdit>
 
 
 #ifndef DEBTPANE_H
