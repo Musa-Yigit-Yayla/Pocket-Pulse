@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QDateEdit>
+#include <QIntValidator>
 
 
 #ifndef DEBTPANE_H

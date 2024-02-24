@@ -63,7 +63,7 @@ private:
 public:
     ContactsPane(User* user, QWidget* parent = nullptr);
 
-    static inline bool isEmpty(string& str);
+    static bool isEmpty(string& str);
     static const vector<string> CONTACT_CATEGORIES;
     static const int ICON_LENGTH = 20;
 private:

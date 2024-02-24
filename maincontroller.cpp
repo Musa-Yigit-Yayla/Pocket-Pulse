@@ -322,10 +322,32 @@ bool MainController::deleteContact(string username, string contactName){
     bool success = sq.exec();
     return success;
 }
+bool MainController::registerDebt(string username, string owedName, int amount, string explanation, string due_date, int paid_status){
+    bool success = false;
+    if(!this->tableExists(USER_DEBTS_TABLE_NAME)){
+        //create the user debts table
+        QSqlQuery sq(this->db);
+        sq.prepare(QString::fromStdString("CREATE TABLE " + USER_DEBTS_TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, owedName TEXT, amount INTEGER," +
+                                          "explanation TEXT, due_date TEXT, paid_status TEXT);"));
+        sq.exec();
+    }
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("INSERT INTO " + USER_DEBTS_TABLE_NAME + " (username, owedName, amount, explanation, due_date, paid_status)" +
+                                      " VALUES(:username, :owedName, :amount, :explanation, :due_date, :paid_status);"));
+    sq.bindValue(":username", QString::fromStdString(username));
+    sq.bindValue(":owedName", QString::fromStdString(owedName));
+    sq.bindValue(":amount", amount);
+    sq.bindValue(":explanation", QString::fromStdString(explanation));
+    sq.bindValue(":due_date", QString::fromStdString(due_date));
+    sq.bindValue(":paid_status", paid_status);
+    success = sq.exec();
+    return success;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";
 
 const string MainController::USER_TABLE_NAME = "User";
 const string MainController::USER_CONTACTS_TABLE_NAME = "user_contacts";
+const string MainController::USER_DEBTS_TABLE_NAME = "USER_DEBTS";
 const vector<string> MainController::monthly_goal_categories_columns = {"health", "education", "market_grocery", "entertainment", "vehicle", "fees", "other"};

@@ -381,7 +381,7 @@ void ContactsPane::editContactSlot(){
     }
 
 }
-inline bool ContactsPane::isEmpty(string& str){
+bool ContactsPane::isEmpty(string& str){
     bool isEmpty = true;
     for(int i = 0; i < str.size(); i++){
         if(str.at(i) != ' '){
