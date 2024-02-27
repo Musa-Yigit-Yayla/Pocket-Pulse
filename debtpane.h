@@ -9,6 +9,7 @@
 #include <QLineEdit>
 #include <QDateEdit>
 #include <QIntValidator>
+#include <QMouseEvent>
 #include <unordered_map>
 
 
@@ -18,7 +19,7 @@
 class DebtPane: public AbstractPane{
 private:
     QGridLayout* gridPane = new QGridLayout(this);
-
+    QVBoxLayout* vbox = new QVBoxLayout(this);
     QPushButton* btAddDebt = new QPushButton(this);
 public:
     DebtPane(User* user, QWidget* parent = nullptr);
@@ -34,6 +35,14 @@ public slots:
 
     public:
         DraggableDebt(int debtId, QWidget* parent = nullptr);
+
+
+    protected:
+        //override and implement some of the mouse related event handling
+        void mousePressEvent(QMouseEvent* event) override;
+        void mouseMoveEvent(QMouseEvent* event) override;
+        void mouseReleaseEvent(QMouseEvent* event) override;
+
     };
 };
 

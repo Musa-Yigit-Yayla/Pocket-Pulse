@@ -53,7 +53,9 @@ void DebtPane::addDebtSlot(){
                                                 debtStatus);
             //after registration ensure that you make a mapping between the newly layout that you will create for the debt, and the debtId for editing
             // or removal later on
-
+            DraggableDebt* newDebt = new DraggableDebt(registeredId, this);
+            //append to the end of our vbox
+            this->vbox->addWidget(newDebt);
         }
         else{
             //display the error label with specifying name cannot be blank
@@ -66,6 +68,15 @@ void DebtPane::addDebtSlot(){
 
     popupDebt->show();
 }
-DebtPane::DraggableDebt::DraggableDebt(int debtId, QWidget* parent): debtId{debtId}, QWidget{parent}{
+DebtPane::DraggableDebt::DraggableDebt(int debtId, QWidget* parent): QWidget{parent}, debtId{debtId}{
+
+}
+void DebtPane::DraggableDebt::mousePressEvent(QMouseEvent* event){
+
+}
+void DebtPane::DraggableDebt::mouseMoveEvent(QMouseEvent* event){
+
+}
+void DebtPane::DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
 
 }
