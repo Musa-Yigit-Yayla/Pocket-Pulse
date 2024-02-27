@@ -21,6 +21,24 @@ private:
     QGridLayout* gridPane = new QGridLayout(this);
     QVBoxLayout* vbox = new QVBoxLayout(this);
     QPushButton* btAddDebt = new QPushButton(this);
+
+    //popup pane attributes
+    QWidget* popupDebt = nullptr;
+    QGridLayout* layout = nullptr;
+    QLabel* expLabel = nullptr;
+    QCheckBox* cbContactEnabled = nullptr;
+    QLabel* labelOwedName = nullptr;
+    QLabel* labelAmount = nullptr;
+    QLabel* labelExp = nullptr;
+    QLabel* labelDate = nullptr;
+    QLineEdit* tfOwedName = nullptr;
+    QLineEdit* tfAmount = nullptr;
+    QLineEdit* tfExplanation = nullptr;
+    QComboBox* cbContactName = nullptr;
+    QLabel* errLabel = nullptr;
+    QDateEdit* dateEditDue = nullptr;
+    QPushButton* btReg = nullptr;
+
 public:
     DebtPane(User* user, QWidget* parent = nullptr);
 private:

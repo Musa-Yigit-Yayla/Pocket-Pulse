@@ -24,96 +24,111 @@ void DebtPane::initializeDebtPane(){
     //ToDo*/
 }
 void DebtPane::addDebtSlot(){
-    QWidget* popupDebt = new QWidget();
-    QGridLayout* layout = new QGridLayout(popupDebt);
 
-    QLabel* expLabel = new QLabel("Register a debt to be paid:", popupDebt);
-    expLabel->setStyleSheet("font-size: 15; color: orange;");
-    QCheckBox* cbContactEnabled = new QCheckBox("Select from\n   contacts", popupDebt);
+    if(this->popupDebt == NULL){ //this condition implies that each and every popup debt related data field is null hence we initialize them
+        popupDebt = new QWidget();
+        this->layout = new QGridLayout(popupDebt);
 
-    QLabel* labelOwedName = new QLabel("Owed name:", popupDebt);
-    QLabel* labelAmount = new QLabel("Owed amount:", popupDebt);
-    QLabel* labelExp = new QLabel("Debt description:", popupDebt);
-    QLabel* labelDate = new QLabel("Due date:", popupDebt);
+        this->expLabel = new QLabel("Register a debt to be paid:", popupDebt);
+        expLabel->setStyleSheet("font-size: 15; color: orange;");
+        this->cbContactEnabled = new QCheckBox("Select from\n   contacts", popupDebt);
 
-    QLineEdit* tfOwedName = new QLineEdit(popupDebt);
-    QLineEdit* tfAmount = new QLineEdit(popupDebt);
-    QIntValidator* validator = new QIntValidator(tfAmount);
-    tfAmount->setValidator(validator);
-    QLineEdit* tfExplanation = new QLineEdit(popupDebt);
-    QComboBox* cbContactName = new QComboBox(popupDebt);
+        labelOwedName = new QLabel("Owed name:", popupDebt);
+        this->labelAmount = new QLabel("Owed amount:", popupDebt);
+        this->labelExp = new QLabel("Debt description:", popupDebt);
+        this->labelDate = new QLabel("Due date:", popupDebt);
 
-    QLabel* errLabel = new QLabel(popupDebt);
-    errLabel->setVisible(false);
+        tfOwedName = new QLineEdit(popupDebt);
+        this->tfAmount = new QLineEdit(popupDebt);
+        QIntValidator* validator = new QIntValidator(this->tfAmount);
+        tfAmount->setValidator(validator);
+        tfExplanation = new QLineEdit(popupDebt);
+        this->cbContactName = new QComboBox(popupDebt);
 
-    QDateEdit* dateEditDue = new QDateEdit(popupDebt);
+        this->errLabel = new QLabel(popupDebt);
+        errLabel->setVisible(false);
 
-    QString noSelection = "-";
-    cbContactName->addItem(noSelection);
+        this->dateEditDue = new QDateEdit(popupDebt);
 
-    //retrieve the contact names
-    MainController mc;
-    string userName = this->user->getUserName();
-    vector<vector<QString>> contactAttributes = mc.retrieveContacts(userName);
-    for(int i = 0; i < contactAttributes.size(); i++){
-        cbContactName->addItem(contactAttributes.at(i).at(0));
+        QString noSelection = "-";
+        cbContactName->addItem(noSelection);
+
+        //retrieve the contact names
+        MainController mc;
+        string userName = this->user->getUserName();
+        vector<vector<QString>> contactAttributes = mc.retrieveContacts(userName);
+        for(int i = 0; i < contactAttributes.size(); i++){
+            cbContactName->addItem(contactAttributes.at(i).at(0));
+        }
+
+        this->btReg = new QPushButton(popupDebt);
+
+        //set the layout management
+        layout->addWidget(expLabel, 0, 0);
+        layout->addWidget(labelOwedName, 1, 0);
+        layout->addWidget(tfOwedName, 1, 1);
+        layout->addWidget(labelAmount, 2, 0);
+        layout->addWidget(tfAmount, 2, 1);
+        layout->addWidget(labelExp, 3, 0);
+        layout->addWidget(tfExplanation, 3, 1);
+        layout->addWidget(labelDate, 4, 0);
+        layout->addWidget(dateEditDue, 4, 1);
+        layout->addWidget(cbContactName,0, 2);
+        layout->addWidget(cbContactEnabled, 4, 2);
+        layout->addWidget(btReg, 5, 0, 1, 2);
+
+        //set the event handling procedures by lambda functions
+        QObject::connect(btReg, &QPushButton::clicked, [&](){
+            QString cbSelection = cbContactName->currentText();
+
+            string givenName;
+            bool selectContactEnabled = cbContactEnabled->isChecked();
+            if(!selectContactEnabled){
+                givenName = tfOwedName->text().toStdString();
+            }
+            else{
+                givenName = cbSelection.toStdString();
+            }
+
+            if(!ContactsPane::isEmpty(givenName) && givenName != noSelection.toStdString()){
+                int debtStatus = 0; //not paid yet
+                //registered holds the id of the debt in database system
+                int registeredId = mc.registerDebt(userName, givenName, tfAmount->text().toInt(), tfExplanation->text().toStdString(), dateEditDue->text().toStdString(),
+                                                   debtStatus);
+                //after registration ensure that you make a mapping between the newly layout that you will create for the debt, and the debtId for editing
+                // or removal later on
+                DraggableDebt* newDebt = new DraggableDebt(registeredId);
+                //append to the end of our vbox
+                this->vbox->addWidget(newDebt);
+            }
+            else{
+                //display the error label with specifying name cannot be blank
+                errLabel->setText("The owed name cannot be blank");
+                errLabel->setVisible(true);
+            }
+
+        });
+
+        QObject::connect(cbContactEnabled, &QCheckBox::clicked, [&](bool checked){
+
+            //cbContactEnabled->setVisible(checked);
+            qDebug() << "Debug: DebtPane checkbox event handling slot has value for tfOwedName as " << tfOwedName;
+            tfOwedName->setVisible(!checked);
+
+        });
+        //cbContactEnabled->setChecked(true); //after connecting checkbox signal to the lambda slot set the checked state to true initially
+    }
+    else{
+        //The popup pane is already set and initialized, but the control nodes must be resetted to initial state
+        tfOwedName->clear();
+        tfAmount->clear();
+        tfExplanation->clear();
+        cbContactName->setCurrentIndex(0);
+        //ToDo clear and reset the dateEditDue
     }
 
-    QPushButton* btReg = new QPushButton(popupDebt);
-
-    //set the layout management
-    layout->addWidget(expLabel, 0, 0);
-    layout->addWidget(labelOwedName, 1, 0);
-    layout->addWidget(tfOwedName, 1, 1);
-    layout->addWidget(labelAmount, 2, 0);
-    layout->addWidget(tfAmount, 2, 1);
-    layout->addWidget(labelExp, 3, 0);
-    layout->addWidget(tfExplanation, 3, 1);
-    layout->addWidget(labelDate, 4, 0);
-    layout->addWidget(dateEditDue, 4, 1);
-    layout->addWidget(cbContactName,0, 2);
-    layout->addWidget(cbContactEnabled, 4, 2);
-    layout->addWidget(btReg, 5, 0, 1, 2);
 
 
-    QObject::connect(btReg, &QPushButton::clicked, [&](){
-        QString cbSelection = cbContactName->currentText();
-
-        string givenName;
-        bool selectContactEnabled = cbContactEnabled->isChecked();
-        if(!selectContactEnabled){
-            givenName = tfOwedName->text().toStdString();
-        }
-        else{
-            givenName = cbSelection.toStdString();
-        }
-
-        if(!ContactsPane::isEmpty(givenName) && givenName != noSelection.toStdString()){
-            int debtStatus = 0; //not paid yet
-            //registered holds the id of the debt in database system
-            int registeredId = mc.registerDebt(userName, givenName, tfAmount->text().toInt(), tfExplanation->text().toStdString(), dateEditDue->text().toStdString(),
-                                                debtStatus);
-            //after registration ensure that you make a mapping between the newly layout that you will create for the debt, and the debtId for editing
-            // or removal later on
-            DraggableDebt* newDebt = new DraggableDebt(registeredId, this);
-            //append to the end of our vbox
-            this->vbox->addWidget(newDebt);
-        }
-        else{
-            //display the error label with specifying name cannot be blank
-            errLabel->setText("The owed name cannot be blank");
-            errLabel->setVisible(true);
-        }
-
-    });
-
-    QObject::connect(cbContactEnabled, &QCheckBox::clicked, [&](bool checked){
-
-        cbContactEnabled->setVisible(checked);
-        tfOwedName->setVisible(!checked);
-
-    });
-    cbContactEnabled->setChecked(true); //after connecting checkbox signal to the lambda slot set the checked state to true initially
 
     popupDebt->show();
 }
