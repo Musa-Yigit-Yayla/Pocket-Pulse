@@ -49,6 +49,7 @@ public:
     bool updateContact(string username, string contactName, string newContactName, string category, string explanation);
     bool deleteContact(string username, string contactName);
     int registerDebt(string username, string owedName, int amount, string explanation, string due_date, int paid_status);
+    vector<vector<QString>> getAllDebts(string username);
 
     static const string USER_TABLE_NAME;
     static const string USER_CONTACTS_TABLE_NAME;

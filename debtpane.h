@@ -23,8 +23,14 @@ private:
     QPushButton* btAddDebt = new QPushButton(this);
 public:
     DebtPane(User* user, QWidget* parent = nullptr);
+private:
+    void initializeDebtPane();
 public slots:
     void addDebtSlot();
+
+
+
+
 
     //Draggable widget which wraps a QHBoxLayout containing information and controls regarding debts
     class DraggableDebt: public QWidget{

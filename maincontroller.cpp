@@ -354,6 +354,9 @@ int MainController::registerDebt(string username, string owedName, int amount, s
     return registeredId;
 
 }
+vector<vector<QString>> MainController::getAllDebts(string username){
+
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

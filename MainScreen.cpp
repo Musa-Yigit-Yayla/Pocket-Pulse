@@ -2,6 +2,7 @@
 #include "user.h"
 #include "bankpane.h"
 #include "abstractpane.h"
+#include "debtpane.h"
 #include <string>
 #include <QList>
 #include <iostream>
@@ -173,11 +174,13 @@ void MainScreen::setGenericPanes(){
     this->expensePane = new ExpensePane(this->user, this->wrapper);
     this->contactsPane = new ContactsPane(this->user, this->wrapper);
     this->incomePane = new IncomePane(this->user, this->wrapper);
+    this->debtPane = new DebtPane(this->user, this->wrapper);
 
     this->bankPane->setVisible(false);
     this->expensePane->setVisible(false); //modify the visibility later on
     this->contactsPane->setVisible(false);
     this->incomePane->setVisible(false);
+    this->debtPane->setVisible(false);
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){
@@ -210,7 +213,9 @@ void MainScreen::toolFinGoalSlot(){
 
 }
 void MainScreen::toolDebtManagerSlot(){
-
+    this->removeCurrGenericPane();
+    this->debtPane->setVisible(true);
+    this->hbox2->addWidget(this->debtPane);
 }
 void MainScreen::toolVisualReportSlot(){
 

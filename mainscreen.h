@@ -8,6 +8,7 @@
 #include "expensepane.h"
 #include "contactspane.h";
 #include "incomepane.h"
+#include "debtpane.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -59,6 +60,7 @@ private:
     ExpensePane* expensePane = nullptr;
     ContactsPane* contactsPane = nullptr;
     IncomePane* incomePane = nullptr;
+    DebtPane* debtPane = nullptr;
 
     vector<string> tooltips = {"Manage expenses", "Track income", "Financial goals", "Debt management", "View reports", "Bank account", "Manage contacts"};
 public:
