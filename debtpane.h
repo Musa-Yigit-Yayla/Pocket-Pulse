@@ -28,10 +28,12 @@ public slots:
     //Draggable widget which wraps a QHBoxLayout containing information and controls regarding debts
     class DraggableDebt: public QWidget{
     private:
+        int debtId;
         QHBoxLayout* hbox = new QHBoxLayout(this);
+        QPushButton* btMarkPaid = new QPushButton("Mark as paid", this);
 
     public:
-        DraggableDebt(QWidget* parent = nullptr);
+        DraggableDebt(int debtId, QWidget* parent = nullptr);
     };
 };
 

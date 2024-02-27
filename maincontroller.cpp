@@ -322,8 +322,9 @@ bool MainController::deleteContact(string username, string contactName){
     bool success = sq.exec();
     return success;
 }
-bool MainController::registerDebt(string username, string owedName, int amount, string explanation, string due_date, int paid_status){
-    bool success = false;
+int MainController::registerDebt(string username, string owedName, int amount, string explanation, string due_date, int paid_status){
+    int registeredId = -1;
+    bool success;
     if(!this->tableExists(USER_DEBTS_TABLE_NAME)){
         //create the user debts table
         QSqlQuery sq(this->db);
@@ -340,8 +341,18 @@ bool MainController::registerDebt(string username, string owedName, int amount, 
     sq.bindValue(":explanation", QString::fromStdString(explanation));
     sq.bindValue(":due_date", QString::fromStdString(due_date));
     sq.bindValue(":paid_status", paid_status);
+
     success = sq.exec();
-    return success;
+    if(success){
+        //retrieve the newly registered id by using aggregate max
+        sq.prepare(QString::fromStdString("SELECT id FROM " + USER_DEBTS_TABLE_NAME + " WHERE id = (SELECT MAX(id) FROM " + USER_DEBTS_TABLE_NAME + ");"));
+        bool idRetrieved = sq.exec();
+        if(idRetrieved && sq.next()){
+            registeredId = sq.value(0).toInt();
+        }
+    }
+    return registeredId;
+
 }
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";

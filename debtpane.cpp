@@ -38,31 +38,34 @@ void DebtPane::addDebtSlot(){
     QObject::connect(btReg, &QPushButton::clicked, [&](){
         QString cbSelection = cbContactName->currentText();
 
+        string givenName;
         if(cbSelection == noSelection){
-            //use the name specified in the textfield and verify that it is not empty
-            string givenName = tfOwedName->text().toStdString();
-            if(!ContactsPane::isEmpty(givenName)){
-                int debtStatus = 0; //not paid yet
-                bool registered = mc.registerDebt(userName, givenName, tfAmount->text().toInt(), tfExplanation->text().toStdString(), dateEditDue->text().toStdString(),
-                                                    debtStatus);
-                //after registration ensure that you make a mapping between the newly layout that you will create for the debt, and the debtId for editing
-                // or removal later on
-
-            }
-            else{
-                //display the error label with specifying name cannot be blank
-                errLabel->setText("The owed name cannot be blank");
-                errLabel->setVisible(true);
-            }
+            givenName = tfOwedName->text().toStdString();
         }
         else{
+            givenName = cbSelection.toStdString();
+        }
+
+        if(!ContactsPane::isEmpty(givenName)){
+            int debtStatus = 0; //not paid yet
+            //registered holds the id of the debt in database system
+            int registeredId = mc.registerDebt(userName, givenName, tfAmount->text().toInt(), tfExplanation->text().toStdString(), dateEditDue->text().toStdString(),
+                                                debtStatus);
+            //after registration ensure that you make a mapping between the newly layout that you will create for the debt, and the debtId for editing
+            // or removal later on
 
         }
+        else{
+            //display the error label with specifying name cannot be blank
+            errLabel->setText("The owed name cannot be blank");
+            errLabel->setVisible(true);
+        }
+
     });
 
 
     popupDebt->show();
 }
-DebtPane::DraggableDebt::DraggableDebt(QWidget* parent): QWidget{parent}{
+DebtPane::DraggableDebt::DraggableDebt(int debtId, QWidget* parent): debtId{debtId}, QWidget{parent}{
 
 }
