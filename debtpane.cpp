@@ -63,3 +63,6 @@ void DebtPane::addDebtSlot(){
 
     popupDebt->show();
 }
+DebtPane::DraggableDebt::DraggableDebt(QWidget* parent): QWidget{parent}{
+
+}

@@ -328,7 +328,7 @@ bool MainController::registerDebt(string username, string owedName, int amount, 
         //create the user debts table
         QSqlQuery sq(this->db);
         sq.prepare(QString::fromStdString("CREATE TABLE " + USER_DEBTS_TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, owedName TEXT, amount INTEGER," +
-                                          "explanation TEXT, due_date TEXT, paid_status TEXT);"));
+                                          "explanation TEXT, due_date TEXT, paid_status TEXT, priority INTEGER AUTOINCREMENT);"));
         sq.exec();
     }
     QSqlQuery sq(this->db);
