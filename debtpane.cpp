@@ -77,45 +77,10 @@ void DebtPane::addDebtSlot(){
         layout->addWidget(cbContactEnabled, 4, 2);
         layout->addWidget(btReg, 5, 0, 1, 2);
 
-        //set the event handling procedures by lambda functions
-        QObject::connect(btReg, &QPushButton::clicked, [&](){
-            QString cbSelection = cbContactName->currentText();
+        //set the event handling procedures
+        QObject::connect(btReg, &QPushButton::clicked, this, &DebtPane::btRegSlot);
 
-            string givenName;
-            bool selectContactEnabled = cbContactEnabled->isChecked();
-            if(!selectContactEnabled){
-                givenName = tfOwedName->text().toStdString();
-            }
-            else{
-                givenName = cbSelection.toStdString();
-            }
-
-            if(!ContactsPane::isEmpty(givenName) && givenName != noSelection.toStdString()){
-                int debtStatus = 0; //not paid yet
-                //registered holds the id of the debt in database system
-                int registeredId = mc.registerDebt(userName, givenName, tfAmount->text().toInt(), tfExplanation->text().toStdString(), dateEditDue->text().toStdString(),
-                                                   debtStatus);
-                //after registration ensure that you make a mapping between the newly layout that you will create for the debt, and the debtId for editing
-                // or removal later on
-                DraggableDebt* newDebt = new DraggableDebt(registeredId);
-                //append to the end of our vbox
-                this->vbox->addWidget(newDebt);
-            }
-            else{
-                //display the error label with specifying name cannot be blank
-                errLabel->setText("The owed name cannot be blank");
-                errLabel->setVisible(true);
-            }
-
-        });
-
-        QObject::connect(cbContactEnabled, &QCheckBox::clicked, [&](bool checked){
-
-            //cbContactEnabled->setVisible(checked);
-            qDebug() << "Debug: DebtPane checkbox event handling slot has value for tfOwedName as " << tfOwedName;
-            tfOwedName->setVisible(!checked);
-
-        });
+        QObject::connect(cbContactEnabled, &QCheckBox::clicked, this, &DebtPane::contactCheckSlot);
         //cbContactEnabled->setChecked(true); //after connecting checkbox signal to the lambda slot set the checked state to true initially
     }
     else{
@@ -131,6 +96,43 @@ void DebtPane::addDebtSlot(){
 
 
     popupDebt->show();
+}
+void DebtPane::btRegSlot(){
+    QString cbSelection = cbContactName->currentText();
+    QString noSelection = cbContactName->itemText(0);
+
+    string givenName;
+    bool selectContactEnabled = cbContactEnabled->isChecked();
+    if(!selectContactEnabled){
+        givenName = tfOwedName->text().toStdString();
+    }
+    else{
+        givenName = cbSelection.toStdString();
+    }
+
+    if(!ContactsPane::isEmpty(givenName) && givenName != noSelection.toStdString()){
+        MainController mc;
+        string userName = this->user->getUserName();
+        int debtStatus = 0; //not paid yet
+        //registered holds the id of the debt in database system
+        int registeredId = mc.registerDebt(userName, givenName, tfAmount->text().toInt(), tfExplanation->text().toStdString(), dateEditDue->text().toStdString(),
+                                           debtStatus);
+        //after registration ensure that you make a mapping between the newly layout that you will create for the debt, and the debtId for editing
+        // or removal later on
+        DraggableDebt* newDebt = new DraggableDebt(registeredId);
+        //append to the end of our vbox
+        this->vbox->addWidget(newDebt);
+    }
+    else{
+        //display the error label with specifying name cannot be blank
+        errLabel->setText("The owed name cannot be blank");
+        errLabel->setVisible(true);
+    }
+}
+void DebtPane::contactCheckSlot(bool checked){
+    cbContactEnabled->setVisible(checked);
+    qDebug() << "Debug: DebtPane checkbox event handling slot has value for tfOwedName as " << tfOwedName;
+    tfOwedName->setVisible(!checked);
 }
 DebtPane::DraggableDebt::DraggableDebt(int debtId, QWidget* parent): QWidget{parent}, debtId{debtId}{
 

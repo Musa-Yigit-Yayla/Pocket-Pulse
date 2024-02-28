@@ -45,7 +45,8 @@ private:
     void initializeDebtPane();
 public slots:
     void addDebtSlot();
-
+    void btRegSlot();
+    void contactCheckSlot(bool checked);
 
 
 
