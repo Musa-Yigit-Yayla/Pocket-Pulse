@@ -11,6 +11,7 @@
 #include <QVariant>
 #include <QString>
 #include <vector>
+#include <QVariant>
 
 class User;
 using namespace std;

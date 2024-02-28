@@ -329,18 +329,31 @@ int MainController::registerDebt(string username, string owedName, int amount, s
         //create the user debts table
         QSqlQuery sq(this->db);
         sq.prepare(QString::fromStdString("CREATE TABLE " + USER_DEBTS_TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, owedName TEXT, amount INTEGER," +
-                                          "explanation TEXT, due_date TEXT, paid_status TEXT, priority INTEGER AUTOINCREMENT);"));
-        sq.exec();
+                                          " explanation TEXT, due_date TEXT, paid_status TEXT, priority INTEGER);"));
+        success = sq.exec();
     }
     QSqlQuery sq(this->db);
-    sq.prepare(QString::fromStdString("INSERT INTO " + USER_DEBTS_TABLE_NAME + " (username, owedName, amount, explanation, due_date, paid_status)" +
-                                      " VALUES(:username, :owedName, :amount, :explanation, :due_date, :paid_status);"));
+    //before inserting the new tuple, retrieve the highest priority number
+    sq.prepare(QString::fromStdString("SELECT MAX(priority) FROM " + USER_DEBTS_TABLE_NAME + ";"));
+    int currPriority = -1;
+    if(sq.exec()){
+        if(sq.next()){
+            currPriority = sq.value(0).toInt() + 1;
+        }
+        else{
+            currPriority = 1; // the very first tuple will be inserted
+        }
+    }
+
+    sq.prepare(QString::fromStdString("INSERT INTO " + USER_DEBTS_TABLE_NAME + " (username, owedName, amount, explanation, due_date, paid_status, priority)" +
+                                      " VALUES(:username, :owedName, :amount, :explanation, :due_date, :paid_status, :priority);"));
     sq.bindValue(":username", QString::fromStdString(username));
     sq.bindValue(":owedName", QString::fromStdString(owedName));
     sq.bindValue(":amount", amount);
     sq.bindValue(":explanation", QString::fromStdString(explanation));
     sq.bindValue(":due_date", QString::fromStdString(due_date));
     sq.bindValue(":paid_status", paid_status);
+    sq.bindValue(":priority", currPriority);
 
     success = sq.exec();
     if(success){
