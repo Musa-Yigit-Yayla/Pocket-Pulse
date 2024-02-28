@@ -46,6 +46,7 @@ void DebtPane::addDebtSlot(){
         this->cbContactName = new QComboBox(popupDebt);
 
         this->errLabel = new QLabel(popupDebt);
+        this->errLabel->setStyleSheet("color: red;");
         errLabel->setVisible(false);
 
         this->dateEditDue = new QDateEdit(popupDebt);
@@ -73,9 +74,10 @@ void DebtPane::addDebtSlot(){
         layout->addWidget(tfExplanation, 3, 1);
         layout->addWidget(labelDate, 4, 0);
         layout->addWidget(dateEditDue, 4, 1);
-        layout->addWidget(cbContactName,0, 2);
+        layout->addWidget(cbContactName,1, 2);
         layout->addWidget(cbContactEnabled, 4, 2);
-        layout->addWidget(btReg, 5, 0, 1, 2);
+        layout->addWidget(errLabel, 5, 0);
+        layout->addWidget(btReg, 6, 0, 1, 2);
 
         //set the event handling procedures
         QObject::connect(btReg, &QPushButton::clicked, this, &DebtPane::btRegSlot);
@@ -89,6 +91,7 @@ void DebtPane::addDebtSlot(){
         tfAmount->clear();
         tfExplanation->clear();
         cbContactName->setCurrentIndex(0);
+        this->errLabel->setVisible(false);
         //ToDo clear and reset the dateEditDue
     }
 
@@ -130,7 +133,7 @@ void DebtPane::btRegSlot(){
     }
 }
 void DebtPane::contactCheckSlot(bool checked){
-    cbContactEnabled->setVisible(checked);
+    cbContactName->setVisible(checked);
     qDebug() << "Debug: DebtPane checkbox event handling slot has value for tfOwedName as " << tfOwedName;
     tfOwedName->setVisible(!checked);
 }
