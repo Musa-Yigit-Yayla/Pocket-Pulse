@@ -367,8 +367,40 @@ int MainController::registerDebt(string username, string owedName, int amount, s
     return registeredId;
 
 }
-vector<vector<QString>> MainController::getAllDebts(string username){
+//selectCurrOnly specifies whether user wants to view only debts with paid status 1 ( current debts)
+//Returns a 2d vector containing all attributes (including id and username) of a tuple in each row
+vector<vector<QVariant>> MainController::getAllDebts(string username, bool selectCurrOnly){
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT * FROM " + USER_DEBTS_TABLE_NAME + " WHERE username = :username;"));
+    sq.bindValue(":username", QString::fromStdString(username));
 
+    vector<vector<QVariant>> result;
+    if(sq.exec()){
+        int columnCount = 8;
+        while(sq.next()){
+            vector<QVariant> currRow;
+            for(int i = 0; i < columnCount; i++){
+                currRow.push_back(sq.value(i));
+            }
+            result.push_back(currRow);
+        }
+    }
+    return result;
+
+}
+//returns all attributes (except debt) in the column declaration order as a vector of QString (notice the first attribute is the username)
+vector<QVariant> MainController::getDebt(int debtId){
+    vector<QVariant> result;
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT * FROM " + USER_DEBTS_TABLE_NAME + " WHERE id = :debtId;"));
+    sq.bindValue(":debtId", debtId);
+
+    if(sq.exec() && sq.next()){
+        int columnCount = 8; //including id
+        for(int i = 1; i < columnCount; i++)
+        result.push_back(sq.value(i));
+    }
+    return result;
 }
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";

@@ -55,8 +55,13 @@ public slots:
     class DraggableDebt: public QWidget{
     private:
         int debtId;
+        int debtPriority;
         QHBoxLayout* hbox = new QHBoxLayout(this);
         QPushButton* btMarkPaid = new QPushButton("Mark as paid", this);
+        QLabel* labelName = nullptr;
+        QLabel* labelAmount = nullptr;
+        QLabel* labelExp = nullptr;
+        QLabel* labelDate = nullptr;
 
     public:
         DraggableDebt(int debtId, QWidget* parent = nullptr);

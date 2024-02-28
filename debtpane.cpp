@@ -152,7 +152,8 @@ void DebtPane::contactCheckSlot(bool checked){
     this->layout->addWidget(selectedWidget, row, column);
 }
 DebtPane::DraggableDebt::DraggableDebt(int debtId, QWidget* parent): QWidget{parent}, debtId{debtId}{
-
+    //retrieve desired debt attributes of the tuple with given debtId
+    this->debtId = debtId;
 }
 void DebtPane::DraggableDebt::mousePressEvent(QMouseEvent* event){
 
