@@ -63,22 +63,24 @@ void DebtPane::addDebtSlot(){
         }
 
         this->btReg = new QPushButton(popupDebt);
+        this->cbContactEnabled->setChecked(true);
 
         //set the layout management
         layout->addWidget(expLabel, 0, 0);
         layout->addWidget(labelOwedName, 1, 0);
-        layout->addWidget(tfOwedName, 1, 1);
+        //layout->addWidget(tfOwedName, 1, 1);
         layout->addWidget(labelAmount, 2, 0);
         layout->addWidget(tfAmount, 2, 1);
         layout->addWidget(labelExp, 3, 0);
         layout->addWidget(tfExplanation, 3, 1);
         layout->addWidget(labelDate, 4, 0);
         layout->addWidget(dateEditDue, 4, 1);
-        layout->addWidget(cbContactName,1, 2);
+        layout->addWidget(cbContactName,1, 1);
         layout->addWidget(cbContactEnabled, 4, 2);
         layout->addWidget(errLabel, 5, 0);
         layout->addWidget(btReg, 6, 0, 1, 2);
 
+        this->tfOwedName->setVisible(false);
         //set the event handling procedures
         QObject::connect(btReg, &QPushButton::clicked, this, &DebtPane::btRegSlot);
 
@@ -134,8 +136,20 @@ void DebtPane::btRegSlot(){
 }
 void DebtPane::contactCheckSlot(bool checked){
     cbContactName->setVisible(checked);
-    qDebug() << "Debug: DebtPane checkbox event handling slot has value for tfOwedName as " << tfOwedName;
+    //qDebug() << "Debug: DebtPane checkbox event handling slot has value for tfOwedName as " << tfOwedName;
     tfOwedName->setVisible(!checked);
+    int row = 1, column = 1;
+    QLayoutItem* item = this->layout->itemAtPosition(1, 1);
+    this->layout->removeItem(item);
+    QWidget* selectedWidget = nullptr;
+    if(checked){
+        selectedWidget = this->cbContactName;
+    }
+    else{
+        selectedWidget = this->tfOwedName;
+
+    }
+    this->layout->addWidget(selectedWidget, row, column);
 }
 DebtPane::DraggableDebt::DraggableDebt(int debtId, QWidget* parent): QWidget{parent}, debtId{debtId}{
 
