@@ -2,6 +2,7 @@
 #include "user.h"
 #include "expensepane.h"
 #include <iostream>
+#include <climits>
 
 using namespace std;
 MainController::MainController(){
@@ -368,7 +369,7 @@ int MainController::registerDebt(string username, string owedName, int amount, s
 
 }
 //selectCurrOnly specifies whether user wants to view only debts with paid status 1 ( current debts)
-//Returns a 2d vector containing all attributes (including id and username) of a tuple in each row
+//Returns a 2d vector containing all attributes (including id and username) in each row
 vector<vector<QVariant>> MainController::getAllDebts(string username, bool selectCurrOnly){
     QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("SELECT * FROM " + USER_DEBTS_TABLE_NAME + " WHERE username = :username;"));
@@ -378,6 +379,9 @@ vector<vector<QVariant>> MainController::getAllDebts(string username, bool selec
     if(sq.exec()){
         int columnCount = 8;
         while(sq.next()){
+            if(selectCurrOnly && sq.value(6).toInt() == 1){
+                continue; //skip the paid debt
+            }
             vector<QVariant> currRow;
             for(int i = 0; i < columnCount; i++){
                 currRow.push_back(sq.value(i));
@@ -402,6 +406,28 @@ vector<QVariant> MainController::getDebt(int debtId){
     }
     return result;
 }
+//Returns INT_MAX if no such debt exists
+int MainController::getDebtPriority(int debtId){
+    int result = INT_MAX;
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT priority FROM " + USER_DEBTS_TABLE_NAME + " WHERE id = :debtId;"));
+    sq.bindValue(":debtId", debtId);
+    if(sq.exec() && sq.next()){
+        result = sq.value(0).toInt();
+    }
+    return result;
+}
+bool MainController::setDebtPriority(int debtId, int debtPriority){
+    bool updated = false;
+
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("UPDATE " + USER_DEBTS_TABLE_NAME + " SET priority = :debtPriority WHERE id = :debtId"));
+    sq.bindValue(":debtId", debtId);
+    sq.bindValue(":debtPriority", debtPriority);
+    updated = sq.exec();
+    return updated;
+}
+
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

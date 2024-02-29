@@ -17,11 +17,11 @@ DebtPane::DebtPane(User* user, QWidget* parent): AbstractPane{user, parent}{
 }
 //private method to initialize the contents of the debts if any exist
 void DebtPane::initializeDebtPane(){
-    //retrieve the debts ordered wrt their categories
+    //retrieve the debts ordered
     MainController mc;
-    /*
-    vector<vector<QString>> existingDebts = mc.getAllDebts(this->user->getUserName());
-    //ToDo*/
+
+    vector<vector<QVariant>> existingDebts = mc.getAllDebts(this->user->getUserName(), true);
+    //ToDo
 }
 void DebtPane::addDebtSlot(){
 
@@ -124,7 +124,8 @@ void DebtPane::btRegSlot(){
                                            debtStatus);
         //after registration ensure that you make a mapping between the newly layout that you will create for the debt, and the debtId for editing
         // or removal later on
-        DraggableDebt* newDebt = new DraggableDebt(registeredId);
+        int debtPriority = mc.getDebtPriority(registeredId);
+        DraggableDebt* newDebt = new DraggableDebt(debtPriority, registeredId);
         //append to the end of our vbox
         this->vbox->addWidget(newDebt);
     }
@@ -151,9 +152,15 @@ void DebtPane::contactCheckSlot(bool checked){
     }
     this->layout->addWidget(selectedWidget, row, column);
 }
-DebtPane::DraggableDebt::DraggableDebt(int debtId, QWidget* parent): QWidget{parent}, debtId{debtId}{
+DebtPane::DraggableDebt::DraggableDebt(int debtId, int debtPriority, QWidget* parent): QWidget{parent}, debtId{debtId}{
     //retrieve desired debt attributes of the tuple with given debtId
     this->debtId = debtId;
+}
+int DebtPane::DraggableDebt::getPriority() const{
+
+}
+void DebtPane::DraggableDebt::setPriority(int debtPriority){
+
 }
 void DebtPane::DraggableDebt::mousePressEvent(QMouseEvent* event){
 

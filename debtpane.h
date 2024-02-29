@@ -64,8 +64,9 @@ public slots:
         QLabel* labelDate = nullptr;
 
     public:
-        DraggableDebt(int debtId, QWidget* parent = nullptr);
-
+        DraggableDebt(int debtId, int debtPriority, QWidget* parent = nullptr);
+        int getPriority() const;
+        void setPriority(int debtPriority);
 
     protected:
         //override and implement some of the mouse related event handling

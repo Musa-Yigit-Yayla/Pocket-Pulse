@@ -52,6 +52,8 @@ public:
     int registerDebt(string username, string owedName, int amount, string explanation, string due_date, int paid_status);
     vector<vector<QVariant>> getAllDebts(string username, bool selectCurrOnly);
     vector<QVariant> getDebt(int debtId);
+    int getDebtPriority(int debtId);
+    bool setDebtPriority(int debtId, int debtPriority);
 
     static const string USER_TABLE_NAME;
     static const string USER_CONTACTS_TABLE_NAME;
