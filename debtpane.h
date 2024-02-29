@@ -9,6 +9,7 @@
 #include <QLineEdit>
 #include <QDateEdit>
 #include <QIntValidator>
+#include <QToolButton>
 #include <QMouseEvent>
 #include <unordered_map>
 
@@ -43,6 +44,7 @@ public:
     DebtPane(User* user, QWidget* parent = nullptr);
 private:
     void initializeDebtPane();
+    inline void setContactComboBox();
 public slots:
     void addDebtSlot();
     void btRegSlot();
@@ -57,14 +59,14 @@ public slots:
         int debtId;
         int debtPriority;
         QHBoxLayout* hbox = new QHBoxLayout(this);
-        QPushButton* btMarkPaid = new QPushButton("Mark as paid", this);
+        QToolButton* btMarkPaid = new QToolButton(this);
         QLabel* labelName = nullptr;
         QLabel* labelAmount = nullptr;
         QLabel* labelExp = nullptr;
         QLabel* labelDate = nullptr;
 
     public:
-        DraggableDebt(int debtId, int debtPriority, QWidget* parent = nullptr);
+        DraggableDebt(int debtId, int debtPriority, QString& owedName, QString& amount, QString& explanation, QString& date, QWidget* parent = nullptr);
         int getPriority() const;
         void setPriority(int debtPriority);
 
@@ -73,6 +75,9 @@ public slots:
         void mousePressEvent(QMouseEvent* event) override;
         void mouseMoveEvent(QMouseEvent* event) override;
         void mouseReleaseEvent(QMouseEvent* event) override;
+
+    protected slots:
+        void markAsPaidSlot();
 
     };
 };

@@ -370,6 +370,7 @@ int MainController::registerDebt(string username, string owedName, int amount, s
 }
 //selectCurrOnly specifies whether user wants to view only debts with paid status 1 ( current debts)
 //Returns a 2d vector containing all attributes (including id and username) in each row
+//The returned vector is sorted wrt debt priorites
 vector<vector<QVariant>> MainController::getAllDebts(string username, bool selectCurrOnly){
     QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("SELECT * FROM " + USER_DEBTS_TABLE_NAME + " WHERE username = :username;"));
@@ -389,6 +390,10 @@ vector<vector<QVariant>> MainController::getAllDebts(string username, bool selec
             result.push_back(currRow);
         }
     }
+
+    //sort the 2d vector by using heap sort
+    //std::make_heap(result.begin(), result.end());
+
     return result;
 
 }

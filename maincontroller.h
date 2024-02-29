@@ -12,6 +12,7 @@
 #include <QString>
 #include <vector>
 #include <QVariant>
+#include <algorithm>
 
 class User;
 using namespace std;

@@ -121,4 +121,3 @@ QHBoxLayout* IncomePane::getIncomeRow(vector<int>& data){
 }
 
 
-

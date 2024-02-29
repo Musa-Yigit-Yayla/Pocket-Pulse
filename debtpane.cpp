@@ -23,6 +23,21 @@ void DebtPane::initializeDebtPane(){
     vector<vector<QVariant>> existingDebts = mc.getAllDebts(this->user->getUserName(), true);
     //ToDo
 }
+inline void DebtPane::setContactComboBox(){
+    //clear the combobox contents
+    this->cbContactName->clear();
+
+    QString noSelection = "-";
+    cbContactName->addItem(noSelection);
+
+    //retrieve the contact names
+    MainController mc;
+    string userName = this->user->getUserName();
+    vector<vector<QString>> contactAttributes = mc.retrieveContacts(userName);
+    for(int i = 0; i < contactAttributes.size(); i++){
+        cbContactName->addItem(contactAttributes.at(i).at(0));
+    }
+}
 void DebtPane::addDebtSlot(){
 
     if(this->popupDebt == NULL){ //this condition implies that each and every popup debt related data field is null hence we initialize them
@@ -51,16 +66,8 @@ void DebtPane::addDebtSlot(){
 
         this->dateEditDue = new QDateEdit(popupDebt);
 
-        QString noSelection = "-";
-        cbContactName->addItem(noSelection);
 
-        //retrieve the contact names
-        MainController mc;
-        string userName = this->user->getUserName();
-        vector<vector<QString>> contactAttributes = mc.retrieveContacts(userName);
-        for(int i = 0; i < contactAttributes.size(); i++){
-            cbContactName->addItem(contactAttributes.at(i).at(0));
-        }
+        this->setContactComboBox();
 
         this->btReg = new QPushButton(popupDebt);
         this->cbContactEnabled->setChecked(true);
@@ -92,7 +99,9 @@ void DebtPane::addDebtSlot(){
         tfOwedName->clear();
         tfAmount->clear();
         tfExplanation->clear();
-        cbContactName->setCurrentIndex(0);
+
+        //Update the contact name combobox since the user may have added new contacts
+        this->setContactComboBox();
         this->errLabel->setVisible(false);
         //ToDo clear and reset the dateEditDue
     }
@@ -125,7 +134,11 @@ void DebtPane::btRegSlot(){
         //after registration ensure that you make a mapping between the newly layout that you will create for the debt, and the debtId for editing
         // or removal later on
         int debtPriority = mc.getDebtPriority(registeredId);
-        DraggableDebt* newDebt = new DraggableDebt(debtPriority, registeredId);
+        QString owedName = QString::fromStdString(givenName);
+        QString owedAmount = tfAmount->text();
+        QString debtExp = tfExplanation->text();
+        QString debtDue = dateEditDue->text();
+        DraggableDebt* newDebt = new DraggableDebt(registeredId, debtPriority, owedName, owedAmount, debtExp, debtDue, this);
         //append to the end of our vbox
         this->vbox->addWidget(newDebt);
     }
@@ -152,15 +165,31 @@ void DebtPane::contactCheckSlot(bool checked){
     }
     this->layout->addWidget(selectedWidget, row, column);
 }
-DebtPane::DraggableDebt::DraggableDebt(int debtId, int debtPriority, QWidget* parent): QWidget{parent}, debtId{debtId}{
+DebtPane::DraggableDebt::DraggableDebt(int debtId, int debtPriority, QString& owedName, QString& amount, QString& explanation, QString& date, QWidget* parent): QWidget{parent}, debtId{debtId}{
     //retrieve desired debt attributes of the tuple with given debtId
     this->debtId = debtId;
+    this->debtPriority = debtPriority;
+    this->btMarkPaid->setText("Mark as paid");
+
+    this->labelName = new QLabel(owedName, this);
+    this->labelAmount = new QLabel(amount, this);
+    this->labelExp = new QLabel(explanation, this);
+    this->labelDate = new QLabel(date, this);
+
+    this->hbox->addWidget(this->labelName);
+    this->hbox->addWidget(this->labelAmount);
+    this->hbox->addWidget(this->labelExp);
+    this->hbox->addWidget(this->labelDate);
+    this->hbox->addWidget(this->btMarkPaid);
+
+
+    QObject::connect(this->btMarkPaid, &QToolButton::clicked, this, &DraggableDebt::markAsPaidSlot);
 }
 int DebtPane::DraggableDebt::getPriority() const{
-
+    return this->debtPriority;
 }
 void DebtPane::DraggableDebt::setPriority(int debtPriority){
-
+    this->debtPriority = debtPriority;
 }
 void DebtPane::DraggableDebt::mousePressEvent(QMouseEvent* event){
 
@@ -169,5 +198,8 @@ void DebtPane::DraggableDebt::mouseMoveEvent(QMouseEvent* event){
 
 }
 void DebtPane::DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
+
+}
+void DebtPane::DraggableDebt::markAsPaidSlot(){
 
 }
