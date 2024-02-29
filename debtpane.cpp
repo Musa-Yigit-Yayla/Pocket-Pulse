@@ -10,7 +10,9 @@ DebtPane::DebtPane(User* user, QWidget* parent): AbstractPane{user, parent}{
 
     //initialize debtpane layout management and child widgets
     this->initializeDebtPane();
-    this->gridPane->addLayout(this->vbox, 0, 0);
+    this->sa->setWidgetResizable(true);
+    this->sa->setLayout(this->vbox);
+    this->gridPane->addWidget(this->sa, 0, 0);
     this->gridPane->addWidget(this->btAddDebt, 1, 0);
 
     QObject::connect(this->btAddDebt, &QPushButton::clicked, this, &DebtPane::addDebtSlot);
@@ -21,7 +23,18 @@ void DebtPane::initializeDebtPane(){
     MainController mc;
 
     vector<vector<QVariant>> existingDebts = mc.getAllDebts(this->user->getUserName(), true);
-    //ToDo
+    for(vector<QVariant> debt: existingDebts){
+        int currDebtId = debt.at(0).toInt();
+        int currDebtPriority = debt.at(1).toInt();
+        QString owedName = debt.at(2).toString();
+        QString owedAmount = debt.at(3).toString();
+        QString owedExp = debt.at(4).toString();
+        QString owedDate = debt.at(5).toString();
+        DraggableDebt* currDebt = new DraggableDebt(currDebtId, currDebtPriority, owedName, owedAmount, owedExp, owedDate, this);
+        this->vbox->addWidget(currDebt);
+    }
+
+
 }
 inline void DebtPane::setContactComboBox(){
     //clear the combobox contents
@@ -170,6 +183,7 @@ DebtPane::DraggableDebt::DraggableDebt(int debtId, int debtPriority, QString& ow
     this->debtId = debtId;
     this->debtPriority = debtPriority;
     this->btMarkPaid->setText("Mark as paid");
+    this->btMarkPaid->setStyleSheet("color: rgb(15, 250, 5");
 
     this->labelName = new QLabel(owedName, this);
     this->labelAmount = new QLabel(amount, this);
@@ -182,6 +196,9 @@ DebtPane::DraggableDebt::DraggableDebt(int debtId, int debtPriority, QString& ow
     this->hbox->addWidget(this->labelDate);
     this->hbox->addWidget(this->btMarkPaid);
 
+    //set hbox color
+    this->setStyleSheet("color: rgb(180, 80, 6);");
+
 
     QObject::connect(this->btMarkPaid, &QToolButton::clicked, this, &DraggableDebt::markAsPaidSlot);
 }
@@ -192,13 +209,13 @@ void DebtPane::DraggableDebt::setPriority(int debtPriority){
     this->debtPriority = debtPriority;
 }
 void DebtPane::DraggableDebt::mousePressEvent(QMouseEvent* event){
-
+    qDebug() << "Debug: DraggableDebt mousePressEvent handler has been invoked";
 }
 void DebtPane::DraggableDebt::mouseMoveEvent(QMouseEvent* event){
-
+    //qDebug() << "Debug: DraggableDebt mouseMoveEvent handler has been invoked";
 }
 void DebtPane::DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
-
+    qDebug() << "Debug: DraggableDebt mousePressEvent handler has been invoked";
 }
 void DebtPane::DraggableDebt::markAsPaidSlot(){
 

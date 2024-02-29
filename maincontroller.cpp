@@ -4,6 +4,24 @@
 #include <iostream>
 #include <climits>
 
+//expects the compared column to have QVariant objects which wrap an int
+struct VariantColumnComparator{
+    int column;
+    bool ascending;
+
+    VariantColumnComparator(int colIndex, bool ascending = false): column{colIndex}, ascending{ascending}{
+
+    }
+    //Perform operator overloading with signature () for providing a functor
+    bool operator()(const vector<QVariant>& v1, const vector<QVariant>& v2) const{
+        bool result = v1.at(column).toInt() < v2.at(column).toInt();
+        if(ascending){
+            result = v1.at(column).toInt() > v2.at(column).toInt();
+        }
+        return result;
+    }
+};
+
 using namespace std;
 MainController::MainController(){
     //Create and establish the database connection
@@ -389,13 +407,12 @@ vector<vector<QVariant>> MainController::getAllDebts(string username, bool selec
             }
             result.push_back(currRow);
         }
+        //sort the 2d vector by using heap sort
+        std::make_heap(result.begin(), result.end(), VariantColumnComparator(columnCount - 1));
+        std::sort_heap(result.begin(), result.end(), VariantColumnComparator(columnCount - 1));
     }
 
-    //sort the 2d vector by using heap sort
-    //std::make_heap(result.begin(), result.end());
-
     return result;
-
 }
 //returns all attributes (except debt) in the column declaration order as a vector of QString (notice the first attribute is the username)
 vector<QVariant> MainController::getDebt(int debtId){

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QScrollArea>
 #include <QPushButton>
 #include <QComboBox>
 #include <QLineEdit>
@@ -20,6 +21,7 @@
 class DebtPane: public AbstractPane{
 private:
     QGridLayout* gridPane = new QGridLayout(this);
+    QScrollArea* sa = new QScrollArea(this);
     QVBoxLayout* vbox = new QVBoxLayout(this);
     QPushButton* btAddDebt = new QPushButton(this);
 
