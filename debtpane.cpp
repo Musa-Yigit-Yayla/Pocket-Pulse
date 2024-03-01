@@ -185,6 +185,11 @@ DebtPane::DraggableDebt::DraggableDebt(int debtId, int debtPriority, QString& ow
     this->btMarkPaid->setText("Mark as paid");
     this->btMarkPaid->setStyleSheet("color: rgb(15, 250, 5");
 
+    this->setMaximumSize(MAX_WIDTH, MAX_HEIGHT);
+
+    //append $ onto amount str
+    amount.append("$");
+
     this->labelName = new QLabel(owedName, this);
     this->labelAmount = new QLabel(amount, this);
     this->labelExp = new QLabel(explanation, this);
@@ -207,16 +212,33 @@ int DebtPane::DraggableDebt::getPriority() const{
 }
 void DebtPane::DraggableDebt::setPriority(int debtPriority){
     this->debtPriority = debtPriority;
+    //Update the value persisted in the database as well
+    //ToDo
 }
 void DebtPane::DraggableDebt::mousePressEvent(QMouseEvent* event){
     qDebug() << "Debug: DraggableDebt mousePressEvent handler has been invoked";
 }
 void DebtPane::DraggableDebt::mouseMoveEvent(QMouseEvent* event){
     //qDebug() << "Debug: DraggableDebt mouseMoveEvent handler has been invoked";
+    QPoint pos = event->pos();
+
+    //event pos represents the centered position hence subtract the offset
+    //pos = pos - MOVE_OFFSET;
+
+    if(event->buttons() & Qt::LeftButton){ //unary and with leftbutton to check whether left button is pressed (among possible other buttons)
+        this->move(pos);
+        event->accept(); //prevent the event from further handling
+    }
+    else{
+        event->ignore();
+    }
+
 }
 void DebtPane::DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
-    qDebug() << "Debug: DraggableDebt mousePressEvent handler has been invoked";
+    qDebug() << "Debug: DraggableDebt mouseReleaseEvent handler has been invoked";
 }
 void DebtPane::DraggableDebt::markAsPaidSlot(){
 
 }
+
+const QPoint DebtPane::DraggableDebt::MOVE_OFFSET(MAX_WIDTH / 2, MAX_HEIGHT / 2);

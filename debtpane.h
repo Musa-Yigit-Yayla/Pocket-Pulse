@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <QWidget>
 #include <QGridLayout>
+#include <QPoint>
 #include <QHBoxLayout>
 #include <QScrollArea>
 #include <QPushButton>
@@ -67,10 +68,16 @@ public slots:
         QLabel* labelExp = nullptr;
         QLabel* labelDate = nullptr;
 
+
+
     public:
         DraggableDebt(int debtId, int debtPriority, QString& owedName, QString& amount, QString& explanation, QString& date, QWidget* parent = nullptr);
         int getPriority() const;
         void setPriority(int debtPriority);
+
+        static const int MAX_WIDTH = 1000;
+        static const int MAX_HEIGHT = 250;
+        static const QPoint MOVE_OFFSET;
 
     protected:
         //override and implement some of the mouse related event handling
