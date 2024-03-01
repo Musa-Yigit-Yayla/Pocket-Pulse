@@ -67,6 +67,7 @@ public slots:
         QLabel* labelAmount = nullptr;
         QLabel* labelExp = nullptr;
         QLabel* labelDate = nullptr;
+        QPoint initialPos;
 
 
 

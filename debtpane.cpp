@@ -202,7 +202,7 @@ DebtPane::DraggableDebt::DraggableDebt(int debtId, int debtPriority, QString& ow
     this->hbox->addWidget(this->btMarkPaid);
 
     //set hbox color
-    this->setStyleSheet("color: rgb(180, 80, 6);");
+    this->setStyleSheet("color: rgb(180, 80, 6); border: 2px solid black;");
 
 
     QObject::connect(this->btMarkPaid, &QToolButton::clicked, this, &DraggableDebt::markAsPaidSlot);
@@ -217,13 +217,18 @@ void DebtPane::DraggableDebt::setPriority(int debtPriority){
 }
 void DebtPane::DraggableDebt::mousePressEvent(QMouseEvent* event){
     qDebug() << "Debug: DraggableDebt mousePressEvent handler has been invoked";
+    //update the initial pos
+    //this->initialPos = this->pos();
+    this->initialPos = this->mapFromGlobal(this->pos());
 }
 void DebtPane::DraggableDebt::mouseMoveEvent(QMouseEvent* event){
-    //qDebug() << "Debug: DraggableDebt mouseMoveEvent handler has been invoked";
-    QPoint pos = event->pos();
+    QPoint pos = event->globalPos();
 
     //event pos represents the centered position hence subtract the offset
-    //pos = pos - MOVE_OFFSET;
+    pos = pos - MOVE_OFFSET;
+
+    //qDebug() << "Debug: DraggableDebt mouseMoveEvent handler has been invoked with pos " << pos;
+    //qDebug() << "Debug: current pos with offset applied yields " << pos - MOVE_OFFSET;
 
     if(event->buttons() & Qt::LeftButton){ //unary and with leftbutton to check whether left button is pressed (among possible other buttons)
         this->move(pos);
@@ -236,6 +241,8 @@ void DebtPane::DraggableDebt::mouseMoveEvent(QMouseEvent* event){
 }
 void DebtPane::DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
     qDebug() << "Debug: DraggableDebt mouseReleaseEvent handler has been invoked";
+
+    //Upon mouse release we should check whether we are in the boundaries of another DraggableDebt instance. If so we update priorities. Else we set back to initial position
 }
 void DebtPane::DraggableDebt::markAsPaidSlot(){
 
