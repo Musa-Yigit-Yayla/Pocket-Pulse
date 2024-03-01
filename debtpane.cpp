@@ -214,12 +214,15 @@ void DebtPane::DraggableDebt::setPriority(int debtPriority){
     this->debtPriority = debtPriority;
     //Update the value persisted in the database as well
     //ToDo
+    //Also Adjust the other draggable debts when applicable
 }
 void DebtPane::DraggableDebt::mousePressEvent(QMouseEvent* event){
     qDebug() << "Debug: DraggableDebt mousePressEvent handler has been invoked";
     //update the initial pos
     //this->initialPos = this->pos();
     this->initialPos = this->mapFromGlobal(this->pos());
+    //invoke mouseMoveEvent
+    this->mouseMoveEvent(event);
 }
 void DebtPane::DraggableDebt::mouseMoveEvent(QMouseEvent* event){
     QPoint pos = event->globalPos();
@@ -243,6 +246,31 @@ void DebtPane::DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
     qDebug() << "Debug: DraggableDebt mouseReleaseEvent handler has been invoked";
 
     //Upon mouse release we should check whether we are in the boundaries of another DraggableDebt instance. If so we update priorities. Else we set back to initial position
+
+    bool updated = false;
+    //Iterate over all DraggableDebt instances persisted within vbox of debtpane
+    DebtPane* debtPane = qobject_cast<DebtPane*>(this->parent());
+    if(debtPane != NULL){
+        for(int i = 0; i < debtPane->vbox->count(); i++){
+            DraggableDebt* currDebt = qobject_cast<DraggableDebt*>(debtPane->vbox->itemAt(i)->widget());
+            if(currDebt != NULL && currDebt != this){
+                //check whether this debt instance contains the event position
+                QPoint eventPoint = event->globalPosition().toPoint();
+                if(currDebt->geometry().contains(eventPoint)){
+                    //swap this debt with currDebt
+                    this->setPriority(currDebt->debtPriority);
+                    updated = true;
+                    break;
+                }
+            }
+        }
+    }
+    qDebug() << "Debug: DraggableDebt::mouseReleaseEvent updated status is " << updated;
+    if(!updated){
+        //return back to initial pos
+        this->move(this->initialPos);
+    }
+
 }
 void DebtPane::DraggableDebt::markAsPaidSlot(){
 
