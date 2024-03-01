@@ -17,6 +17,9 @@ DebtPane::DebtPane(User* user, QWidget* parent): AbstractPane{user, parent}{
 
     QObject::connect(this->btAddDebt, &QPushButton::clicked, this, &DebtPane::addDebtSlot);
 }
+QVBoxLayout*& DebtPane::getVBox(){
+    return this->vbox;
+}
 //private method to initialize the contents of the debts if any exist
 void DebtPane::initializeDebtPane(){
     //retrieve the debts ordered
@@ -178,7 +181,7 @@ void DebtPane::contactCheckSlot(bool checked){
     }
     this->layout->addWidget(selectedWidget, row, column);
 }
-DebtPane::DraggableDebt::DraggableDebt(int debtId, int debtPriority, QString& owedName, QString& amount, QString& explanation, QString& date, QWidget* parent): QWidget{parent}, debtId{debtId}{
+DraggableDebt::DraggableDebt(int debtId, int debtPriority, QString& owedName, QString& amount, QString& explanation, QString& date, QWidget* parent): QWidget{parent}, debtId{debtId}{
     //retrieve desired debt attributes of the tuple with given debtId
     this->debtId = debtId;
     this->debtPriority = debtPriority;
@@ -203,20 +206,18 @@ DebtPane::DraggableDebt::DraggableDebt(int debtId, int debtPriority, QString& ow
 
     //set hbox color
     this->setStyleSheet("color: rgb(180, 80, 6); border: 2px solid black;");
-
-
     QObject::connect(this->btMarkPaid, &QToolButton::clicked, this, &DraggableDebt::markAsPaidSlot);
 }
-int DebtPane::DraggableDebt::getPriority() const{
+int DraggableDebt::getPriority() const{
     return this->debtPriority;
 }
-void DebtPane::DraggableDebt::setPriority(int debtPriority){
+void DraggableDebt::setPriority(int debtPriority){
     this->debtPriority = debtPriority;
     //Update the value persisted in the database as well
     //ToDo
     //Also Adjust the other draggable debts when applicable
 }
-void DebtPane::DraggableDebt::mousePressEvent(QMouseEvent* event){
+void DraggableDebt::mousePressEvent(QMouseEvent* event){
     qDebug() << "Debug: DraggableDebt mousePressEvent handler has been invoked";
     //update the initial pos
     //this->initialPos = this->pos();
@@ -224,7 +225,7 @@ void DebtPane::DraggableDebt::mousePressEvent(QMouseEvent* event){
     //invoke mouseMoveEvent
     this->mouseMoveEvent(event);
 }
-void DebtPane::DraggableDebt::mouseMoveEvent(QMouseEvent* event){
+void DraggableDebt::mouseMoveEvent(QMouseEvent* event){
     QPoint pos = event->globalPos();
 
     //event pos represents the centered position hence subtract the offset
@@ -242,17 +243,19 @@ void DebtPane::DraggableDebt::mouseMoveEvent(QMouseEvent* event){
     }
 
 }
-void DebtPane::DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
+void DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
     qDebug() << "Debug: DraggableDebt mouseReleaseEvent handler has been invoked";
+    qDebug() << "Debug: DraggableWidget's parent's parent widget pointer is " << this->parent()->parent();
 
     //Upon mouse release we should check whether we are in the boundaries of another DraggableDebt instance. If so we update priorities. Else we set back to initial position
 
     bool updated = false;
     //Iterate over all DraggableDebt instances persisted within vbox of debtpane
-    DebtPane* debtPane = qobject_cast<DebtPane*>(this->parent());
+    DebtPane* debtPane = qobject_cast<DebtPane*>(this->parent()->parent()); //direct parent of the DraggableDebts is QScrollArea, hence retrieve its parent
     if(debtPane != NULL){
-        for(int i = 0; i < debtPane->vbox->count(); i++){
-            DraggableDebt* currDebt = qobject_cast<DraggableDebt*>(debtPane->vbox->itemAt(i)->widget());
+        QVBoxLayout* vbox = debtPane->getVBox();
+        for(int i = 0; i < vbox->count(); i++){
+            DraggableDebt* currDebt = qobject_cast<DraggableDebt*>(vbox->itemAt(i)->widget());
             if(currDebt != NULL && currDebt != this){
                 //check whether this debt instance contains the event position
                 QPoint eventPoint = event->globalPosition().toPoint();
@@ -272,8 +275,8 @@ void DebtPane::DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
     }
 
 }
-void DebtPane::DraggableDebt::markAsPaidSlot(){
+void DraggableDebt::markAsPaidSlot(){
 
 }
 
-const QPoint DebtPane::DraggableDebt::MOVE_OFFSET(MAX_WIDTH / 2, MAX_HEIGHT / 2);
+const QPoint DraggableDebt::MOVE_OFFSET(MAX_WIDTH / 2, MAX_HEIGHT / 2);

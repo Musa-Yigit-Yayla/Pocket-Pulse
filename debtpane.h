@@ -20,6 +20,7 @@
 #define DEBTPANE_H
 
 class DebtPane: public AbstractPane{
+Q_OBJECT
 private:
     QGridLayout* gridPane = new QGridLayout(this);
     QScrollArea* sa = new QScrollArea(this);
@@ -45,6 +46,7 @@ private:
 
 public:
     DebtPane(User* user, QWidget* parent = nullptr);
+    QVBoxLayout*& getVBox();
 private:
     void initializeDebtPane();
     inline void setContactComboBox();
@@ -53,43 +55,43 @@ public slots:
     void btRegSlot();
     void contactCheckSlot(bool checked);
 
+};
+
+//Draggable widget which wraps a QHBoxLayout containing information and controls regarding debts
+class DraggableDebt: public QWidget{
+    Q_OBJECT
+private:
+    int debtId;
+    int debtPriority;
+    QHBoxLayout* hbox = new QHBoxLayout(this);
+    QToolButton* btMarkPaid = new QToolButton(this);
+    QLabel* labelName = nullptr;
+    QLabel* labelAmount = nullptr;
+    QLabel* labelExp = nullptr;
+    QLabel* labelDate = nullptr;
+    QPoint initialPos;
 
 
 
-    //Draggable widget which wraps a QHBoxLayout containing information and controls regarding debts
-    class DraggableDebt: public QWidget{
-    private:
-        int debtId;
-        int debtPriority;
-        QHBoxLayout* hbox = new QHBoxLayout(this);
-        QToolButton* btMarkPaid = new QToolButton(this);
-        QLabel* labelName = nullptr;
-        QLabel* labelAmount = nullptr;
-        QLabel* labelExp = nullptr;
-        QLabel* labelDate = nullptr;
-        QPoint initialPos;
+public:
+    DraggableDebt(int debtId, int debtPriority, QString& owedName, QString& amount, QString& explanation, QString& date, QWidget* parent = nullptr);
+    int getPriority() const;
+    void setPriority(int debtPriority);
+
+    static const int MAX_WIDTH = 1000;
+    static const int MAX_HEIGHT = 250;
+    static const QPoint MOVE_OFFSET;
+
+protected:
+    //override and implement some of the mouse related event handling
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+
+protected slots:
+    void markAsPaidSlot();
 
 
-
-    public:
-        DraggableDebt(int debtId, int debtPriority, QString& owedName, QString& amount, QString& explanation, QString& date, QWidget* parent = nullptr);
-        int getPriority() const;
-        void setPriority(int debtPriority);
-
-        static const int MAX_WIDTH = 1000;
-        static const int MAX_HEIGHT = 250;
-        static const QPoint MOVE_OFFSET;
-
-    protected:
-        //override and implement some of the mouse related event handling
-        void mousePressEvent(QMouseEvent* event) override;
-        void mouseMoveEvent(QMouseEvent* event) override;
-        void mouseReleaseEvent(QMouseEvent* event) override;
-
-    protected slots:
-        void markAsPaidSlot();
-
-    };
 };
 
 #endif // DEBTPANE_H
