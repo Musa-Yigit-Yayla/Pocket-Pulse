@@ -70,6 +70,7 @@ private:
     QLabel* labelExp = nullptr;
     QLabel* labelDate = nullptr;
     QPoint initialPos;
+    bool initialPosSet = false;
 
 
 
@@ -81,6 +82,9 @@ public:
     static const int MAX_WIDTH = 1000;
     static const int MAX_HEIGHT = 250;
     static const QPoint MOVE_OFFSET;
+
+private:
+    void setInitialPos(QPoint point);
 
 protected:
     //override and implement some of the mouse related event handling

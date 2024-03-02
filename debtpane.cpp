@@ -157,6 +157,7 @@ void DebtPane::btRegSlot(){
         DraggableDebt* newDebt = new DraggableDebt(registeredId, debtPriority, owedName, owedAmount, debtExp, debtDue, this);
         //append to the end of our vbox
         this->vbox->addWidget(newDebt);
+        //set the debt's initial pos
     }
     else{
         //display the error label with specifying name cannot be blank
@@ -217,11 +218,19 @@ void DraggableDebt::setPriority(int debtPriority){
     //ToDo
     //Also Adjust the other draggable debts when applicable
 }
+void DraggableDebt::setInitialPos(QPoint point){
+    qDebug() << "Debug: DraggableDebt::setInitialPos received point " << point;
+    this->initialPos = point;
+}
 void DraggableDebt::mousePressEvent(QMouseEvent* event){
-    qDebug() << "Debug: DraggableDebt mousePressEvent handler has been invoked";
-    //update the initial pos
-    //this->initialPos = this->pos();
-    this->initialPos = this->mapFromGlobal(this->pos());
+    qDebug() << "Debug: DraggableDebt mousePressEvent handler has been invoked. this->pos() yields " << this->pos() << " mapFromGlobal yields " << this->mapFromGlobal(this->pos());
+    //set the initial pos
+    if(!this->initialPosSet){
+        this->initialPos = this->pos();
+        this->initialPosSet = true;
+    }
+
+
     //invoke mouseMoveEvent
     this->mouseMoveEvent(event);
 }
@@ -246,6 +255,7 @@ void DraggableDebt::mouseMoveEvent(QMouseEvent* event){
 void DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
     qDebug() << "Debug: DraggableDebt mouseReleaseEvent handler has been invoked";
     qDebug() << "Debug: DraggableWidget's parent's parent widget pointer is " << this->parent()->parent();
+    qDebug() << "Debug: DraggableDebt's initial pos is " << this->initialPos;
 
     //Upon mouse release we should check whether we are in the boundaries of another DraggableDebt instance. If so we update priorities. Else we set back to initial position
 
