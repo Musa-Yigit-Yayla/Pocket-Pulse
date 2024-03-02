@@ -39,6 +39,43 @@ void DebtPane::initializeDebtPane(){
 
 
 }
+//Method to be invoked when priority of a draggable debt is altered
+void DebtPane::refreshVBox(){
+    //sort the current draggableDebt instances with respect to their priority (in ascending order) after storing them in a vector with improved bubble sort
+    vector<DraggableDebt*> children;
+
+    for(int i = 0; i < this->vbox->count(); i++){
+        DraggableDebt* currDebt = qobject_cast<DraggableDebt*>(this->vbox->itemAt(i)->widget());
+        if(currDebt != NULL){
+            children.push_back(currDebt);
+        }
+    }
+    for(int i = 0; i < children.size() - 1; i++){
+        bool swapped = false;
+        for(int j = 0; j < children.size() - i - 1; j++){
+            DraggableDebt* curr = children.at(j);
+            DraggableDebt* next = children.at(j + 1);
+            if(next->getPriority() < curr->getPriority()){
+                children.at(j) = next;
+                children.at(j + 1) = curr;
+                swapped = true;
+            }
+        }
+        if(!swapped){
+            //vector is sorted apparently
+            break;
+        }
+    }
+    //clear all elements of the vbox
+    while(vbox->count() > 0){
+        this->vbox->removeItem(this->vbox->itemAt(0));
+    }
+    //reconstruct the vbox by adding widgets back in
+    for(DraggableDebt* debt: children){
+        this->vbox->addWidget(debt);
+        debt->resetInitialPosSet();
+    }
+}
 inline void DebtPane::setContactComboBox(){
     //clear the combobox contents
     this->cbContactName->clear();
@@ -222,6 +259,10 @@ void DraggableDebt::setInitialPos(QPoint point){
     qDebug() << "Debug: DraggableDebt::setInitialPos received point " << point;
     this->initialPos = point;
 }
+//Invoked from refreshVBox of debtpane
+void DraggableDebt::resetInitialPosSet(){
+    this->initialPosSet = false;
+}
 void DraggableDebt::mousePressEvent(QMouseEvent* event){
     qDebug() << "Debug: DraggableDebt mousePressEvent handler has been invoked. this->pos() yields " << this->pos() << " mapFromGlobal yields " << this->mapFromGlobal(this->pos());
     //set the initial pos
@@ -271,7 +312,12 @@ void DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
                 QPoint eventPoint = event->globalPosition().toPoint();
                 if(currDebt->geometry().contains(eventPoint)){
                     //swap this debt with currDebt
+                    int tempPriority = this->debtPriority;
                     this->setPriority(currDebt->debtPriority);
+                    currDebt->setPriority(tempPriority);
+
+                    //refresh the debtPane's vbox
+                    debtPane->refreshVBox();
                     updated = true;
                     break;
                 }

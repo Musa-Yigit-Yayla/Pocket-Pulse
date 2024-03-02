@@ -47,6 +47,7 @@ private:
 public:
     DebtPane(User* user, QWidget* parent = nullptr);
     QVBoxLayout*& getVBox();
+    void refreshVBox();
 private:
     void initializeDebtPane();
     inline void setContactComboBox();
@@ -78,6 +79,7 @@ public:
     DraggableDebt(int debtId, int debtPriority, QString& owedName, QString& amount, QString& explanation, QString& date, QWidget* parent = nullptr);
     int getPriority() const;
     void setPriority(int debtPriority);
+    void resetInitialPosSet();
 
     static const int MAX_WIDTH = 1000;
     static const int MAX_HEIGHT = 250;
