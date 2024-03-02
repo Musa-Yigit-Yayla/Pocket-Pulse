@@ -449,7 +449,16 @@ bool MainController::setDebtPriority(int debtId, int debtPriority){
     updated = sq.exec();
     return updated;
 }
+//Returns true when an unpaid debt is marked as paid in the database
+bool MainController::markDebtAsPaid(int debtId){
+    bool updated = false;
 
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("UPDATE " + USER_DEBTS_TABLE_NAME + " SET paid_status = 1 WHERE id = :debtId AND paid_status = 0;"));
+    sq.bindValue(":debtId", debtId);
+    updated = sq.exec();
+    return updated;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

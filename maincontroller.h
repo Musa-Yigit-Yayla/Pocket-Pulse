@@ -55,6 +55,7 @@ public:
     vector<QVariant> getDebt(int debtId);
     int getDebtPriority(int debtId);
     bool setDebtPriority(int debtId, int debtPriority);
+    bool markDebtAsPaid(int debtId);
 
     static const string USER_TABLE_NAME;
     static const string USER_CONTACTS_TABLE_NAME;

@@ -332,7 +332,18 @@ void DraggableDebt::mouseReleaseEvent(QMouseEvent* event){
 
 }
 void DraggableDebt::markAsPaidSlot(){
+    //remove the widget from the vbox
+    DebtPane* debtPane = qobject_cast<DebtPane*>(this->parent()->parent());
+    if(debtPane != NULL){
 
+        QVBoxLayout* debtVBox = debtPane->getVBox();
+        debtVBox->removeWidget(this);
+        //update this debt's paid satus in the database
+        MainController mc;
+        mc.markDebtAsPaid(this->debtId);
+        //delete this object now as we do not need it visually anymore
+        delete this;
+    }
 }
 
 const QPoint DraggableDebt::MOVE_OFFSET(MAX_WIDTH / 2, MAX_HEIGHT / 2);
