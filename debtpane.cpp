@@ -28,7 +28,7 @@ void DebtPane::initializeDebtPane(){
     vector<vector<QVariant>> existingDebts = mc.getAllDebts(this->user->getUserName(), true);
     for(vector<QVariant> debt: existingDebts){
         int currDebtId = debt.at(0).toInt();
-        int currDebtPriority = debt.at(1).toInt();
+        int currDebtPriority = debt.at(7).toInt();
         QString owedName = debt.at(2).toString();
         QString owedAmount = debt.at(3).toString();
         QString owedExp = debt.at(4).toString();
@@ -252,8 +252,8 @@ int DraggableDebt::getPriority() const{
 void DraggableDebt::setPriority(int debtPriority){
     this->debtPriority = debtPriority;
     //Update the value persisted in the database as well
-    //ToDo
-    //Also Adjust the other draggable debts when applicable
+    MainController mc;
+    mc.setDebtPriority(this->debtId, this->debtPriority);
 }
 void DraggableDebt::setInitialPos(QPoint point){
     qDebug() << "Debug: DraggableDebt::setInitialPos received point " << point;
