@@ -12,6 +12,7 @@
 #include <QDateEdit>
 #include <QIntValidator>
 #include <QToolButton>
+#include <QSpacerItem>
 #include <QMouseEvent>
 #include <unordered_map>
 
@@ -25,7 +26,7 @@ private:
     QGridLayout* gridPane = new QGridLayout(this);
     QScrollArea* sa = new QScrollArea(this);
     QVBoxLayout* vbox = new QVBoxLayout(this);
-    QPushButton* btAddDebt = new QPushButton(this);
+    QPushButton* btAddDebt = new QPushButton("Regiser a debt", this);
 
     //popup pane attributes
     QWidget* popupDebt = nullptr;

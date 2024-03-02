@@ -13,7 +13,17 @@ DebtPane::DebtPane(User* user, QWidget* parent): AbstractPane{user, parent}{
     this->sa->setWidgetResizable(true);
     this->sa->setLayout(this->vbox);
     this->gridPane->addWidget(this->sa, 0, 0);
-    this->gridPane->addWidget(this->btAddDebt, 1, 0);
+
+    const int btAddDebtLength = 200;
+    this->btAddDebt->setMaximumWidth(btAddDebtLength);
+    QSpacerItem* spacer = new QSpacerItem(150, 100, QSizePolicy::Preferred, QSizePolicy::Preferred);
+    QHBoxLayout* hboxBtWrapper = new QHBoxLayout(this);
+    hboxBtWrapper->addSpacerItem(spacer);
+    hboxBtWrapper->addWidget(btAddDebt);
+
+    //this->gridPane->addWidget(this->btAddDebt, 1, 0);
+    this->gridPane->addLayout(hboxBtWrapper, 1, 0);
+
 
     QObject::connect(this->btAddDebt, &QPushButton::clicked, this, &DebtPane::addDebtSlot);
 }
@@ -122,7 +132,7 @@ void DebtPane::addDebtSlot(){
 
         this->setContactComboBox();
 
-        this->btReg = new QPushButton(popupDebt);
+        this->btReg = new QPushButton("Add the debt", popupDebt);
         this->cbContactEnabled->setChecked(true);
 
         //set the layout management
@@ -195,6 +205,10 @@ void DebtPane::btRegSlot(){
         //append to the end of our vbox
         this->vbox->addWidget(newDebt);
         //set the debt's initial pos
+
+        //close the popupdebt
+        this->popupDebt->close();
+
     }
     else{
         //display the error label with specifying name cannot be blank
