@@ -28,6 +28,7 @@ SOURCES += \
     contactspane.cpp \
     debtpane.cpp \
     expensepane.cpp \
+    fingoalpane.cpp \
     incomepane.cpp \
     loginscreen.cpp \
     main.cpp \
@@ -46,6 +47,7 @@ HEADERS += \
     contactspane.h \
     debtpane.h \
     expensepane.h \
+    fingoalpane.h \
     incomepane.h \
     loginscreen.h \
     maincontroller.h \
