@@ -267,6 +267,27 @@ bool MainController::registerUserMonthlyGoals(string username, int month, int ye
     }
     return success;
 }
+vector<int> MainController::getUserMonthlyGoals(string username, int month, int year){
+    vector<int> result;
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT * FROM " + USER_CONTACTS_TABLE_NAME + " WHERE user_name = :username AND month = :month AND year = :year;"));
+    sq.bindValue(":username", QString::fromStdString(username));
+    sq.bindValue(":month", month);
+    sq.bindValue(":year", year);
+
+    if(sq.exec() && sq.next()){
+        int startIndex = 3;
+        int counter = 0;
+        while(counter < (int)ExpensePane::EXPENSE_CATEGORIES::count){
+            int currIndex = startIndex + counter;
+            int currExpenseLimit = sq.value(currIndex).toInt();
+            result.push_back(currExpenseLimit);
+            counter++;
+        }
+    }
+
+    return result;
+}
 bool MainController::createUserContactsTable(){
     bool success = false;
 

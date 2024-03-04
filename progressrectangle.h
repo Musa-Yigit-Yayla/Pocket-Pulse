@@ -4,6 +4,7 @@
 #include <QVBoxLayout>
 #include <string>
 #include <QString>
+#include <QPainter>
 
 #ifndef PROGRESSRECTANGLE_H
 #define PROGRESSRECTANGLE_H
@@ -15,13 +16,11 @@ private:
     int width;
     double fillRatio;
 
-    QVBoxLayout* vbox = new QVBoxLayout(this); //vbox to contain the rectangles
-    QRect* upperRect = nullptr;
-    QRect* lowerRect = nullptr;
 public:
     ProgressRectangle(const int width, const int height, const double fillRatio, QWidget* parent = nullptr);
     void redraw(const double fillRatio);
-    static int* getFillRatioRGB(const double fillRatio);
+    static QColor getFillRatioRGB(const double fillRatio);
+    void paintEvent(QPaintEvent* event) override;
 };
 
 #endif // PROGRESSRECTANGLE_H

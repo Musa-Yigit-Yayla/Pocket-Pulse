@@ -1,6 +1,17 @@
 #include "fingoalpane.h"
+#include "maincontroller.h"
 
 FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent}{
+    //retrieve the date of today
+    QDate currTime = QDateTime::currentDateTime().date();
+    int month = currTime.month();
+    int year = currTime.year();
+
+    //retrieve the financial goals registered for this month
+    MainController mc;
+    vector<int> spenditures = mc.getUserMonthlyGoals(this->user->getUserName(), month, year);
+    this->setTransactionsGrid();
+
     //allocate the rectangles and fill the rect array
     for(int i = 0; i < this->RECTS_LENGTH; i++){
         QRect* newRect = new QRect();
@@ -8,6 +19,12 @@ FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent
         //this->spenditureRects[i] = new ProgressRectangle(this->RECT_WIDTH, this->RECT_HEIGHT);
     }
     this->redrawRectangles();
+}
+void FingoalPane::setRectGrid(){
+
+}
+void FingoalPane::setTransactionsGrid(){
+
 }
 FingoalPane::~FingoalPane(){
     //deallocate dynamically allocated rectangles and the container array
