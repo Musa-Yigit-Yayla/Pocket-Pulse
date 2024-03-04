@@ -31,8 +31,8 @@ public:
 
     static void paintProgressRect(QRect& rect, double successRatio);
 private:
-    void setRectGrid();
-    void setTransactionsGrid();
+    void setRectGrid(vector<vector<QVariant>>& transactions);
+    void setTransactionsGrid(vector<vector<QVariant>>& transactions, vector<int>& spenditureGoals);
 
 };
 

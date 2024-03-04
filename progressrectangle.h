@@ -17,9 +17,9 @@ private:
     double fillRatio;
 
 public:
-    ProgressRectangle(const int width, const int height, const double fillRatio, QWidget* parent = nullptr);
-    void redraw(const double fillRatio);
-    static QColor getFillRatioRGB(const double fillRatio);
+    ProgressRectangle(const int width, const int height, double fillRatio, QWidget* parent = nullptr);
+    void redraw(double fillRatio);
+    static QColor getFillRatioRGB(double fillRatio);
     void paintEvent(QPaintEvent* event) override;
 };
 

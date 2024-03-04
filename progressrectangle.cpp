@@ -2,16 +2,29 @@
 
 using namespace std;
 //Fill ratio lies between [0, 1]
-ProgressRectangle::ProgressRectangle(const int width, const int height, const double fillRatio, QWidget* parent): QWidget{parent}{
+ProgressRectangle::ProgressRectangle(const int width, const int height, double fillRatio, QWidget* parent): QWidget{parent}{
     this->width = width;
     this->height = height;
+    if(fillRatio < 0){
+        fillRatio = 0.0;
+    }
+    else if(fillRatio > 1){
+        fillRatio = 1.0;
+    }
+
     this->fillRatio = fillRatio;
 
     this->setFixedSize(this->width, this->height);
-
+    this->redraw(this->fillRatio);
 }
-void ProgressRectangle::redraw(const double fillRatio){
-    this->fillRatio = this->fillRatio;
+void ProgressRectangle::redraw(double fillRatio){
+    if(fillRatio < 0){
+        fillRatio = 0.0;
+    }
+    else if(fillRatio > 1){
+        fillRatio = 1.0;
+    }
+    this->fillRatio = fillRatio;
     this->update();
 }
 /**
@@ -21,7 +34,14 @@ void ProgressRectangle::redraw(const double fillRatio){
  * @param fillRatio [0, 1]
  * @return Returns a QColor
  */
-QColor ProgressRectangle::getFillRatioRGB(const double fillRatio){
+QColor ProgressRectangle::getFillRatioRGB(double fillRatio){
+    if(fillRatio < 0){
+        fillRatio = 0.0;
+    }
+    else if(fillRatio > 1){
+        fillRatio = 1.0;
+    }
+
     //set blue value to 0
     int r = 255 * fillRatio;
     int g = 255 - r;

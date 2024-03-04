@@ -182,6 +182,32 @@ vector<vector<int>> BankingController::retrieveIncome(const string username){
     }
     return result;
 }
+vector<vector<QVariant>> BankingController::getSpentTransactions(const int userId, const int month, const int year){
+    vector<vector<QVariant>> result;
+    QSqlQuery sq(this->db);
+
+    string datePattern0 = to_string(month) + "/_/" + to_string(year);
+    string datePattern1 = to_string(month) + "/__/" + to_string(year);
+    sq.prepare(QString::fromStdString("SELECT * FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND (date = :pattern0 OR date = :pattern1);"));
+    sq.bindValue(":userId", userId);
+    sq.bindValue(":pattern0", QString::fromStdString(datePattern0));
+    sq.bindValue(":pattern1", QString::fromStdString(datePattern1));
+
+    if(sq.exec() && sq.next()){
+        int columnCount = 6;
+        //do while for fun :)
+        do{
+
+            vector<QVariant> currRow;
+            //insert all data for possible usage of any of them
+            for(int i = 0; i < columnCount; i++){
+                currRow.push_back(sq.value(i));
+            }
+            result.push_back(currRow);
+        }while(sq.next());
+    }
+    return result;
+}
 
 //Receives a date string in the format m/d/y
 //Returns a vector containing {month, day, year} as int
