@@ -34,6 +34,7 @@ SOURCES += \
     main.cpp \
     maincontroller.cpp \
     networkcontroller.cpp \
+    progressrectangle.cpp \
     registerscreen.cpp \
     savecodepane.cpp \
     user.cpp
@@ -53,6 +54,7 @@ HEADERS += \
     maincontroller.h \
     mainscreen.h \
     networkcontroller.h \
+    progressrectangle.h \
     registerscreen.h \
     savecodepane.h \
     user.h

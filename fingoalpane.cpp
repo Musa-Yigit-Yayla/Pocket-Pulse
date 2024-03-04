@@ -5,7 +5,7 @@ FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent
     for(int i = 0; i < this->RECTS_LENGTH; i++){
         QRect* newRect = new QRect();
         newRect->setSize(QSize(this->RECT_WIDTH, this->RECT_HEIGHT));
-        this->spenditureRects[i] = newRect;
+        //this->spenditureRects[i] = new ProgressRectangle(this->RECT_WIDTH, this->RECT_HEIGHT);
     }
     this->redrawRectangles();
 }
