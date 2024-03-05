@@ -12,10 +12,10 @@ FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent
     MainController mc;
     BankingController bc;
     vector<int> spenditureGoals = mc.getUserMonthlyGoals(this->user->getUserName(), month, year);
-    int userId = mc.getUserId(this->user->getUserName());
-    vector<vector<QVariant>> transactions = bc.getSpentTransactions(userId, month, year); //all columns are returned
+    //int userId = mc.getUserId(this->user->getUserName());
+    //vector<vector<QVariant>> transactions = bc.getSpentTransactions(userId, month, year); //all columns are returned
 
-    this->setTransactionsGrid(transactions);
+    this->setTransactionsGrid();
     this->setRectGrid(spenditureGoals);
 
 }
@@ -50,9 +50,11 @@ void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
         }
         this->spenditureRects[i] = currRect;
     }
-    this->redrawRectangles();
+    //this->redrawRectangles();
+
+    //Now wrap each rectangle in a widget which contains necessary labels and add them into the rectGrid
 }
-void FingoalPane::setTransactionsGrid(vector<vector<QVariant>>& transactions){
+void FingoalPane::setTransactionsGrid(){
     //initialize the contents of the combobox
     QList<QString> categories = {"All", "Health", "Education", "Market/Grocery", "Entertainment", "Vehicle & Petrol", "Fees", "Other"}; //all specifies select all transactions
     this->cbTransactionCategory->addItems(QStringList::fromVector(categories));
@@ -61,6 +63,11 @@ void FingoalPane::setTransactionsGrid(vector<vector<QVariant>>& transactions){
     expLabel->setStyleSheet("font-size: 16px;");
     this->transactionsGrid->addWidget(expLabel, 0, 0);
     this->transactionsGrid->addWidget(this->cbTransactionCategory, 0, 1);
+
+    //set the scroll area
+    this->transactionSA->setLayout(this->transactionsVBox);
+    this->transactionSA->setWidgetResizable(true);
+    this->transactionsGrid->addWidget(this->transactionSA);
 
 
     QObject::connect(this->cbTransactionCategory, &QComboBox::currentIndexChanged, this, &FingoalPane::cbTransactionSlot);
@@ -75,7 +82,7 @@ void FingoalPane::setTransactionsGrid(vector<vector<QVariant>>& transactions){
     delete[] this->spenditureRects;
 }*/
 void FingoalPane::redrawRectangles(){
-
+    //rectangles are already instantiated, hence just redraw by changing the fill ratios
 }
 //Draw the given rectangle to display progress of the attribıute represented by it
 //successRatio must be a floating point number [0, 1]. 0 indicates no progress (full green), 1 indicates full capacity (full red)
@@ -83,5 +90,39 @@ void FingoalPane::paintProgressRect(QRect& rect, double successRatio){
 
 }
 void FingoalPane::cbTransactionSlot(int index){
+    QDate currTime = QDateTime::currentDateTime().date();
+    int month = currTime.month();
+    int year = currTime.year();
 
+    MainController mc;
+    BankingController bc;
+
+    int userId = mc.getUserId(this->user->getUserName());
+    vector<vector<QVariant>> transactions = bc.getSpentTransactions(userId, month, year, index); //index stands for the category
+
+    //remove the current content of the vbox
+    while(this->transactionsVBox->count() > 0){
+        QLayoutItem* item = this->transactionsVBox->takeAt(0);
+        delete item;
+    }
+
+    for(vector<QVariant> currTransaction: transactions){
+        //recall that transaction vector holds all columns, use the ones you need
+        QHBoxLayout* hbox = new QHBoxLayout();
+
+        int receiverId = currTransaction.at(2).toInt();
+        QLabel* sentNameLabel = new QLabel(QString::fromStdString(bc.getAccountAttribute(receiverId, BankingController::ACCOUNT_ATTRIBUTES::FIRST_NAME) + " " +
+                                                            bc.getAccountAttribute(receiverId, BankingController::ACCOUNT_ATTRIBUTES::LAST_NAME)));
+        QLabel* amountLabel = new QLabel(currTransaction.at(3).toString());
+        int category = currTransaction.at(4).toInt();
+        QLabel* categoryLabel = new QLabel(this->cbTransactionCategory->itemText(category));
+        QLabel* dateLabel = new QLabel(currTransaction.at(5).toString());
+
+        hbox->addWidget(sentNameLabel);
+        hbox->addWidget(amountLabel);
+        hbox->addWidget(categoryLabel);
+        hbox->addWidget(dateLabel);
+
+        this->transactionsVBox->addLayout(hbox);
+    }
 }

@@ -24,7 +24,7 @@ private:
     QGridLayout* rectGrid = new QGridLayout(this); //gridpane to contain the rectangular spenditure views
     QGridLayout* transactionsGrid = new QGridLayout(this); //gridPane to contain sent transactions for this month
     QScrollArea* transactionSA = new QScrollArea(this);
-    QVBoxLayout* transactionsVBox = new QVBoxLayout(this);
+    QVBoxLayout* transactionsVBox = new QVBoxLayout(this->transactionSA);
     QComboBox* cbTransactionCategory = new QComboBox(this);
 
 
@@ -42,7 +42,7 @@ public:
     static void paintProgressRect(QRect& rect, double successRatio);
 private:
     void setRectGrid(vector<int>& spenditureGoals);
-    void setTransactionsGrid(vector<vector<QVariant>>& transactions);
+    void setTransactionsGrid();
 public slots:
     void cbTransactionSlot(int index);
 
