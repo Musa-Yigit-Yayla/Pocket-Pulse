@@ -182,13 +182,26 @@ vector<vector<int>> BankingController::retrieveIncome(const string username){
     }
     return result;
 }
-vector<vector<QVariant>> BankingController::getSpentTransactions(const int userId, const int month, const int year){
+//Category 0 specifies select all transactions
+//Returned transactions are sorted wrt date of transaction
+vector<vector<QVariant>> BankingController::getSpentTransactions(const int userId, const int month, const int year, int category = 0){
     vector<vector<QVariant>> result;
     QSqlQuery sq(this->db);
 
     string datePattern0 = to_string(month) + "/_/" + to_string(year);
     string datePattern1 = to_string(month) + "/__/" + to_string(year);
-    sq.prepare(QString::fromStdString("SELECT * FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND (date = :pattern0 OR date = :pattern1);"));
+
+    if(category == 0){
+        sq.prepare(QString::fromStdString("SELECT * FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND (date = :pattern0 OR date = :pattern1)"
+                                                                                      " ORDER BY date DESC;"));
+    }
+    else{
+        //select from the specified category
+        sq.prepare(QString::fromStdString("SELECT * FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND category = :category AND (date = :pattern0 OR date = :pattern1)"
+                                                                                      " ORDER BY date DESC;"));
+        sq.bindValue(":category", category);
+    }
+
     sq.bindValue(":userId", userId);
     sq.bindValue(":pattern0", QString::fromStdString(datePattern0));
     sq.bindValue(":pattern1", QString::fromStdString(datePattern1));
@@ -206,6 +219,8 @@ vector<vector<QVariant>> BankingController::getSpentTransactions(const int userI
             result.push_back(currRow);
         }while(sq.next());
     }
+
+
     return result;
 }
 int BankingController::sumSentTransactions(int userId, int category){

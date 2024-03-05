@@ -37,7 +37,7 @@ public:
     vector<vector<string>> getPastTransactions(int accountId);
     vector<string> getFullNameByAccId(int accountId);
     vector<vector<int>> retrieveIncome(const string username);
-    vector<vector<QVariant>> getSpentTransactions(const int userId, const int month, const int year);
+    vector<vector<QVariant>> getSpentTransactions(const int userId, const int month, const int year, int category);
     int sumSentTransactions(int userId, int category);
 
     static inline vector<int> splitDate(const string givenDate);
