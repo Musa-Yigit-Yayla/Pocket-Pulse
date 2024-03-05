@@ -208,7 +208,19 @@ vector<vector<QVariant>> BankingController::getSpentTransactions(const int userI
     }
     return result;
 }
+int BankingController::sumSentTransactions(int userId, int category){
+    int result;
+    //use aggregate sum to retrieve the total sum of sent transactions by their category
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT SUM(amount) AS result FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND category = :category;"));
+    sq.bindValue(":userId", userId);
+    sq.bindValue(":category", category);
 
+    if(sq.exec() && sq.next()){
+        result = sq.value(0).toDouble(); //auto cast to int
+    }
+    return result;
+}
 //Receives a date string in the format m/d/y
 //Returns a vector containing {month, day, year} as int
 inline vector<int> BankingController::splitDate(const string givenDate){

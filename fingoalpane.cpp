@@ -15,20 +15,33 @@ FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent
     int userId = mc.getUserId(this->user->getUserName());
     vector<vector<QVariant>> transactions = bc.getSpentTransactions(userId, month, year); //all columns are returned
 
-    this->setTransactionsGrid(transactions, spenditureGoals);
-    this->setRectGrid(transactions);
+    this->setTransactionsGrid(transactions);
+    this->setRectGrid(transactions, spenditureGoals);
 
 }
-void FingoalPane::setRectGrid(vector<vector<QVariant>>& transactions){
+void FingoalPane::setRectGrid(vector<vector<QVariant>>& transactions, vector<int>& spenditureGoals){
     //allocate the rectangles and fill the rect array
+    BankingController bc;
+    MainController mc;
+
+    double spenditureGoalsSum = 0;
+    double transactionsSum = 0;
     for(int i = 0; i < this->RECTS_LENGTH; i++){
-        QRect* newRect = new QRect();
-        newRect->setSize(QSize(this->RECT_WIDTH, this->RECT_HEIGHT));
-        //this->spenditureRects[i] = new ProgressRectangle(this->RECT_WIDTH, this->RECT_HEIGHT);
+        double currFillRatio;
+        ProgressRectangle* currRect = nullptr;
+        if(i != 7){ //the regular case of calculating transactions wrt their category
+            int userId = mc.getUserId(this->user->getUserName());
+            currFillRatio = bc.sumSentTransactions(userId, i); //i stands for the current category of sent transactions
+            currRect = new ProgressRectangle(RECT_WIDTH, RECT_HEIGHT, currFillRatio);
+        }
+        else{
+            //the special case where we instantiate the total sum rectangle
+        }
+
     }
     this->redrawRectangles();
 }
-void FingoalPane::setTransactionsGrid(vector<vector<QVariant>>& transactions, vector<int>& spenditureGoals){
+void FingoalPane::setTransactionsGrid(vector<vector<QVariant>>& transactions){
 
 }
 FingoalPane::~FingoalPane(){
