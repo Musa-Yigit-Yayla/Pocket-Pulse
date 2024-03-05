@@ -209,7 +209,7 @@ vector<vector<QVariant>> BankingController::getSpentTransactions(const int userI
     return result;
 }
 int BankingController::sumSentTransactions(int userId, int category){
-    int result;
+    int result = 0;
     //use aggregate sum to retrieve the total sum of sent transactions by their category
     QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("SELECT SUM(amount) AS result FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND category = :category;"));
