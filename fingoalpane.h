@@ -40,12 +40,11 @@ public:
     void redrawRectangles();
 
     static void paintProgressRect(QRect& rect, double successRatio);
+    static const vector<const QString*> CATEGORY_NAMES;
 private:
     void setRectGrid(vector<int>& spenditureGoals);
     void setTransactionsGrid();
 public slots:
     void cbTransactionSlot(int index);
-
 };
-
 #endif // FINGOALPANE_H

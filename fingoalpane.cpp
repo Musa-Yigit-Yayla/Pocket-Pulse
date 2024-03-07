@@ -26,26 +26,35 @@ void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
             spenditureGoals.push_back(i);
         }
     }
+    QDate currTime = QDateTime::currentDateTime().date();
+    int month = currTime.month();
+    int year = currTime.year();
 
     //allocate the rectangles and fill the rect array
     BankingController bc;
     MainController mc;
 
-    double spenditureGoalsSum = 0;
-    double transactionsSum = 0;
+    int userId = mc.getUserId(this->user->getUserName());
+
+    int spenditureGoalsSum = 0;
+    int transactionsSum = 0;
     for(int i = 0; i < this->RECTS_LENGTH; i++){
         double currFillRatio;
         ProgressRectangle* currRect = nullptr;
+        QString labelTopStr;
+        QString labelBottomStr;
         if(i != 7){ //the regular case of calculating transactions wrt their category
-            int userId = mc.getUserId(this->user->getUserName());
-            double currSum = bc.sumSentTransactions(userId, i);
-            double currGoal = spenditureGoals.at(i);
+
+            int currSum = bc.sumSentTransactions(userId, i, month, year);
+            int currGoal = spenditureGoals.at(i);
             if(currSum == 0){
                 currFillRatio = 0;
             }
             else{
                 currFillRatio = currGoal / currSum;
             }
+            labelTopStr = QString::fromStdString(to_string(currSum) + "/" + to_string(currSum));
+            labelBottomStr = *FingoalPane::CATEGORY_NAMES.at(i);
             currRect = new ProgressRectangle(RECT_WIDTH, RECT_HEIGHT, currFillRatio, this);
             transactionsSum += currSum;
             spenditureGoalsSum += currGoal;
@@ -58,13 +67,26 @@ void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
             else{
                 currFillRatio = transactionsSum / spenditureGoalsSum;
             }
+            labelTopStr = QString::fromStdString(to_string(transactionsSum) + "/" + to_string(spenditureGoalsSum));
+            labelBottomStr = "Total";
             currRect = new ProgressRectangle(RECT_WIDTH, RECT_HEIGHT, currFillRatio, this);
         }
         this->spenditureRects[i] = currRect;
-    }
-    //this->redrawRectangles();
+        //wrap the curr progress rectangle into the widget and add it to the transactions grid
 
-    //Now wrap each rectangle in a widget which contains necessary labels and add them into the rectGrid
+        QWidget* wrapper = new QWidget(this); //widget which will have our currRect wrapped
+        QVBoxLayout* currVBox = new QVBoxLayout(wrapper);
+        QLabel* labelTop = new QLabel(labelTopStr, wrapper);
+        QLabel* labelBottom = new QLabel(labelBottomStr, wrapper);
+
+        currVBox->addWidget(labelTop);
+        currVBox->addWidget(currRect);
+        currVBox->addWidget(labelBottom);
+        wrapper->setLayout(currVBox);
+
+        int rowIndex = i / 4, columnIndex = i % 4;
+        this->rectGrid->addWidget(wrapper, rowIndex, columnIndex);
+    }
 }
 void FingoalPane::setTransactionsGrid(){
     //initialize the contents of the combobox
@@ -95,6 +117,8 @@ void FingoalPane::setTransactionsGrid(){
 }*/
 void FingoalPane::redrawRectangles(){
     //rectangles are already instantiated, hence just redraw by changing the fill ratios
+
+
 }
 //Draw the given rectangle to display progress of the attribıute represented by it
 //successRatio must be a floating point number [0, 1]. 0 indicates no progress (full green), 1 indicates full capacity (full red)
@@ -138,3 +162,6 @@ void FingoalPane::cbTransactionSlot(int index){
         this->transactionsVBox->addLayout(hbox);
     }
 }
+const vector<const QString*> FingoalPane::CATEGORY_NAMES = {new QString("Health"), new QString("Education"), new QString("Market/Grocery"),
+                                                             new QString("Entertainment"), new QString("Vehicle/Fuel"), new QString("Fees"),
+                                                             new QString("Other")};

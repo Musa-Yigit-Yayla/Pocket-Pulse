@@ -223,11 +223,22 @@ vector<vector<QVariant>> BankingController::getSpentTransactions(const int userI
 
     return result;
 }
-int BankingController::sumSentTransactions(int userId, int category){
+//When month and year is not specified, all of the transactions with the given category regardless of transaction dates will be summed and returned
+int BankingController::sumSentTransactions(int userId, int category, int month, int year){
     int result = 0;
     //use aggregate sum to retrieve the total sum of sent transactions by their category
     QSqlQuery sq(this->db);
-    sq.prepare(QString::fromStdString("SELECT SUM(amount) AS result FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND category = :category;"));
+    if(month == -1 && year == -1){
+        sq.prepare(QString::fromStdString("SELECT SUM(amount) AS result FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND category = :category;"));
+    }
+    else{
+        QString datePattern = QString::fromStdString(":" + to_string(month) + "/_%/" + to_string(month));
+        sq.prepare(QString::fromStdString("SELECT SUM(amount) AS result FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND category = :category "
+                                                                                                          "AND date LIKE ':datePattern;"));
+        sq.bindValue(":month", month);
+        sq.bindValue(":year", year);
+        sq.bindValue(":datePattern", datePattern);
+    }
     sq.bindValue(":userId", userId);
     sq.bindValue(":category", category);
 
