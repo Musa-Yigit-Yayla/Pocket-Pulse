@@ -20,6 +20,13 @@ FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent
 
 }
 void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
+    //If the given spenditureGoals vector is empty, we should construct one containing all 0s
+    if(spenditureGoals.size() == 0){
+        for(int i = 0; i < this->RECTS_LENGTH; i++){
+            spenditureGoals.push_back(i);
+        }
+    }
+
     //allocate the rectangles and fill the rect array
     BankingController bc;
     MainController mc;
@@ -33,7 +40,12 @@ void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
             int userId = mc.getUserId(this->user->getUserName());
             double currSum = bc.sumSentTransactions(userId, i);
             double currGoal = spenditureGoals.at(i);
-            currFillRatio = currGoal / currSum; //i stands for the current category of sent transactions
+            if(currSum == 0){
+                currFillRatio = 0;
+            }
+            else{
+                currFillRatio = currGoal / currSum;
+            }
             currRect = new ProgressRectangle(RECT_WIDTH, RECT_HEIGHT, currFillRatio, this);
             transactionsSum += currSum;
             spenditureGoalsSum += currGoal;
