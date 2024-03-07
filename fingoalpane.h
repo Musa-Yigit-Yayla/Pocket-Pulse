@@ -29,6 +29,11 @@ private:
     QVBoxLayout* transactionsVBox = new QVBoxLayout(this->transactionSA);
     QComboBox* cbTransactionCategory = new QComboBox(this);
 
+    QGridLayout* financialGoalsGrid = new QGridLayout(this);
+    QHBoxLayout* hboxGoalHeader = new QHBoxLayout(this);
+    QLabel* labelGoal = new QLabel("Financial Goals", this);
+    QVBoxLayout* vboxGoals = new QVBoxLayout(this);
+
 
     const int RECTS_LENGTH = 8;
     ProgressRectangle** spenditureRects = new ProgressRectangle*[RECTS_LENGTH];
@@ -40,12 +45,14 @@ public:
     FingoalPane(User* user, QWidget* parent = nullptr);
     //~FingoalPane();
     void redrawRectangles();
+    void refreshFinancialGoals();
 
     static void paintProgressRect(QRect& rect, double successRatio);
     static const vector<const QString*> CATEGORY_NAMES;
 private:
     void setRectGrid(vector<int>& spenditureGoals);
     void setTransactionsGrid();
+    void setFinancialGoalsGrid();
 public slots:
     void cbTransactionSlot(int index);
 };

@@ -1,5 +1,6 @@
 #include "fingoalpane.h"
 #include "maincontroller.h"
+#include "mainscreen.h"
 #include "bankingcontroller.h"
 
 FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent}{
@@ -18,11 +19,26 @@ FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent
 
     this->setTransactionsGrid();
     this->setRectGrid(spenditureGoals);
+    this->setFinancialGoalsGrid();
 
-    this->gridPane->addLayout(this->rectGrid, 0, 0); //change the indexing later on
-    this->gridPane->addLayout(this->transactionsGrid, 0, 1);
+    this->gridPane->addLayout(this->financialGoalsGrid, 0, 0);
+    this->gridPane->addLayout(this->rectGrid, 1, 0); //change the indexing later on
+    this->gridPane->addLayout(this->transactionsGrid, 1, 1);
     qDebug() << "Debug: FingoalPane constructor is about to return to the caller";
 
+}
+void FingoalPane::setFinancialGoalsGrid(){
+    QLabel* goalIconLabel = new QLabel(this);
+    QString imgPath = QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + "\\icons2.png");
+    QImage img(imgPath);
+    QPixmap pixmap = QPixmap::fromImage(img);
+    goalIconLabel->setPixmap(pixmap);
+
+    //add the labels into the hbox for financial goals' header
+    this->hboxGoalHeader->addWidget(goalIconLabel);
+    this->hboxGoalHeader->addWidget(this->labelGoal);
+    this->financialGoalsGrid->addLayout(this->hboxGoalHeader, 0, 0);
+    //Proceed
 }
 void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
     //If the given spenditureGoals vector is empty, we should construct one containing all 0s
@@ -120,11 +136,15 @@ void FingoalPane::setTransactionsGrid(){
     }
     delete[] this->spenditureRects;
 }*/
+void FingoalPane::refreshFinancialGoals(){
+
+}
 void FingoalPane::redrawRectangles(){
     //rectangles are already instantiated, hence just redraw by changing the fill ratios
 
 
 }
+
 //Draw the given rectangle to display progress of the attribıute represented by it
 //successRatio must be a floating point number [0, 1]. 0 indicates no progress (full green), 1 indicates full capacity (full red)
 void FingoalPane::paintProgressRect(QRect& rect, double successRatio){

@@ -480,6 +480,20 @@ bool MainController::markDebtAsPaid(int debtId){
     updated = sq.exec();
     return updated;
 }
+bool MainController::registerFinancialGoal(int userId, string explanation, string dateOfCreation){
+    bool created = false;
+    QSqlQuery sq;
+    if(!this->tableExists(FINANCIAL_GOALS_TABLE_NAME)){
+        //create the financial goals table
+        sq.prepare(QString::fromStdString("CREATE TABLE " + FINANCIAL_GOALS_TABLE_NAME + " ID INTEGER PRIMARY KEY AUTOINCREMENT, userID INTEGER, "
+                                                                                         "explanation TEXT, date TEXT, status INTEGER;"));
+        sq.exec();
+    }
+    sq.prepare(QString::fromStdString(
+        "INSERT INTO " + FINANCIAL_GOALS_TABLE_NAME + " (userID, explanation, date, status) VALUES(:userID, :explanation, :date 0);"));
+    created = sq.exec();
+    return created;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";
@@ -487,4 +501,5 @@ const string MainController::DB_PASSWORD = "123456";
 const string MainController::USER_TABLE_NAME = "User";
 const string MainController::USER_CONTACTS_TABLE_NAME = "user_contacts";
 const string MainController::USER_DEBTS_TABLE_NAME = "USER_DEBTS";
+const string MainController::FINANCIAL_GOALS_TABLE_NAME = "financial_goals";
 const vector<string> MainController::monthly_goal_categories_columns = {"health", "education", "market_grocery", "entertainment", "vehicle", "fees", "other"};

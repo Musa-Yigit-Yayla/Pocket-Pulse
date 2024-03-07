@@ -57,10 +57,12 @@ public:
     int getDebtPriority(int debtId);
     bool setDebtPriority(int debtId, int debtPriority);
     bool markDebtAsPaid(int debtId);
+    bool registerFinancialGoal(int userId, string explanation, string dateOfCreation);
 
     static const string USER_TABLE_NAME;
     static const string USER_CONTACTS_TABLE_NAME;
     static const string USER_DEBTS_TABLE_NAME;
+    static const string FINANCIAL_GOALS_TABLE_NAME;
     static const vector<string> monthly_goal_categories_columns;
 };
 
