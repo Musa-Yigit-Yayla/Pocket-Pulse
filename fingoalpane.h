@@ -21,6 +21,8 @@
 class FingoalPane: public AbstractPane{
 Q_OBJECT
 private:
+    QGridLayout* gridPane = new QGridLayout(this); //main grid pane
+
     QGridLayout* rectGrid = new QGridLayout(this); //gridpane to contain the rectangular spenditure views
     QGridLayout* transactionsGrid = new QGridLayout(this); //gridPane to contain sent transactions for this month
     QScrollArea* transactionSA = new QScrollArea(this);

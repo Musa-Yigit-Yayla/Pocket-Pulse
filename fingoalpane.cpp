@@ -3,6 +3,7 @@
 #include "bankingcontroller.h"
 
 FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent}{
+    qDebug() << "Debug: FingoalPane constructor scope has been entered.";
     //retrieve the date of today
     QDate currTime = QDateTime::currentDateTime().date();
     int month = currTime.month();
@@ -17,6 +18,10 @@ FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent
 
     this->setTransactionsGrid();
     this->setRectGrid(spenditureGoals);
+
+    this->gridPane->addLayout(this->rectGrid, 0, 0); //change the indexing later on
+    this->gridPane->addLayout(this->transactionsGrid, 0, 1);
+    qDebug() << "Debug: FingoalPane constructor is about to return to the caller";
 
 }
 void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
@@ -101,7 +106,7 @@ void FingoalPane::setTransactionsGrid(){
     //set the scroll area
     this->transactionSA->setLayout(this->transactionsVBox);
     this->transactionSA->setWidgetResizable(true);
-    this->transactionsGrid->addWidget(this->transactionSA);
+    this->transactionsGrid->addWidget(this->transactionSA, 1, 0);
 
 
     QObject::connect(this->cbTransactionCategory, &QComboBox::currentIndexChanged, this, &FingoalPane::cbTransactionSlot);
