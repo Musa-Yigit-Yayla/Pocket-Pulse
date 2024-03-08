@@ -3,6 +3,7 @@
 using namespace std;
 //Fill ratio lies between [0, 1]
 ProgressRectangle::ProgressRectangle(const int width, const int height, double fillRatio, QWidget* parent): QWidget{parent}{
+    qDebug() << "Debug: ProgressRectangle constructor has been invoked with fillRatio " << fillRatio;
     this->width = width;
     this->height = height;
     if(fillRatio < 0){

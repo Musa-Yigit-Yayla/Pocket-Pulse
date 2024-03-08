@@ -164,7 +164,14 @@ void FingoalPane::cbTransactionSlot(int index){
 
     //remove the current content of the vbox
     while(this->transactionsVBox->count() > 0){
+        qDebug() << "Debug: Deleting layoutItem in cbTransactionSlot, and current vbox->count() is " << transactionsVBox->count();
         QLayoutItem* item = this->transactionsVBox->takeAt(0);
+        QLayout* childLayout = item->layout();
+        //delete the child widgets of the layout
+        while(item->layout()->count() > 0){
+            QWidget* currWidget = childLayout->takeAt(0)->widget();
+            delete currWidget;
+        }
         delete item;
     }
 

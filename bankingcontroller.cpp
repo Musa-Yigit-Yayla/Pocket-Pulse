@@ -242,25 +242,36 @@ vector<vector<QVariant>> BankingController::getSpentTransactions(const int userI
 //When month and year is not specified, all of the transactions with the given category regardless of transaction dates will be summed and returned
 int BankingController::sumSentTransactions(int userId, int category, int month, int year){
     int result = 0;
-    //use aggregate sum to retrieve the total sum of sent transactions by their category
-    QSqlQuery sq(this->db);
-    if(month == -1 && year == -1){
-        sq.prepare(QString::fromStdString("SELECT SUM(amount) AS result FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND category = :category;"));
-    }
-    else{
-        QString datePattern = QString::fromStdString(":" + to_string(month) + "/_%/" + to_string(month));
-        sq.prepare(QString::fromStdString("SELECT SUM(amount) AS result FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND category = :category "
-                                                                                                          "AND date LIKE ':datePattern;"));
-        sq.bindValue(":month", month);
-        sq.bindValue(":year", year);
-        sq.bindValue(":datePattern", datePattern);
-    }
-    sq.bindValue(":userId", userId);
-    sq.bindValue(":category", category);
 
-    if(sq.exec() && sq.next()){
-        result = sq.value(0).toDouble(); //auto cast to int
+    //Perform the following loop body for each and every account of the given user
+    vector<int> accounts = this->getAccountsOfUser(userId);
+
+    for(int currAccount: accounts){
+        //use aggregate sum to retrieve the total sum of sent transactions by their category
+        QSqlQuery sq(this->db);
+        if(month == -1 && year == -1){
+            sq.prepare(QString::fromStdString("SELECT amount FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :accountId AND category = :category;"));
+        }
+        else{
+            QString datePattern = QString::fromStdString(to_string(month) + "/_%/" + to_string(year));
+            sq.prepare(QString::fromStdString("SELECT amount FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :accountId AND category = :category "
+                                                                                                              "AND date LIKE :datePattern;"));
+            sq.bindValue(":month", month);
+            sq.bindValue(":year", year);
+            sq.bindValue(":datePattern", datePattern);
+        }
+        sq.bindValue(":accountId", currAccount);
+        sq.bindValue(":category", category);
+
+        if(sq.exec()){
+            while(sq.next()){
+                result += stod(sq.value(0).toString().toStdString().substr(1)); //auto cast to int
+            }
+
+        }
     }
+
+    qDebug() << "Debug: returning from sumSentTransactions the value " << result << " for the given category " << category;
     return result;
 }
 //Receives a date string in the format m/d/y
