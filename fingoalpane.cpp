@@ -160,6 +160,7 @@ void FingoalPane::cbTransactionSlot(int index){
 
     int userId = mc.getUserId(this->user->getUserName());
     vector<vector<QVariant>> transactions = bc.getSpentTransactions(userId, month, year, index); //index stands for the category
+    qDebug() << "Debug: FingoalPane::cbTransactionSlot transactions.size() yields " << transactions.size();
 
     //remove the current content of the vbox
     while(this->transactionsVBox->count() > 0){

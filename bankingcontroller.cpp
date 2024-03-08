@@ -191,34 +191,50 @@ vector<vector<QVariant>> BankingController::getSpentTransactions(const int userI
     string datePattern0 = to_string(month) + "/_/" + to_string(year);
     string datePattern1 = to_string(month) + "/__/" + to_string(year);
 
-    if(category == 0){
-        sq.prepare(QString::fromStdString("SELECT * FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND (date = :pattern0 OR date = :pattern1)"
-                                                                                      " ORDER BY date DESC;"));
-    }
-    else{
-        //select from the specified category
-        sq.prepare(QString::fromStdString("SELECT * FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :userId AND category = :category AND (date = :pattern0 OR date = :pattern1)"
-                                                                                      " ORDER BY date DESC;"));
-        sq.bindValue(":category", category);
+    //we should apply this process to all accounts of the given user
+    vector<int> accounts = this->getAccountsOfUser(userId);
+
+    for(int accountId: accounts){
+        if(category == 0){
+            sq.prepare(QString::fromStdString("SELECT * FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :accountId AND (date LIKE :pattern0 OR date LIKE :pattern1)"
+                                                                                          " ORDER BY date DESC;"));
+        }
+        else{
+            //select from the specified category
+            sq.prepare(QString::fromStdString("SELECT * FROM " + TRANSACTION_TABLE_NAME + " WHERE sender_id = :accountId AND category = :category AND (date LIKE :pattern0 OR date LIKE :pattern1)"
+                                                                                          " ORDER BY date DESC;"));
+            sq.bindValue(":category", category);
+        }
+
+        sq.bindValue(":accountId", accountId);
+        sq.bindValue(":pattern0", QString::fromStdString(datePattern0));
+        sq.bindValue(":pattern1", QString::fromStdString(datePattern1));
+
+        bool success = sq.exec();
+        qDebug() << "Debug: BankingController::getSpentTransactions query execution yielded " << success;
+
+
+        if(success && sq.next()){
+            qDebug() << "Debug: about to execute the do while loop of getSpentTransactions";
+
+            int columnCount = 6;
+            //do while for fun :)
+            do{
+
+                vector<QVariant> currRow;
+                //insert all data for possible usage of any of them
+                for(int i = 0; i < columnCount; i++){
+                    currRow.push_back(sq.value(i));
+                }
+                result.push_back(currRow);
+            }while(sq.next());
+        }
+        else{
+            qDebug() << "Debug: no viable transaction for account " << accountId << " in getSpentTransactions has been found.";
+        }
     }
 
-    sq.bindValue(":userId", userId);
-    sq.bindValue(":pattern0", QString::fromStdString(datePattern0));
-    sq.bindValue(":pattern1", QString::fromStdString(datePattern1));
 
-    if(sq.exec() && sq.next()){
-        int columnCount = 6;
-        //do while for fun :)
-        do{
-
-            vector<QVariant> currRow;
-            //insert all data for possible usage of any of them
-            for(int i = 0; i < columnCount; i++){
-                currRow.push_back(sq.value(i));
-            }
-            result.push_back(currRow);
-        }while(sq.next());
-    }
 
 
     return result;
