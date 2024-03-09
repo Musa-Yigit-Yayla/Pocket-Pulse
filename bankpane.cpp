@@ -288,6 +288,7 @@ void BankPane::viewTransactions(){
         for(auto& it: this->closeMap){
            if(it.second == targetRow){
                it.first->setVisible(true); //set the close button's visibility to true
+               break;
            }
         }
 
@@ -493,22 +494,29 @@ int BankPane::partitionTransactions(vector<vector<string>>& transactions, int lo
         int partitionIndex = low;
         low += 1;
 
-        while(low < high){
+        while(low <= high){
            string lowElt = transactions.at(low).at(3);
            while(dateCompare(lowElt, partitionElt) < 0 && low <= high){
-               lowElt = transactions.at(low).at(3);
                low++;
+               if(low <= high){
+                   lowElt = transactions.at(low).at(3);
+               }
             }
             string highElt = transactions.at(high).at(3);
             while(dateCompare(highElt, partitionElt) > 0 && low <= high){
-               highElt = transactions.at(high).at(3);
                high--;
+               if(low <= high){
+                   highElt = transactions.at(high).at(3);
+               }
             }
-            if(low < high){
+            if(low <= high){
                //swap the high index with low index
                vector<string> temp = transactions.at(low);
                transactions.at(low) = transactions.at(high);
                transactions.at(high) = temp;
+
+               low++;
+               high--;
             }
         }
         //swap high with partition index
