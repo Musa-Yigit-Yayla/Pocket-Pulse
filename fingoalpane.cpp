@@ -66,7 +66,7 @@ void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
         QString labelBottomStr;
         if(i != 7){ //the regular case of calculating transactions wrt their category
 
-            int currSum = bc.sumSentTransactions(userId, i, month, year);
+            int currSum = bc.sumSentTransactions(userId, i + 1, month, year); // i + 1 to match the database category attribute values directly
             int currGoal = spenditureGoals.at(i);
 
             qDebug() << "Debug: currSum and currGoal are respectively " << currSum << ", and " << currGoal << " in FingoalPane::setRectGrid";
@@ -89,7 +89,7 @@ void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
                 currFillRatio = 0;
             }
             else{
-                currFillRatio = transactionsSum / spenditureGoalsSum;
+                currFillRatio = transactionsSum / (double)spenditureGoalsSum;
             }
             labelTopStr = QString::fromStdString(to_string(transactionsSum) + "/" + to_string(spenditureGoalsSum));
             labelBottomStr = "Total";
