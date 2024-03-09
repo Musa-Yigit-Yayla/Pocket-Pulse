@@ -44,7 +44,7 @@ void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
     //If the given spenditureGoals vector is empty, we should construct one containing all 0s
     if(spenditureGoals.size() == 0){
         for(int i = 0; i < this->RECTS_LENGTH; i++){
-            spenditureGoals.push_back(i);
+            spenditureGoals.push_back(0);
         }
     }
     QDate currTime = QDateTime::currentDateTime().date();
@@ -74,7 +74,7 @@ void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
             else{
                 currFillRatio = currGoal / currSum;
             }
-            labelTopStr = QString::fromStdString(to_string(currSum) + "/" + to_string(currSum));
+            labelTopStr = QString::fromStdString(to_string(currSum) + "/" + to_string(currGoal));
             labelBottomStr = *FingoalPane::CATEGORY_NAMES.at(i);
             currRect = new ProgressRectangle(RECT_WIDTH, RECT_HEIGHT, currFillRatio, this);
             transactionsSum += currSum;
@@ -127,7 +127,7 @@ void FingoalPane::setTransactionsGrid(){
 
     QObject::connect(this->cbTransactionCategory, &QComboBox::currentIndexChanged, this, &FingoalPane::cbTransactionSlot);
     //since initial selection is All, display each and every transaction in the given vector sorted by their dates
-    this->cbTransactionCategory->setCurrentIndex(0);
+    this->cbTransactionSlot(0);
 }
 /*FingoalPane::~FingoalPane(){
     //deallocate dynamically allocated rectangles and the container array

@@ -270,13 +270,15 @@ bool MainController::registerUserMonthlyGoals(string username, int month, int ye
 vector<int> MainController::getUserMonthlyGoals(string username, int month, int year){
     vector<int> result;
     QSqlQuery sq(this->db);
-    sq.prepare(QString::fromStdString("SELECT * FROM " + USER_CONTACTS_TABLE_NAME + " WHERE user_name = :username AND month = :month AND year = :year;"));
+    sq.prepare(QString::fromStdString("SELECT * FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME + " WHERE user_name = :username AND month = :month AND year = :year;"));
     sq.bindValue(":username", QString::fromStdString(username));
     sq.bindValue(":month", month);
     sq.bindValue(":year", year);
 
-    if(sq.exec() && sq.next()){
-        int startIndex = 3;
+    bool success = sq.exec();
+
+    if(success && sq.next()){
+        int startIndex = 4;
         int counter = 0;
         while(counter < (int)ExpensePane::EXPENSE_CATEGORIES::count){
             int currIndex = startIndex + counter;
@@ -284,6 +286,9 @@ vector<int> MainController::getUserMonthlyGoals(string username, int month, int 
             result.push_back(currExpenseLimit);
             counter++;
         }
+    }
+    else if(!success){
+        qDebug() << "Debug: query execution in getUserMonthlyGoals has given errors " << sq.lastError();
     }
 
     return result;

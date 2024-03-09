@@ -6,12 +6,6 @@ ProgressRectangle::ProgressRectangle(const int width, const int height, double f
     qDebug() << "Debug: ProgressRectangle constructor has been invoked with fillRatio " << fillRatio;
     this->width = width;
     this->height = height;
-    if(fillRatio < 0){
-        fillRatio = 0.0;
-    }
-    else if(fillRatio > 1){
-        fillRatio = 1.0;
-    }
 
     this->fillRatio = fillRatio;
 
