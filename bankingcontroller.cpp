@@ -265,7 +265,10 @@ int BankingController::sumSentTransactions(int userId, int category, int month, 
 
         if(sq.exec()){
             while(sq.next()){
-                result += stod(sq.value(0).toString().toStdString().substr(1)); //auto cast to int
+                qDebug() << "Debug: executing sq.next() in sumSentTransactions with string value " << sq.value(0).toString();
+                double value = stod(sq.value(0).toString().toStdString().substr(1));
+                result += value; //auto cast to int
+                qDebug() << "Debug: current double value that has been added is " << value;
             }
 
         }

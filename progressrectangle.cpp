@@ -46,7 +46,7 @@ QColor ProgressRectangle::getFillRatioRGB(double fillRatio){
     return color;
 }
 void ProgressRectangle::paintEvent(QPaintEvent* event){
-    QPainter painter;
+    QPainter painter(this);
     double lowerHeight = this->height * fillRatio;
     double upperHeight = this->height - lowerHeight;
 
@@ -54,6 +54,7 @@ void ProgressRectangle::paintEvent(QPaintEvent* event){
     QColor fillColor = getFillRatioRGB(this->fillRatio);
     QBrush emptyColor = painter.brush();
     painter.setBrush(QBrush(fillColor));
+
 
     //draw the lower rect
     painter.drawRect(QRect(0, upperHeight, this->width, lowerHeight));

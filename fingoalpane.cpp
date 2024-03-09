@@ -68,12 +68,15 @@ void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
 
             int currSum = bc.sumSentTransactions(userId, i, month, year);
             int currGoal = spenditureGoals.at(i);
+
+            qDebug() << "Debug: currSum and currGoal are respectively " << currSum << ", and " << currGoal << " in FingoalPane::setRectGrid";
             if(currSum == 0){
                 currFillRatio = 0;
             }
             else{
-                currFillRatio = currGoal / currSum;
+                currFillRatio = currSum / (double)(currGoal);
             }
+            qDebug() << "Debug: currFillRatio in FingoalPane::setRectGrid is " << currFillRatio;
             labelTopStr = QString::fromStdString(to_string(currSum) + "/" + to_string(currGoal));
             labelBottomStr = *FingoalPane::CATEGORY_NAMES.at(i);
             currRect = new ProgressRectangle(RECT_WIDTH, RECT_HEIGHT, currFillRatio, this);
