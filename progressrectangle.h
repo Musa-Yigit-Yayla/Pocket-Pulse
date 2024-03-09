@@ -9,7 +9,6 @@
 #ifndef PROGRESSRECTANGLE_H
 #define PROGRESSRECTANGLE_H
 
-
 class ProgressRectangle: public QWidget{
 private:
     int height;

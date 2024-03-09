@@ -8,11 +8,14 @@
 #include <QList>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QTextEdit>
+#include <QPushButton>
 #include <cstddef>
 #include <vector>
 #include "abstractpane.h"
 #include "user.h"
 #include "progressrectangle.h"
+#include "progresscircle.h"
 
 #ifndef FINGOALPANE_H
 #define FINGOALPANE_H
@@ -32,7 +35,13 @@ private:
     QGridLayout* financialGoalsGrid = new QGridLayout(this);
     QHBoxLayout* hboxGoalHeader = new QHBoxLayout(this);
     QLabel* labelGoal = new QLabel("Financial Goals", this);
-    QVBoxLayout* vboxGoals = new QVBoxLayout(this);
+
+    QVBoxLayout* vboxGoals = new QVBoxLayout(this); //vbox to wrap financial goals related stuff
+    QHBoxLayout* hboxFinReg = new QHBoxLayout(this); // will be used to wrap the circular widget (showing goal finish success) and register fingoal pane
+    ProgressCircle* progressCircle = nullptr;
+    QVBoxLayout* registerFinGoalPane = new QVBoxLayout(this);
+    QTextEdit* expTextArea = new QTextEdit(this);
+    QPushButton* btRegFinGoal = new QPushButton("Add financial\n    goal", this);
 
 
     const int RECTS_LENGTH = 8;
@@ -55,5 +64,6 @@ private:
     void setFinancialGoalsGrid();
 public slots:
     void cbTransactionSlot(int index);
+    void regFinGoalSlot();
 };
 #endif // FINGOALPANE_H

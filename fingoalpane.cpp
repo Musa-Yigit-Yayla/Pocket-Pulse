@@ -38,7 +38,14 @@ void FingoalPane::setFinancialGoalsGrid(){
     this->hboxGoalHeader->addWidget(goalIconLabel);
     this->hboxGoalHeader->addWidget(this->labelGoal);
     this->financialGoalsGrid->addLayout(this->hboxGoalHeader, 0, 0);
+
+    //add the textarea and reg button to the correlated vbox
+    this->registerFinGoalPane->addWidget(this->expTextArea);
+    this->registerFinGoalPane->addWidget(this->btRegFinGoal);
+
     //Proceed
+
+    QObject::connect(this->btRegFinGoal, &QPushButton::clicked, this, &FingoalPane::regFinGoalSlot);
 }
 void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
     //If the given spenditureGoals vector is empty, we should construct one containing all 0s
@@ -197,6 +204,9 @@ void FingoalPane::cbTransactionSlot(int index){
 
         this->transactionsVBox->addLayout(hbox);
     }
+}
+void FingoalPane::regFinGoalSlot(){
+
 }
 const vector<const QString*> FingoalPane::CATEGORY_NAMES = {new QString("Health"), new QString("Education"), new QString("Market/Grocery"),
                                                              new QString("Entertainment"), new QString("Vehicle/Fuel"), new QString("Fees"),
