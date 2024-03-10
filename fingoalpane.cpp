@@ -43,7 +43,9 @@ void FingoalPane::setFinancialGoalsGrid(){
     this->registerFinGoalPane->addWidget(this->expTextArea);
     this->registerFinGoalPane->addWidget(this->btRegFinGoal);
 
-    //Proceed
+
+    this->refreshFinancialGoals();
+    this->financialGoalsGrid->addLayout(this->registerFinGoalPane, 1, 0);
 
     QObject::connect(this->btRegFinGoal, &QPushButton::clicked, this, &FingoalPane::regFinGoalSlot);
 }
@@ -147,7 +149,18 @@ void FingoalPane::setTransactionsGrid(){
     delete[] this->spenditureRects;
 }*/
 void FingoalPane::refreshFinancialGoals(){
+    //clear out the current content of the registerFinGoalPane
+    while(this->registerFinGoalPane->count() > 0){
+        delete this->registerFinGoalPane->takeAt(0);
+    }
 
+    //fetch existing financial goals (ones that are not reached yet) and add them into the registerFinGoalPane
+    MainController mc;
+    vector<string> goals = mc.retrieveFinancialGoals(this->user->getUserName(), false);
+    for(string currGoal: goals){
+        QLabel* goalLabel = new QLabel(QString::fromStdString(currGoal), this);
+        this->registerFinGoalPane->addWidget(goalLabel);
+    }
 }
 void FingoalPane::redrawRectangles(){
     //rectangles are already instantiated, hence just redraw by changing the fill ratios

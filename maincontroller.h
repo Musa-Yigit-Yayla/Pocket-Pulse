@@ -58,6 +58,7 @@ public:
     bool setDebtPriority(int debtId, int debtPriority);
     bool markDebtAsPaid(int debtId);
     bool registerFinancialGoal(int userId, string explanation, string dateOfCreation);
+    vector<string> retrieveFinancialGoals(string username, bool reached);
 
     static const string USER_TABLE_NAME;
     static const string USER_CONTACTS_TABLE_NAME;

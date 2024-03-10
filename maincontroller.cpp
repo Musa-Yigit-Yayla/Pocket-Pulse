@@ -495,9 +495,31 @@ bool MainController::registerFinancialGoal(int userId, string explanation, strin
         sq.exec();
     }
     sq.prepare(QString::fromStdString(
-        "INSERT INTO " + FINANCIAL_GOALS_TABLE_NAME + " (userID, explanation, date, status) VALUES(:userID, :explanation, :date 0);"));
+        "INSERT INTO " + FINANCIAL_GOALS_TABLE_NAME + " (userID, explanation, date, status) VALUES(:userID, :explanation, :date, 0);"));
     created = sq.exec();
     return created;
+}
+//reached specifies that whether tuples with status 1 (reached goals) will be selected
+vector<string> MainController::retrieveFinancialGoals(string username, bool reached){
+    vector<string> result;
+
+    if(this->tableExists(FINANCIAL_GOALS_TABLE_NAME)){
+        int userID = this->getUserId(username);
+        int desiredStatus = reached;
+
+        //retrieve explanation fields of the financial goals (if exists) sorted by their creation date
+        QSqlQuery sq(this->db);
+        sq.prepare(QString::fromStdString("SELECT explanation FROM " + FINANCIAL_GOALS_TABLE_NAME + " WHERE userID = :userID AND status = :status ORDER BY date DESC;"));
+        sq.bindValue(":userID", userID);
+        sq.bindValue(":status", desiredStatus);
+
+        if(sq.exec()){
+            while(sq.next()){
+                result.push_back(sq.value(0).toString().toStdString());
+            }
+        }
+    }
+    return result;
 }
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
