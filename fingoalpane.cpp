@@ -30,15 +30,22 @@ FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent
 }
 void FingoalPane::setFinancialGoalsGrid(){
     QLabel* goalIconLabel = new QLabel(this);
-    QString imgPath = QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + "\\icons2.png");
+    QString imgPath = QString::fromStdString(MainScreen::ICONS_FOLDER_PATH + "\\icon2.png");
     QImage img(imgPath);
     QPixmap pixmap = QPixmap::fromImage(img);
+    pixmap = pixmap.scaled(25, 25);
     goalIconLabel->setPixmap(pixmap);
 
+    this->expTextArea->setFixedWidth(200);
     //add the textarea and reg button to the correlated vbox
     this->registerFinGoalPane->addWidget(this->expTextArea);
     this->registerFinGoalPane->addWidget(this->btRegFinGoal);
 
+    //wrap the vboxGoals in a scroll area after you have wrapped it into an intermediate widget
+    QWidget* vboxGoalWrapper = new QWidget(this);
+    QScrollArea* vboxSA = new QScrollArea(this);
+    vboxGoalWrapper->setLayout(this->vboxGoals);
+    vboxSA->setWidget(vboxGoalWrapper);
 
     this->refreshFinancialGoals();
 
@@ -48,7 +55,7 @@ void FingoalPane::setFinancialGoalsGrid(){
     this->financialGoalsGrid->addLayout(this->hboxGoalHeader, 0, 0);
     //DONT FORGET TO ADD THE PROGRESS CIRCLE INTO THIS LINE IN POSITION 1, 0
     this->financialGoalsGrid->addLayout(this->registerFinGoalPane, 2, 0);
-    this->financialGoalsGrid->addLayout(this->vboxGoals, 0, 1, 3, 1);
+    this->financialGoalsGrid->addWidget(vboxSA, 0, 1, 3, 1);
 
 
     QObject::connect(this->btRegFinGoal, &QPushButton::clicked, this, &FingoalPane::regFinGoalSlot);
@@ -137,10 +144,12 @@ void FingoalPane::setTransactionsGrid(){
 
     //set the scroll area
     const int TRANSACTION_SA_MINHEIGHT = 350;
-    this->transactionSA->setMaximumHeight(TRANSACTION_SA_MINHEIGHT);
+    this->transactionSA->setFixedHeight(TRANSACTION_SA_MINHEIGHT);
     this->transactionSA->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     this->transactionSA->setWidgetResizable(true);
-    this->transactionSA->setLayout(this->transactionsVBox);
+    QWidget* wrapper = new QWidget(this);
+    wrapper->setLayout(this->transactionsVBox);
+    this->transactionSA->setWidget(wrapper);
 
     this->transactionsGrid->addWidget(this->transactionSA, 1, 0);
 
@@ -166,7 +175,8 @@ void FingoalPane::refreshFinancialGoals(){
     MainController mc;
     vector<string> goals = mc.retrieveFinancialGoals(this->user->getUserName(), false);
     for(string currGoal: goals){
-        QLabel* goalLabel = new QLabel(QString::fromStdString(currGoal), this);
+        QLabel* goalLabel = new QLabel(QString::fromStdString("● " + currGoal), this);
+        goalLabel->setStyleSheet("border-color: green;");
         this->vboxGoals->addWidget(goalLabel);
     }
 }
@@ -227,7 +237,22 @@ void FingoalPane::cbTransactionSlot(int index){
     }
 }
 void FingoalPane::regFinGoalSlot(){
+    //register a new financial goal if the textarea is not empty
+    string goalStr = this->expTextArea->toPlainText().toStdString();
+    qDebug() << "Debug: FingoalPane::regFinGoalSlot invoked with goalStr " << goalStr;
+    if(goalStr != ""){
+        QDate currDate = QDateTime::currentDateTime().date();
+        int month = currDate.month();
+        int day = currDate.day();
+        int year = currDate.year();
 
+        string dateStr = to_string(month) + "/" + to_string(day) + "/" + to_string(year);
+
+        MainController mc;
+        mc.registerFinancialGoal(this->user->getUserName(), goalStr, dateStr);
+        this->refreshFinancialGoals();
+        this->expTextArea->clear();
+    }
 }
 const vector<const QString*> FingoalPane::CATEGORY_NAMES = {new QString("Health"), new QString("Education"), new QString("Market/Grocery"),
                                                              new QString("Entertainment"), new QString("Vehicle/Fuel"), new QString("Fees"),

@@ -485,17 +485,22 @@ bool MainController::markDebtAsPaid(int debtId){
     updated = sq.exec();
     return updated;
 }
-bool MainController::registerFinancialGoal(int userId, string explanation, string dateOfCreation){
+bool MainController::registerFinancialGoal(string username, string explanation, string dateOfCreation){
     bool created = false;
-    QSqlQuery sq;
+    QSqlQuery sq(this->db);
     if(!this->tableExists(FINANCIAL_GOALS_TABLE_NAME)){
         //create the financial goals table
-        sq.prepare(QString::fromStdString("CREATE TABLE " + FINANCIAL_GOALS_TABLE_NAME + " ID INTEGER PRIMARY KEY AUTOINCREMENT, userID INTEGER, "
-                                                                                         "explanation TEXT, date TEXT, status INTEGER;"));
+        sq.prepare(QString::fromStdString("CREATE TABLE " + FINANCIAL_GOALS_TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, userID INTEGER, "
+                                                                                         "explanation TEXT, date TEXT, status INTEGER);"));
         sq.exec();
     }
+    int userID = this->getUserId(username);
     sq.prepare(QString::fromStdString(
         "INSERT INTO " + FINANCIAL_GOALS_TABLE_NAME + " (userID, explanation, date, status) VALUES(:userID, :explanation, :date, 0);"));
+    sq.bindValue(":userID", userID);
+    sq.bindValue(":explanation", QString::fromStdString(explanation));
+    sq.bindValue(":date", QString::fromStdString(dateOfCreation));
+
     created = sq.exec();
     return created;
 }
