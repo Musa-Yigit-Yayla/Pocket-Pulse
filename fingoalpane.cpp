@@ -41,13 +41,17 @@ void FingoalPane::setFinancialGoalsGrid(){
     this->registerFinGoalPane->addWidget(this->expTextArea);
     this->registerFinGoalPane->addWidget(this->btRegFinGoal);
 
+    const int VBOX_GOALS_SPACING = 20;
+    this->vboxGoals->setSpacing(VBOX_GOALS_SPACING);
+    this->refreshFinancialGoals();
+
     //wrap the vboxGoals in a scroll area after you have wrapped it into an intermediate widget
     QWidget* vboxGoalWrapper = new QWidget(this);
     QScrollArea* vboxSA = new QScrollArea(this);
     vboxGoalWrapper->setLayout(this->vboxGoals);
     vboxSA->setWidget(vboxGoalWrapper);
 
-    this->refreshFinancialGoals();
+
 
     //add the labels into the hbox for financial goals' header
     this->hboxGoalHeader->addWidget(goalIconLabel);
@@ -168,7 +172,7 @@ void FingoalPane::setTransactionsGrid(){
 void FingoalPane::refreshFinancialGoals(){
     //clear out the current content of the vboxGoals
     while(this->vboxGoals->count() > 0){
-        delete this->vboxGoals->takeAt(0);
+        delete this->vboxGoals->takeAt(0)->widget();
     }
 
     //fetch existing financial goals (ones that are not reached yet) and add them into the registerFinGoalPane
