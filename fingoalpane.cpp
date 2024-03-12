@@ -172,16 +172,37 @@ void FingoalPane::setTransactionsGrid(){
 void FingoalPane::refreshFinancialGoals(){
     //clear out the current content of the vboxGoals
     while(this->vboxGoals->count() > 0){
-        delete this->vboxGoals->takeAt(0)->widget();
+        QLayout* currHBox =  this->vboxGoals->takeAt(0)->layout();
+
+        //delete child widgets
+        delete currHBox->itemAt(0)->widget();
+        delete currHBox->itemAt(1)->widget();
+
+        delete currHBox;
     }
+
+    //clear the current button id map
+    this->fingoalMap.clear();
 
     //fetch existing financial goals (ones that are not reached yet) and add them into the registerFinGoalPane
     MainController mc;
-    vector<string> goals = mc.retrieveFinancialGoals(this->user->getUserName(), false);
-    for(string currGoal: goals){
+    unordered_map<int, string> goals = mc.retrieveFinancialGoals(this->user->getUserName(), false); // goals along with fingoal ids
+    for(unordered_map<int, string>::iterator it = goals.begin(); it != goals.end(); it++){
+        string currGoal = it->second;
         QLabel* goalLabel = new QLabel(QString::fromStdString("● " + currGoal), this);
         goalLabel->setStyleSheet("border-color: green;");
-        this->vboxGoals->addWidget(goalLabel);
+
+        QToolButton* btMarkDone = new QToolButton(this);
+        btMarkDone->setText("Mark as\n achieved");
+
+        int goalID = it->first;
+        this->fingoalMap.insert(make_pair(goalID, btMarkDone));
+
+        QHBoxLayout* hbox = new QHBoxLayout(this);
+        hbox->addWidget(goalLabel);
+        hbox->addWidget(btMarkDone);
+        this->vboxGoals->addLayout(hbox);
+        QObject::connect(btMarkDone, &QToolButton::clicked, this, &FingoalPane::redrawRectangles);
     }
 }
 void FingoalPane::redrawRectangles(){
@@ -257,6 +278,9 @@ void FingoalPane::regFinGoalSlot(){
         this->refreshFinancialGoals();
         this->expTextArea->clear();
     }
+}
+void FingoalPane::markFinGoalComplete(){
+
 }
 const vector<const QString*> FingoalPane::CATEGORY_NAMES = {new QString("Health"), new QString("Education"), new QString("Market/Grocery"),
                                                              new QString("Entertainment"), new QString("Vehicle/Fuel"), new QString("Fees"),

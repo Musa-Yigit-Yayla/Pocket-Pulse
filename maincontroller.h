@@ -13,6 +13,7 @@
 #include <vector>
 #include <QVariant>
 #include <algorithm>
+#include <unordered_map>
 
 class User;
 using namespace std;
@@ -58,7 +59,7 @@ public:
     bool setDebtPriority(int debtId, int debtPriority);
     bool markDebtAsPaid(int debtId);
     bool registerFinancialGoal(string username, string explanation, string dateOfCreation);
-    vector<string> retrieveFinancialGoals(string username, bool reached);
+    unordered_map<int, string> retrieveFinancialGoals(string username, bool reached);
 
     static const string USER_TABLE_NAME;
     static const string USER_CONTACTS_TABLE_NAME;

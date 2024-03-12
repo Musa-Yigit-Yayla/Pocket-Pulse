@@ -505,8 +505,8 @@ bool MainController::registerFinancialGoal(string username, string explanation, 
     return created;
 }
 //reached specifies that whether tuples with status 1 (reached goals) will be selected
-vector<string> MainController::retrieveFinancialGoals(string username, bool reached){
-    vector<string> result;
+unordered_map<int, string> MainController::retrieveFinancialGoals(string username, bool reached){
+    unordered_map<int, string> result;
 
     if(this->tableExists(FINANCIAL_GOALS_TABLE_NAME)){
         int userID = this->getUserId(username);
@@ -514,13 +514,14 @@ vector<string> MainController::retrieveFinancialGoals(string username, bool reac
 
         //retrieve explanation fields of the financial goals (if exists) sorted by their creation date
         QSqlQuery sq(this->db);
-        sq.prepare(QString::fromStdString("SELECT explanation FROM " + FINANCIAL_GOALS_TABLE_NAME + " WHERE userID = :userID AND status = :status ORDER BY date DESC;"));
+        sq.prepare(QString::fromStdString("SELECT ID, explanation FROM " + FINANCIAL_GOALS_TABLE_NAME + " WHERE userID = :userID AND status = :status ORDER BY date DESC;"));
         sq.bindValue(":userID", userID);
         sq.bindValue(":status", desiredStatus);
 
         if(sq.exec()){
             while(sq.next()){
-                result.push_back(sq.value(0).toString().toStdString());
+                //result[sq.value(0).toInt()] = sq.value(1).toString().toStdString();
+                result.insert(make_pair(sq.value(0).toInt(), sq.value(1).toString().toStdString()));
             }
         }
     }
