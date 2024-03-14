@@ -527,6 +527,14 @@ unordered_map<int, string> MainController::retrieveFinancialGoals(string usernam
     }
     return result;
 }
+bool MainController::markFinancialGoalDone(int goalID){
+    bool success = false;
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("UPDATE " + FINANCIAL_GOALS_TABLE_NAME + " SET status = 1 WHERE ID = :goalID;")); //mark as done
+    sq.bindValue(":goalID", goalID);
+    success = sq.exec();
+    return success;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

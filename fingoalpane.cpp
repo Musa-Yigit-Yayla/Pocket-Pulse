@@ -36,7 +36,7 @@ void FingoalPane::setFinancialGoalsGrid(){
     pixmap = pixmap.scaled(25, 25);
     goalIconLabel->setPixmap(pixmap);
 
-    this->expTextArea->setFixedWidth(200);
+    this->expTextArea->setFixedWidth(300);
     //add the textarea and reg button to the correlated vbox
     this->registerFinGoalPane->addWidget(this->expTextArea);
     this->registerFinGoalPane->addWidget(this->btRegFinGoal);
@@ -190,19 +190,20 @@ void FingoalPane::refreshFinancialGoals(){
     for(unordered_map<int, string>::iterator it = goals.begin(); it != goals.end(); it++){
         string currGoal = it->second;
         QLabel* goalLabel = new QLabel(QString::fromStdString("● " + currGoal), this);
+        goalLabel->setWordWrap(true); //enable newline breaking
         goalLabel->setStyleSheet("border-color: green;");
 
         QToolButton* btMarkDone = new QToolButton(this);
         btMarkDone->setText("Mark as\n achieved");
 
         int goalID = it->first;
-        this->fingoalMap.insert(make_pair(goalID, btMarkDone));
+        this->fingoalMap.insert(make_pair(btMarkDone, goalID));
 
         QHBoxLayout* hbox = new QHBoxLayout(this);
         hbox->addWidget(goalLabel);
         hbox->addWidget(btMarkDone);
         this->vboxGoals->addLayout(hbox);
-        QObject::connect(btMarkDone, &QToolButton::clicked, this, &FingoalPane::redrawRectangles);
+        QObject::connect(btMarkDone, &QToolButton::clicked, this, &FingoalPane::markFinGoalComplete);
     }
 }
 void FingoalPane::redrawRectangles(){
@@ -280,7 +281,19 @@ void FingoalPane::regFinGoalSlot(){
     }
 }
 void FingoalPane::markFinGoalComplete(){
+    QObject* sender = QObject::sender();
+    QToolButton* senderBt = qobject_cast<QToolButton*>(sender);
 
+    qDebug() << "Debug: markFinGoalComplete has been invoked and sender has been cast to pointer " << senderBt;
+    int goalID = this->fingoalMap.at(senderBt);
+
+    MainController mc;
+    bool success = mc.markFinancialGoalDone(goalID);
+    qDebug() << "Debug: success of query execution after markFinancialGoalDone is invoked is " << success;
+    if(success){
+        //refresh the financial goals pane
+        this->refreshFinancialGoals();
+    }
 }
 const vector<const QString*> FingoalPane::CATEGORY_NAMES = {new QString("Health"), new QString("Education"), new QString("Market/Grocery"),
                                                              new QString("Entertainment"), new QString("Vehicle/Fuel"), new QString("Fees"),

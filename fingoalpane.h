@@ -37,7 +37,7 @@ private:
     QGridLayout* financialGoalsGrid = new QGridLayout(this);
     QHBoxLayout* hboxGoalHeader = new QHBoxLayout(this);
     QLabel* labelGoal = new QLabel("Financial Goals", this);
-    unordered_map<int, QToolButton*> fingoalMap;
+    unordered_map<QToolButton*, int> fingoalMap;
 
     QVBoxLayout* vboxGoals = new QVBoxLayout(this); //vbox to wrap financial goals related stuff
     QHBoxLayout* hboxFinReg = new QHBoxLayout(this); // will be used to wrap the circular widget (showing goal finish success) and register fingoal pane
