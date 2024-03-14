@@ -25,6 +25,7 @@ FingoalPane::FingoalPane(User* user, QWidget* parent): AbstractPane{user, parent
     this->gridPane->addLayout(this->rectGrid, 0, 0, 2, 1); //change the indexing later on
     this->gridPane->addLayout(this->financialGoalsGrid, 0, 1);
     this->gridPane->addLayout(this->transactionsGrid, 1, 1);
+    this->gridPane->setContentsMargins(5, 0, 0, 0);
     qDebug() << "Debug: FingoalPane constructor is about to return to the caller";
 
 }
@@ -36,7 +37,7 @@ void FingoalPane::setFinancialGoalsGrid(){
     pixmap = pixmap.scaled(25, 25);
     goalIconLabel->setPixmap(pixmap);
 
-    this->expTextArea->setFixedWidth(300);
+    this->expTextArea->setFixedWidth(450);
     //add the textarea and reg button to the correlated vbox
     this->registerFinGoalPane->addWidget(this->expTextArea);
     this->registerFinGoalPane->addWidget(this->btRegFinGoal);
@@ -65,6 +66,20 @@ void FingoalPane::setFinancialGoalsGrid(){
     QObject::connect(this->btRegFinGoal, &QPushButton::clicked, this, &FingoalPane::regFinGoalSlot);
 }
 void FingoalPane::setRectGrid(vector<int>& spenditureGoals){
+    //first deallocate the rectGrid contents if there are any, this will help refreshing the panel
+    qDebug() << "Debug: FingoalPane rectGrid->count() is " << rectGrid->count();
+    if(this->rectGrid->count() > 0){
+        int rowsCount = 2;
+        int columnsCount = 4;
+        for(int i = 0; i < rowsCount; i++){
+            for(int j = 0; j < columnsCount; j++){
+                QLayoutItem* currItem = this->rectGrid->itemAtPosition(i, j);
+                this->rectGrid->removeItem(currItem);
+                delete currItem->widget();
+            }
+        }
+    }
+
     //If the given spenditureGoals vector is empty, we should construct one containing all 0s
     if(spenditureGoals.size() == 0){
         for(int i = 0; i < this->RECTS_LENGTH; i++){
@@ -261,6 +276,9 @@ void FingoalPane::cbTransactionSlot(int index){
 
         this->transactionsVBox->addLayout(hbox);
     }
+    //lastly refresh the rect grid as some new transactions might have arrived
+    vector<int> spenditureGoals = mc.getUserMonthlyGoals(this->user->getUserName(), month, year);
+    this->setRectGrid(spenditureGoals);
 }
 void FingoalPane::regFinGoalSlot(){
     //register a new financial goal if the textarea is not empty
