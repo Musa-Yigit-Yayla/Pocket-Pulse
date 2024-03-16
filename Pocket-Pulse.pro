@@ -24,6 +24,7 @@ SOURCES += \
     animatedlabel.cpp \
     bankingcontroller.cpp \
     bankpane.cpp \
+    barchart.cpp \
     circularimage.cpp \
     contactspane.cpp \
     debtpane.cpp \
@@ -34,9 +35,11 @@ SOURCES += \
     main.cpp \
     maincontroller.cpp \
     networkcontroller.cpp \
+    piechart.cpp \
     progresscircle.cpp \
     progressrectangle.cpp \
     registerscreen.cpp \
+    reportpane.cpp \
     savecodepane.cpp \
     user.cpp
 
@@ -45,6 +48,7 @@ HEADERS += \
     animatedlabel.h \
     bankingcontroller.h \
     bankpane.h \
+    barchart.h \
     circularimage.h \
     contactspane.h \
     debtpane.h \
@@ -55,9 +59,11 @@ HEADERS += \
     maincontroller.h \
     mainscreen.h \
     networkcontroller.h \
+    piechart.h \
     progresscircle.h \
     progressrectangle.h \
     registerscreen.h \
+    reportpane.h \
     savecodepane.h \
     user.h
 

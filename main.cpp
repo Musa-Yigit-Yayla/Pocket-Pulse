@@ -1,4 +1,5 @@
 #include <QWidget>
+#include <qDebug>
 #include "registerscreen.h"
 #include <QApplication>
 #include "user.h"
@@ -22,8 +23,8 @@ void defaultFlow(){
     LoginScreen* ls = new LoginScreen();
     ls->show();
 }
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
+    qDebug() << "Qt version being used id: " << qVersion();
     QApplication a(argc, argv);
     //test0(); //remove later on
     defaultFlow();
