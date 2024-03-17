@@ -303,4 +303,30 @@ inline vector<int> BankingController::splitDate(const string givenDate){
     }
     return result;
 }
+//get the months (along with year) where the user has made any spenditure transactions
+vector<QString> BankingController::getSpenditureMonths(const string& username){
+    vector<QString> result;
+    //we must retrieve the dates of each month where user has performed at least one spenditure transaction (where he was the sender)
+    MainController mc;
+    int userID = mc.getUserId(username);
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString(
+        "SELECT DISTINCT date FROM " + TRANSACTION_TABLE_NAME + ", " + ACCOUNT_TABLE_NAME +
+        " WHERE account_id IN (SELECT account_id FROM " + ACCOUNT_TABLE_NAME +  " WHERE user_id = :userID) AND" +
+        " account_id = sender_id ORDER BY date DESC;"
+    ));
+    sq.bindValue(":userID", userID);
+    bool success = sq.exec();
+
+    qDebug() << "Debug: success of getSpenditureMonths query execution is " << success;
+    if(success){
+        unordered_set<QString> dateSet;
+        while(sq.next()){
+            QString currValue = sq.value(0).toString();
+            QStringList dateValues = currValue.split("/");
+            //if(dateSet.find()) //Proceed
+        }
+    }
+
+}
 const QDate BankingController::fromDate(2020, 1, 1);
