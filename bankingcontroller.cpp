@@ -316,6 +316,7 @@ vector<QString> BankingController::getSpenditureMonths(const string& username){
         " account_id = sender_id ORDER BY date DESC;"
     ));
     sq.bindValue(":userID", userID);
+    qDebug() << "Debug: last query error before getSpenditureMonths query execution is " << sq.lastError();
     bool success = sq.exec();
 
     qDebug() << "Debug: success of getSpenditureMonths query execution is " << success;
@@ -324,9 +325,20 @@ vector<QString> BankingController::getSpenditureMonths(const string& username){
         while(sq.next()){
             QString currValue = sq.value(0).toString();
             QStringList dateValues = currValue.split("/");
-            //if(dateSet.find()) //Proceed
+
+            QString currStr = dateValues.at(0) + "-" + dateValues.at(2); // month-year
+            //if(dateSet.count(currStr) == 0){ //insert the new date combination
+                dateSet.insert(currStr);
+            //}
+        }
+        //now iterate over the set and insert each element to the result vector
+        for(unordered_set<QString>::iterator it = dateSet.begin(); it != dateSet.end(); it++){
+                result.push_back(*it);
         }
     }
-
+    else{
+        qDebug() << "Debug: last error of query execution appears to be " << sq.lastError();
+    }
+    return result;
 }
 const QDate BankingController::fromDate(2020, 1, 1);

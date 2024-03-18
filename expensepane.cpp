@@ -137,7 +137,7 @@ void ExpensePane::confirmationLabelSlot(bool confirmed){
 void ExpensePane::confirmTimerSlot(){
     this->confirmationLabel->setVisible(false);
 }
-inline string ExpensePane::getMonthString(int month){
+string ExpensePane::getMonthString(int month){
     string result = "";
     switch(month){
     case 1: result = "Jan"; break;
@@ -158,7 +158,7 @@ inline string ExpensePane::getMonthString(int month){
 //Given string should match the month names provided by the getMonthString method
 //1 based indexing
 //Otherwise 0 is returned
-inline int ExpensePane::getMonthInteger(string month){
+int ExpensePane::getMonthInteger(string month){
     int result = -1;
 
     if(monthMap.empty()){

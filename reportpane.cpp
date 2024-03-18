@@ -1,4 +1,8 @@
 #include "reportpane.h"
+#include "expensepane.h"
+#include "bankingcontroller.h"
+
+using namespace std;
 
 
 ReportPane::ReportPane(User* user, QWidget* parent): AbstractPane{user, parent}{
@@ -17,7 +21,13 @@ ReportPane::ReportPane(User* user, QWidget* parent): AbstractPane{user, parent}{
     this->menuBox->setSpacing(20);
 
     this->initExpenseChartsPane();
+    this->initIncomeExpenseDebtPane();
+    this->initMonthPieChartPane();
 
+    this->vbox->addLayout(this->menuBox);
+    //!!! ADD THE INITIAL SELECTED PANE TO THE VBOX
+
+    this->setLayout(this->vbox);
 }
 void ReportPane::initExpenseChartsPane(){
 
@@ -28,8 +38,29 @@ void ReportPane::initIncomeExpenseDebtPane(){
 void ReportPane::initMonthPieChartPane(){
     this->monthPieChartPane = new QGridLayout(this);
     //set the combobox content to the months along with years in which user has made spending transactions using any of their registered accounts
+    BankingController bc;
+    vector<QString> spenditureMonths = bc.getSpenditureMonths(this->user->getUserName()); //returned values are in the form of month-year, hence convert it to the string form
 
+    for(QString currDate: spenditureMonths){
+        QString month = currDate.split("-").at(0);
+        QString year = currDate.split("-").at(1);
+
+        month = QString::fromStdString(ExpensePane::getMonthString(month.toInt()));
+        this->comboBox->addItem(month + " " + year);
+    }
+
+    this->monthPieChartPane->addWidget(this->comboBox, 0, 1);
 }
 void ReportPane::menuSelectionSlot(){
-
+    QObject* eventSource = QObject::sender();
+    this->vbox->takeAt(1);
+    if(eventSource == this->tbMPCP){
+        this->vbox->addLayout(this->monthPieChartPane);
+    }
+    else if(eventSource == this->tbIEDP){
+        this->vbox->addLayout(this->incomeExpenseDebtPane);
+    }
+    else if(eventSource == this->tbECP){
+        this->vbox->addLayout(this->expenseChartsPane);
+    }
 }
