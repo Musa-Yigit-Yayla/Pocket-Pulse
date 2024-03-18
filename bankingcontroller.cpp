@@ -311,8 +311,8 @@ vector<QString> BankingController::getSpenditureMonths(const string& username){
     int userID = mc.getUserId(username);
     QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString(
-        "SELECT DISTINCT date FROM " + TRANSACTION_TABLE_NAME + ", " + ACCOUNT_TABLE_NAME +
-        " WHERE account_id IN (SELECT account_id FROM " + ACCOUNT_TABLE_NAME +  " WHERE user_id = :userID) AND" +
+        "SELECT DISTINCT date FROM " + TRANSACTION_TABLE_NAME + ", " + USER_ACCOUNT_TABLE_NAME +
+        " WHERE account_id IN (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME +  " WHERE user_id = :userID) AND" +
         " account_id = sender_id ORDER BY date DESC;"
     ));
     sq.bindValue(":userID", userID);
