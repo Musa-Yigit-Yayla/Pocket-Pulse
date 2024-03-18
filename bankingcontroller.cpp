@@ -233,10 +233,6 @@ vector<vector<QVariant>> BankingController::getSpentTransactions(const int userI
             qDebug() << "Debug: no viable transaction for account " << accountId << " in getSpentTransactions has been found.";
         }
     }
-
-
-
-
     return result;
 }
 //When month and year is not specified, all of the transactions with the given category regardless of transaction dates will be summed and returned
@@ -333,7 +329,7 @@ vector<QString> BankingController::getSpenditureMonths(const string& username){
         }
         //now iterate over the set and insert each element to the result vector
         for(unordered_set<QString>::iterator it = dateSet.begin(); it != dateSet.end(); it++){
-                result.push_back(*it);
+            result.push_back(*it);
         }
     }
     else{

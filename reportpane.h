@@ -40,6 +40,7 @@ private:
     void initMonthPieChartPane();
 public slots:
     void menuSelectionSlot();
+    void pieDateSelectionSlot(int index); //for the combobox
 
 };
 

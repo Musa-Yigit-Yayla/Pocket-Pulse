@@ -1,6 +1,7 @@
 #include "reportpane.h"
 #include "expensepane.h"
 #include "bankingcontroller.h"
+#include "maincontroller.h"
 
 using namespace std;
 
@@ -37,6 +38,7 @@ void ReportPane::initIncomeExpenseDebtPane(){
 }
 void ReportPane::initMonthPieChartPane(){
     this->monthPieChartPane = new QGridLayout(this);
+    this->expenseDistribution = new PieChart(this);
     //set the combobox content to the months along with years in which user has made spending transactions using any of their registered accounts
     BankingController bc;
     vector<QString> spenditureMonths = bc.getSpenditureMonths(this->user->getUserName()); //returned values are in the form of month-year, hence convert it to the string form
@@ -55,6 +57,11 @@ void ReportPane::initMonthPieChartPane(){
         }
     }
 
+    //then swap the elements to obtain descending order of dates
+    for(int i = 0; i < spenditureMonths.size() / 2; i++){
+        swap(spenditureMonths.at(i), spenditureMonths.at(spenditureMonths.size() - i - 1));
+    }
+
     for(QString currDate: spenditureMonths){
         QString month = currDate.split("-").at(0);
         QString year = currDate.split("-").at(1);
@@ -64,6 +71,7 @@ void ReportPane::initMonthPieChartPane(){
     }
 
     this->monthPieChartPane->addWidget(this->comboBox, 0, 1);
+    QObject::connect(this->comboBox, &QComboBox::currentIndexChanged, this, &ReportPane::pieDateSelectionSlot);
 }
 void ReportPane::menuSelectionSlot(){
     QObject* eventSource = QObject::sender();
@@ -77,4 +85,28 @@ void ReportPane::menuSelectionSlot(){
     else if(eventSource == this->tbECP){
         this->vbox->addLayout(this->expenseChartsPane);
     }
+}
+void ReportPane::pieDateSelectionSlot(int index){
+    //refresh the current pie chart
+
+    QString currItem = this->comboBox->itemText(index);
+
+    int month = ExpensePane::getMonthInteger(currItem.split(' ').at(0).toStdString());
+    int year = currItem.split(' ').at(1).toInt();
+
+    //get the spent transactions for the given specific month and year so we can update our pie chart
+    BankingController bc;
+    MainController mc;
+    int userID = mc.getUserId(this->user->getUserName());
+    // bc.getSpentTransactions(userID, month, year, 0); //select all categories
+
+    vector<double> transactionSums;
+    vector<QString> transactionHeaders = {};
+    int categoryCount = static_cast<int>(ExpensePane::EXPENSE_CATEGORIES::count);
+    for(int i = 1; i <= categoryCount; i++){
+        double currSum = bc.sumSentTransactions(userID, i, month, year);
+        transactionSums.push_back(currSum);
+    }
+    //Proceed with updating the piechart values using the corresponding setter method
+
 }
