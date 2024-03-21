@@ -23,7 +23,7 @@ private:
     QComboBox* comboBox = new QComboBox(this);
 
     QHBoxLayout* menuBox = new QHBoxLayout(this); // will enable the user to choose between panes
-    PieChart* expenseDistribution = nullptr;
+    PieChart* expenseDistributionChart = nullptr;
 
     QToolButton* tbECP = new QToolButton(this);
     QToolButton* tbIEDP = new QToolButton(this);

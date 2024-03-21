@@ -76,7 +76,8 @@ void PieChart::paintEvent(QPaintEvent* event){
             //generate a random color which has not been used before
             QColor newColor;
             do{
-                newColor = QColor(rand() * 200 + 55, rand() * 200 + 55 , rand() * 200 + 55);
+                newColor = QColor(rand() % 200 + 55, rand() % 200 + 55 , rand() % 200 + 55);
+                qDebug() << "Debug: do while loop body executed and newColor is " << newColor;
             }while(count(usedColors.begin(), usedColors.end(), newColor) != 0);
 
             painter.setPen(newColor);
