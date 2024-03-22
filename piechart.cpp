@@ -5,12 +5,19 @@ using namespace std;
 
 PieChart::PieChart(QWidget* parent): QWidget{parent}
 {
+
+    this->setSize(800, 500);
     //initialize layout management
     QWidget* intermediateWrapper = new QWidget(this);
+    this->hboxHeaders->setSpacing(20);
+    this->hboxHeaders->setSizeConstraint(QLayout::SetFixedSize);
     intermediateWrapper->setLayout(this->hboxHeaders);
     this->headerSA->setWidget(intermediateWrapper);
     this->headerSA->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->headerSA->setFixedWidth(300);
+    this->headerSA->setFixedHeight(150);
+    wrapper->addWidget(this);
+    wrapper->addWidget(this->headerSA);
 }
 PieChart::PieChart(vector<double>& contentValues, vector<string>& contentHeaders, QWidget* parent): PieChart{parent}{
     this->setContents(contentValues, contentHeaders);
@@ -78,10 +85,19 @@ void PieChart::paintEvent(QPaintEvent* event){
 
 
     if(this->contentValues.size() == this->contentHeaders.size()){ //just to enable the program to remain fault tolerant
+        //clear out the current contents of the rect vbox
+        while(this->hboxHeaders->count() > 0){
+            QWidget* widget = this->hboxHeaders->takeAt(0)->widget();
+            delete widget;
+        }
+
         vector<QColor> usedColors; //colors which have been used so far
         //start from the top point of the circle tangent to the x axis and draw slices clockwise
         for(int i = 0; i < this->contentValues.size(); i++){
             double currValue = this->contentValues.at(i);
+            if(currValue == 0){
+                continue;
+            }
             double currAngle = (-360 * currValue * 16) / totalSum; //we have the curr angle in negative degrees
 
             //generate a random color which has not been used before
