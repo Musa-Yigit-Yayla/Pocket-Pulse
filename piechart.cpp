@@ -50,6 +50,7 @@ void PieChart::refresh(bool displayValues){
 void PieChart::paintEvent(QPaintEvent* event){
     QPainter painter(this);
 
+
     const int RECT_LENGTH = 10;
     const int RADIUS = this->width() / 2 - RECT_LENGTH; // circle radius
 
@@ -71,21 +72,21 @@ void PieChart::paintEvent(QPaintEvent* event){
         //start from the top point of the circle tangent to the x axis and draw slices clockwise
         for(int i = 0; i < this->contentValues.size(); i++){
             double currValue = this->contentValues.at(i);
-            double currAngle = (-360 * currValue) / totalSum; //we have the curr angle in negative degrees
+            double currAngle = (-360 * currValue * 16) / totalSum; //we have the curr angle in negative degrees
 
             //generate a random color which has not been used before
             QColor newColor;
             do{
-                newColor = QColor(rand() % 200 + 55, rand() % 200 + 55 , rand() % 200 + 55);
+                newColor = QColor(rand() % 200 + 30, rand() % 200 + 30 , rand() % 200 + 30);
                 qDebug() << "Debug: do while loop body executed and newColor is " << newColor;
             }while(count(usedColors.begin(), usedColors.end(), newColor) != 0);
 
             painter.setPen(newColor);
+            painter.setBrush(newColor);
             usedColors.push_back(newColor);
 
-
             //recall that zero degree is at 3 o'clock position and degrees go with 1/16 precision and positive degrees mean counter clockwise
-            painter.drawArc(currX, currY, RADIUS, RADIUS, angleSum, currAngle);
+            painter.drawPie(currX, currY, RADIUS, RADIUS, angleSum, currAngle);
             angleSum += currAngle; //angleSum also contains negative values now
         }
     }
