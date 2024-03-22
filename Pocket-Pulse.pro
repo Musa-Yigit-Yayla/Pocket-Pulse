@@ -38,6 +38,7 @@ SOURCES += \
     piechart.cpp \
     progresscircle.cpp \
     progressrectangle.cpp \
+    rectwidget.cpp \
     registerscreen.cpp \
     reportpane.cpp \
     savecodepane.cpp \
@@ -62,6 +63,7 @@ HEADERS += \
     piechart.h \
     progresscircle.h \
     progressrectangle.h \
+    rectwidget.h \
     registerscreen.h \
     reportpane.h \
     savecodepane.h \

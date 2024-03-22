@@ -31,6 +31,9 @@ ReportPane::ReportPane(User* user, QWidget* parent): AbstractPane{user, parent}{
     this->vbox->addLayout(this->monthPieChartPane);
 
     this->setLayout(this->vbox);
+    //invoke the combobox (for piechart) manually
+    this->comboBox->setCurrentIndex(1);
+    this->comboBox->setCurrentIndex(0);
 }
 void ReportPane::initExpenseChartsPane(){
 

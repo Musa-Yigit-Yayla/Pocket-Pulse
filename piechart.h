@@ -10,7 +10,11 @@
 #include <QPainter>
 #include <vector>
 #include <string>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QScrollArea>
 #include <cstdlib>
+#include <QLabel>
 
 
 #ifndef PIECHART_H
@@ -22,6 +26,9 @@ private:
     vector<double> contentValues;
     vector<string> contentHeaders;
     bool displayValuesEnabled = true; //true by default
+    QVBoxLayout* wrapper = new QVBoxLayout(this);
+    QHBoxLayout* hboxHeaders = new QHBoxLayout(this);
+    QScrollArea* headerSA = new QScrollArea(this);
 
 public:
     PieChart(QWidget* parent = nullptr);
@@ -35,6 +42,7 @@ public:
     int getWidth() const;
     int getHeight() const;
     void refresh(bool displayValues);
+    QVBoxLayout* getContainerLayout();
 
     const int DEFAULT_WIDTH = 600;
     const int DEFAULT_HEIGHT = 600;

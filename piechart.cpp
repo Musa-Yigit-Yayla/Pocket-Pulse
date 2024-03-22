@@ -1,11 +1,18 @@
 #include "piechart.h"
+#include "rectwidget.h"
+
 using namespace std;
 
 PieChart::PieChart(QWidget* parent): QWidget{parent}
 {
-
+    //initialize layout management
+    QWidget* intermediateWrapper = new QWidget(this);
+    intermediateWrapper->setLayout(this->hboxHeaders);
+    this->headerSA->setWidget(intermediateWrapper);
+    this->headerSA->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->headerSA->setFixedWidth(300);
 }
-PieChart::PieChart(vector<double>& contentValues, vector<string>& contentHeaders, QWidget* parent): QWidget{parent}{
+PieChart::PieChart(vector<double>& contentValues, vector<string>& contentHeaders, QWidget* parent): PieChart{parent}{
     this->setContents(contentValues, contentHeaders);
 }
 PieChart::PieChart(vector<double>& contentValues, vector<string>& contentHeaders, int width, int height, QWidget* parent):
@@ -18,6 +25,9 @@ vector<double> PieChart::getContentValues() const{
 }
 vector<string> PieChart::getContentHeaders() const{
     return this->contentHeaders; //return by copy
+}
+QVBoxLayout* PieChart::getContainerLayout(){
+    return this->wrapper;
 }
 void PieChart::setContents(vector<double>& contentValues, vector<string>& contentHeaders){
     this->contentValues = contentValues;
@@ -51,7 +61,7 @@ void PieChart::paintEvent(QPaintEvent* event){
     QPainter painter(this);
 
 
-    const int RECT_LENGTH = 10;
+    const int RECT_LENGTH = 20;
     const int RADIUS = this->width() / 2 - RECT_LENGTH; // circle radius
 
     //sum the total values
@@ -80,6 +90,18 @@ void PieChart::paintEvent(QPaintEvent* event){
                 newColor = QColor(rand() % 200 + 30, rand() % 200 + 30 , rand() % 200 + 30);
                 qDebug() << "Debug: do while loop body executed and newColor is " << newColor;
             }while(count(usedColors.begin(), usedColors.end(), newColor) != 0);
+
+            if(this->displayValuesEnabled){
+                //add a small rectangle along with a QLabel into our hbox which is wrapped in the scroll area
+                RectWidget* rect = new RectWidget(RECT_LENGTH, RECT_LENGTH, newColor, this);
+                QVBoxLayout* rectWrapper = new QVBoxLayout(this);
+                rectWrapper->addWidget(rect);
+                QLabel* headerLabel = new QLabel(QString::fromStdString(this->contentHeaders.at(i)), this);
+                rectWrapper->addWidget(headerLabel);
+
+                //add the vbox into the hbox
+                this->hboxHeaders->addLayout(rectWrapper);
+            }
 
             painter.setPen(newColor);
             painter.setBrush(newColor);
