@@ -16,8 +16,16 @@ PieChart::PieChart(QWidget* parent): QWidget{parent}
     this->headerSA->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->headerSA->setFixedWidth(300);
     this->headerSA->setFixedHeight(150);
+    QWidget* intermediateWrapper2 = new QWidget(this);
+    intermediateWrapper2->setLayout(this->vboxValues);
+    this->vboxValues->setSpacing(20);
+    this->vboxValues->setSizeConstraint(QLayout::SetFixedSize);
+    this->valuesSA->setWidget(intermediateWrapper2);
+    this->valuesSA->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->valuesSA->setFixedSize(200, 400);
     wrapper->addWidget(this);
     wrapper->addWidget(this->headerSA);
+    wrapper->addWidget(this->valuesSA);
 }
 PieChart::PieChart(vector<double>& contentValues, vector<string>& contentHeaders, QWidget* parent): PieChart{parent}{
     this->setContents(contentValues, contentHeaders);
@@ -62,10 +70,12 @@ void PieChart::setSize(int width, int height){
 //refreshes the piechart by first setting displayValues option
 void PieChart::refresh(bool displayValues){
     this->displayValuesEnabled = displayValues;
+    this->redrawHeadersEnabled = true;
     this->update();
 }
 void PieChart::paintEvent(QPaintEvent* event){
     QPainter painter(this);
+    qDebug() << "Debug: PieChart::refresh has been invoked with event type " << event->type();
 
 
     const int RECT_LENGTH = 20;
@@ -85,18 +95,28 @@ void PieChart::paintEvent(QPaintEvent* event){
 
 
     if(this->contentValues.size() == this->contentHeaders.size()){ //just to enable the program to remain fault tolerant
-        //clear out the current contents of the rect vbox
-        while(this->hboxHeaders->count() > 0){
-            QLayout* layout = this->hboxHeaders->takeAt(0)->layout();
+        //clear out the current contents of the rect hbox and valuesvbox if the event is not a scroll event
+        if(this->redrawHeadersEnabled){
+            while(this->hboxHeaders->count() > 0){ //&& !(event->type() == QEvent::Scroll || event->type() == QEvent::MouseButtonPress)){
+                QLayout* layout = this->hboxHeaders->takeAt(0)->layout();
 
-            //delete the contents of the layout (we have 2 children normally) and all children must be of QWidget subclass
-            while(layout->count() > 0){
-                QWidget* currChild = layout->takeAt(0)->widget();
-                delete currChild;
+                //delete the contents of the layout (we have 2 children normally) and all children must be of QWidget subclass
+                while(layout->count() > 0){
+                    QWidget* currChild = layout->takeAt(0)->widget();
+                    delete currChild;
+                }
+                qDebug() << "Debug: PieChart::paintEvent hboxHeaders child layout to be deleted has pointer value " << layout;
+                delete layout;
             }
-            qDebug() << "Debug: PieChart::paintEvent hboxHeaders child layout to be deleted has pointer value " << layout;
-            delete layout;
+
+            //also clear out the vboxValues' contents
+            while(this->vboxValues->count() > 0){
+                QWidget* widget = this->vboxValues->takeAt(0)->widget(); //widget child is expected
+                delete widget;
+            }
         }
+
+        double sumValue = 0;
 
         vector<QColor> usedColors; //colors which have been used so far
         //start from the top point of the circle tangent to the x axis and draw slices clockwise
@@ -111,10 +131,9 @@ void PieChart::paintEvent(QPaintEvent* event){
             QColor newColor;
             do{
                 newColor = QColor(rand() % 200 + 30, rand() % 200 + 30 , rand() % 200 + 30);
-                qDebug() << "Debug: do while loop body executed and newColor is " << newColor;
             }while(count(usedColors.begin(), usedColors.end(), newColor) != 0);
 
-            if(this->displayValuesEnabled){
+            if(this->displayValuesEnabled && this->redrawHeadersEnabled){
                 //add a small rectangle along with a QLabel into our hbox which is wrapped in the scroll area
                 RectWidget* rect = new RectWidget(RECT_LENGTH, RECT_LENGTH, newColor, this);
                 QVBoxLayout* rectWrapper = new QVBoxLayout(this);
@@ -124,6 +143,11 @@ void PieChart::paintEvent(QPaintEvent* event){
 
                 //add the vbox into the hbox
                 this->hboxHeaders->addLayout(rectWrapper);
+
+                //now update the valuesSA content (vboxValues)
+                QLabel* valueLabel = new QLabel(QString::fromStdString(this->contentHeaders.at(i) + ": " + to_string(currValue) + "$"), this);
+                this->vboxValues->addWidget(valueLabel);
+                sumValue += currValue;
             }
 
             painter.setPen(newColor);
@@ -134,6 +158,13 @@ void PieChart::paintEvent(QPaintEvent* event){
             painter.drawPie(currX, currY, RADIUS, RADIUS, angleSum, currAngle);
             angleSum += currAngle; //angleSum also contains negative values now
         }
+        //add the total sum value to the vboxValues if conditions are satisfied
+        if(this->displayValuesEnabled && this->redrawHeadersEnabled){
+            QLabel* totalLabel = new QLabel(QString::fromStdString("Total: " + to_string(sumValue) + "$"), this);
+            this->vboxValues->addWidget(totalLabel);
+        }
     }
+    //set the redrawHeadersEnabled to its default state
+    this->redrawHeadersEnabled = false;
 
 }

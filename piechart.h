@@ -26,9 +26,12 @@ private:
     vector<double> contentValues;
     vector<string> contentHeaders;
     bool displayValuesEnabled = true; //true by default
+    bool redrawHeadersEnabled = false; //will be used to avoid redrawing header rects when paintEvent is not invoked by setContents
     QVBoxLayout* wrapper = new QVBoxLayout(this);
     QHBoxLayout* hboxHeaders = new QHBoxLayout(this);
     QScrollArea* headerSA = new QScrollArea(this);
+    QScrollArea* valuesSA = new QScrollArea(this); //scroll area to hold the amount of values in piechart categories
+    QVBoxLayout* vboxValues = new QVBoxLayout(this);
 
 public:
     PieChart(QWidget* parent = nullptr);
