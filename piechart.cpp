@@ -87,8 +87,15 @@ void PieChart::paintEvent(QPaintEvent* event){
     if(this->contentValues.size() == this->contentHeaders.size()){ //just to enable the program to remain fault tolerant
         //clear out the current contents of the rect vbox
         while(this->hboxHeaders->count() > 0){
-            QWidget* widget = this->hboxHeaders->takeAt(0)->widget();
-            delete widget;
+            QLayout* layout = this->hboxHeaders->takeAt(0)->layout();
+
+            //delete the contents of the layout (we have 2 children normally) and all children must be of QWidget subclass
+            while(layout->count() > 0){
+                QWidget* currChild = layout->takeAt(0)->widget();
+                delete currChild;
+            }
+            qDebug() << "Debug: PieChart::paintEvent hboxHeaders child layout to be deleted has pointer value " << layout;
+            delete layout;
         }
 
         vector<QColor> usedColors; //colors which have been used so far
