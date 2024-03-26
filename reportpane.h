@@ -13,29 +13,31 @@
 class ReportPane: public AbstractPane{
 private:
     QVBoxLayout* vbox = new QVBoxLayout(this); //vbox containing the menuBar and selected pane
+    QHBoxLayout* menuBox = new QHBoxLayout(this); // will enable the user to choose between panes
+    QToolButton* tbECP = new QToolButton(this);
+    QToolButton* tbIEDP = new QToolButton(this);
+    QToolButton* tbMPCP = new QToolButton(this);
 
-    QLayout* expenseChartsPane = nullptr;
+    QGridLayout* goalsChartPane = nullptr;
+    QComboBox* cbGoalDate = new QComboBox(this);
+    PieChart* goalDistributionChart = nullptr;
 
     QLayout* incomeExpenseDebtPane = nullptr;
 
 
     QGridLayout* monthPieChartPane = nullptr;
     QComboBox* comboBox = new QComboBox(this);
-
-    QHBoxLayout* menuBox = new QHBoxLayout(this); // will enable the user to choose between panes
     PieChart* expenseDistributionChart = nullptr;
 
-    QToolButton* tbECP = new QToolButton(this);
-    QToolButton* tbIEDP = new QToolButton(this);
-    QToolButton* tbMPCP = new QToolButton(this);
 
-    QString toolButtonStrings[3] = {"Expense Charts", "Income Expense\n Debt Graphs", "Monthly Spenditures\n   Charts"};
+
+    QString toolButtonStrings[3] = {"Monthly Financial\nGoal Distribution", "Income Expense\n Debt Graphs", "Monthly Spenditure\n   Distribution"};
 
 public:
     ReportPane(User* user, QWidget* parent = nullptr);
 
 private:
-    void initExpenseChartsPane();
+    void initGoalsChartPane();
     void initIncomeExpenseDebtPane();
     void initMonthPieChartPane();
 public slots:

@@ -23,7 +23,7 @@ ReportPane::ReportPane(User* user, QWidget* parent): AbstractPane{user, parent}{
 
     this->vbox->addLayout(this->menuBox);
 
-    this->initExpenseChartsPane();
+    this->initGoalsChartPane();
     this->initIncomeExpenseDebtPane();
     this->initMonthPieChartPane();
 
@@ -34,9 +34,19 @@ ReportPane::ReportPane(User* user, QWidget* parent): AbstractPane{user, parent}{
     //invoke the combobox (for piechart) manually
     this->comboBox->setCurrentIndex(1);
     this->comboBox->setCurrentIndex(0);
-}
-void ReportPane::initExpenseChartsPane(){
 
+    QObject::connect(this->tbECP, &QToolButton::clicked, this, &ReportPane::menuSelectionSlot);
+    QObject::connect(this->tbIEDP, &QToolButton::clicked, this, &ReportPane::menuSelectionSlot);
+    QObject::connect(this->tbMPCP, &QToolButton::clicked, this, &ReportPane::menuSelectionSlot);
+}
+void ReportPane::initGoalsChartPane(){
+    this->goalsChartPane = new QGridLayout(this);
+    this->goalDistributionChart = new PieChart(this);
+
+    //retrieve the months in which the user has specified any financial goals
+    MainController mc;
+    vector<vector<int>> monthsWithGoals = mc.getMonthsWithExpenseGoals(this->user->getUserName());
+    //PROCEED
 }
 void ReportPane::initIncomeExpenseDebtPane(){
 
@@ -92,7 +102,7 @@ void ReportPane::menuSelectionSlot(){
         this->vbox->addLayout(this->incomeExpenseDebtPane);
     }
     else if(eventSource == this->tbECP){
-        this->vbox->addLayout(this->expenseChartsPane);
+        this->vbox->addLayout(this->goalsChartPane);
     }
 }
 void ReportPane::pieDateSelectionSlot(int index){

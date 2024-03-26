@@ -46,6 +46,7 @@ public:
     void createMonthlyExpenseGoalsTable();
     bool registerUserMonthlyGoals(string username, int month, int year, vector<int>& values);
     vector<int> getUserMonthlyGoals(string username, int month, int year);
+    vector<vector<int>> getMonthsWithExpenseGoals(string username);
     bool createUserContactsTable();
     vector<vector<QString>> retrieveContacts(string& username);
     bool addContact(string username, string contactName, string category, string explanation);

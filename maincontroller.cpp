@@ -535,6 +535,24 @@ bool MainController::markFinancialGoalDone(int goalID){
     success = sq.exec();
     return success;
 }
+//Returns a 2D int vector containing month and year attributes in each row. Each row represents a month of a year in which user has or had
+//any expense goal (could be all 0)
+vector<vector<int>> MainController::getMonthsWithExpenseGoals(string username){
+    vector<vector<int>> result;
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT month, year FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME + " WHERE user_name = :username;"));
+    sq.bindValue(":username", QString::fromStdString(username));
+
+    if(sq.exec()){
+        while(sq.next()){
+            vector<int> currRow;
+            currRow.push_back(sq.value(0).toInt());
+            currRow.push_back(sq.value(1).toInt());
+            result.push_back(currRow);
+        }
+    }
+    return result;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";
