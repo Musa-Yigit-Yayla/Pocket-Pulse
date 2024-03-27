@@ -46,7 +46,19 @@ void ReportPane::initGoalsChartPane(){
     //retrieve the months in which the user has specified any financial goals
     MainController mc;
     vector<vector<int>> monthsWithGoals = mc.getMonthsWithExpenseGoals(this->user->getUserName());
-    //PROCEED
+
+    //initialize the related combobox
+    for(vector<int> currDate: monthsWithGoals){
+        int year = currDate.at(0);
+        int month = currDate.at(1);
+        string monthStr = ExpensePane::getMonthString(month);
+        this->cbGoalDate->addItem(QString::fromStdString(to_string(year) + " " + monthStr));
+    }
+
+    this->goalsChartPane->addWidget(this->cbGoalDate, 0, 1);
+    this->goalsChartPane->addWidget(this->goalDistributionChart, 1, 0);
+
+    QObject::connect(this->cbGoalDate, &QComboBox::currentIndexChanged, this, &ReportPane::pieDateSelectionSlot);
 }
 void ReportPane::initIncomeExpenseDebtPane(){
 
@@ -106,32 +118,36 @@ void ReportPane::menuSelectionSlot(){
     }
 }
 void ReportPane::pieDateSelectionSlot(int index){
-    //refresh the current pie chart
+    QObject* eventSource = QObject::sender();
 
+    if(eventSource == this->comboBox){
+        //refresh the current pie chart
+        QString currItem = this->comboBox->itemText(index);
 
-    QString currItem = this->comboBox->itemText(index);
+        int month = ExpensePane::getMonthInteger(currItem.split(' ').at(0).toStdString());
+        int year = currItem.split(' ').at(1).toInt();
 
-    int month = ExpensePane::getMonthInteger(currItem.split(' ').at(0).toStdString());
-    int year = currItem.split(' ').at(1).toInt();
+        //get the spent transactions for the given specific month and year so we can update our pie chart
+        BankingController bc;
+        MainController mc;
+        int userID = mc.getUserId(this->user->getUserName());
+        // bc.getSpentTransactions(userID, month, year, 0); //select all categories
 
-    //get the spent transactions for the given specific month and year so we can update our pie chart
-    BankingController bc;
-    MainController mc;
-    int userID = mc.getUserId(this->user->getUserName());
-    // bc.getSpentTransactions(userID, month, year, 0); //select all categories
+        vector<double> transactionSums;
+        vector<string> transactionHeaders = {"Health", "Education", "Market", "Entertainment", "Vehicle & Oil", "Fees", "Other"};
+        int categoryCount = static_cast<int>(ExpensePane::EXPENSE_CATEGORIES::count);
+        for(int i = 1; i <= categoryCount; i++){
+            double currSum = bc.sumSentTransactions(userID, i, month, year);
+            transactionSums.push_back(currSum);
+        }
+        //Proceed with updating the piechart values using the corresponding setter method
+        this->expenseDistributionChart->setContents(transactionSums, transactionHeaders);
 
-    vector<double> transactionSums;
-    vector<string> transactionHeaders = {"Health", "Education", "Market", "Entertainment", "Vehicle & Oil", "Fees", "Other"};
-    int categoryCount = static_cast<int>(ExpensePane::EXPENSE_CATEGORIES::count);
-    for(int i = 1; i <= categoryCount; i++){
-        double currSum = bc.sumSentTransactions(userID, i, month, year);
-        transactionSums.push_back(currSum);
+        //now simply remove the current item from the vbox so we can insert the pieChart
+        //this->vbox->takeAt(1);
+        //this->vbox->addLayout(this->monthPieChartPane);
     }
-    //Proceed with updating the piechart values using the corresponding setter method
-    this->expenseDistributionChart->setContents(transactionSums, transactionHeaders);
+    else if(eventSource == this->cbGoalDate){
 
-    //now simply remove the current item from the vbox so we can insert the pieChart
-    //this->vbox->takeAt(1);
-    //this->vbox->addLayout(this->monthPieChartPane);
-
+    }
 }

@@ -540,7 +540,8 @@ bool MainController::markFinancialGoalDone(int goalID){
 vector<vector<int>> MainController::getMonthsWithExpenseGoals(string username){
     vector<vector<int>> result;
     QSqlQuery sq(this->db);
-    sq.prepare(QString::fromStdString("SELECT month, year FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME + " WHERE user_name = :username;"));
+    sq.prepare(QString::fromStdString("SELECT month, year FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME + " WHERE user_name = :username" +
+                                      " ORDER BY(year, month) DESC;"));
     sq.bindValue(":username", QString::fromStdString(username));
 
     if(sq.exec()){
