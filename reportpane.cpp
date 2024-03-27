@@ -55,8 +55,8 @@ void ReportPane::initGoalsChartPane(){
 
     //initialize the related combobox
     for(vector<int> currDate: monthsWithGoals){
-        int year = currDate.at(0);
-        int month = currDate.at(1);
+        int year = currDate.at(1);
+        int month = currDate.at(0);
         string monthStr = ExpensePane::getMonthString(month);
         this->cbGoalDate->addItem(QString::fromStdString(to_string(year) + " " + monthStr));
     }
@@ -161,8 +161,8 @@ void ReportPane::pieDateSelectionSlot(int index){
         //refresh the pie chart regarding goal distributions
         QString currItem = this->cbGoalDate->itemText(index);
 
-        int month = ExpensePane::getMonthInteger(currItem.split(' ').at(0).toStdString());
-        int year = currItem.split(' ').at(1).toInt();
+        int month = ExpensePane::getMonthInteger(currItem.split(' ').at(1).toStdString());
+        int year = currItem.split(' ').at(0).toInt();
 
         MainController mc;
 
@@ -175,6 +175,7 @@ void ReportPane::pieDateSelectionSlot(int index){
         }
         vector<string> goalHeaders = ExpensePane::CATEGORY_LABEL_STRINGS;
 
+        qDebug() << "Debug: goalsDouble array has contents " << goalsDouble << " and size " << goalsDouble.size();
         this->goalDistributionChart->setContents(goalsDouble, goalHeaders);
     }
 }

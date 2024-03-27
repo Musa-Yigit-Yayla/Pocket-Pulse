@@ -535,13 +535,14 @@ bool MainController::markFinancialGoalDone(int goalID){
     success = sq.exec();
     return success;
 }
-//Returns a 2D int vector containing month and year attributes in each row. Each row represents a month of a year in which user has or had
+//Returns a 2D int vector containing year and month attributes in each row. Each row represents a month of a year in which user has or had
 //any expense goal (could be all 0)
 vector<vector<int>> MainController::getMonthsWithExpenseGoals(string username){
+    qDebug() << "Debug: MainController::getMonthsWithExpenseGoals has been invoked";
     vector<vector<int>> result;
     QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("SELECT month, year FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME + " WHERE user_name = :username" +
-                                      " ORDER BY(year, month) DESC;"));
+                                      " ORDER BY year DESC, month DESC;"));
     sq.bindValue(":username", QString::fromStdString(username));
 
     if(sq.exec()){
@@ -551,6 +552,9 @@ vector<vector<int>> MainController::getMonthsWithExpenseGoals(string username){
             currRow.push_back(sq.value(1).toInt());
             result.push_back(currRow);
         }
+    }
+    else{
+        qDebug() << "Debug: query last error in getMonthsWithExpenseGoals is " << sq.lastError();
     }
     return result;
 }
