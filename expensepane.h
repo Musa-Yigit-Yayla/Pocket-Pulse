@@ -28,7 +28,6 @@ private:
     QGridLayout* gridLayout = nullptr;
     QLabel* confirmationLabel = nullptr;
 
-    static const vector<string> CATEGORY_LABEL_STRINGS;
     static unordered_map<string, int> monthMap;
 
 public:
@@ -36,6 +35,7 @@ public:
     static string getMonthString(int month);
     static int getMonthInteger(string month);
 
+    static const vector<string> CATEGORY_LABEL_STRINGS;
     static const string MONTHLY_GOALS_TABLENAME;
     enum class EXPENSE_CATEGORIES{HEALTH, EDUCATION, GROCERY_MARKET, ENTERTAINMENT, VEHICLE, FEES, OTHER, count}; //count stores the length of enum class
 private:

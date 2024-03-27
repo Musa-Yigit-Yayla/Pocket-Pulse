@@ -19,14 +19,14 @@ private:
     QToolButton* tbMPCP = new QToolButton(this);
 
     QGridLayout* goalsChartPane = nullptr;
-    QComboBox* cbGoalDate = new QComboBox(this);
+    QComboBox* cbGoalDate = new QComboBox();
     PieChart* goalDistributionChart = nullptr;
 
     QLayout* incomeExpenseDebtPane = nullptr;
 
 
     QGridLayout* monthPieChartPane = nullptr;
-    QComboBox* comboBox = new QComboBox(this);
+    QComboBox* comboBox = new QComboBox();
     PieChart* expenseDistributionChart = nullptr;
 
 

@@ -28,20 +28,26 @@ ReportPane::ReportPane(User* user, QWidget* parent): AbstractPane{user, parent}{
     this->initMonthPieChartPane();
 
     //!!! ADD THE INITIAL SELECTED PANE TO THE VBOX
-    this->vbox->addLayout(this->monthPieChartPane);
+    //this->vbox->addLayout(this->monthPieChartPane);
 
     this->setLayout(this->vbox);
-    //invoke the combobox (for piechart) manually
-    this->comboBox->setCurrentIndex(1);
-    this->comboBox->setCurrentIndex(0);
+    //invoke the combobox currIndexChanges (for piecharts) manually
+    if(this->comboBox->count() >= 2){
+        this->comboBox->setCurrentIndex(1);
+        this->comboBox->setCurrentIndex(0);
+    }
+    if(this->cbGoalDate->count() >= 2){
+        this->cbGoalDate->setCurrentIndex(1);
+        this->cbGoalDate->setCurrentIndex(0);
+    }
 
     QObject::connect(this->tbECP, &QToolButton::clicked, this, &ReportPane::menuSelectionSlot);
     QObject::connect(this->tbIEDP, &QToolButton::clicked, this, &ReportPane::menuSelectionSlot);
     QObject::connect(this->tbMPCP, &QToolButton::clicked, this, &ReportPane::menuSelectionSlot);
 }
 void ReportPane::initGoalsChartPane(){
-    this->goalsChartPane = new QGridLayout(this);
-    this->goalDistributionChart = new PieChart(this);
+    this->goalsChartPane = new QGridLayout();
+    this->goalDistributionChart = new PieChart();
 
     //retrieve the months in which the user has specified any financial goals
     MainController mc;
@@ -64,8 +70,8 @@ void ReportPane::initIncomeExpenseDebtPane(){
 
 }
 void ReportPane::initMonthPieChartPane(){
-    this->monthPieChartPane = new QGridLayout(this);
-    this->expenseDistributionChart = new PieChart(this);
+    this->monthPieChartPane = new QGridLayout();
+    this->expenseDistributionChart = new PieChart();
     //set the combobox content to the months along with years in which user has made spending transactions using any of their registered accounts
     BankingController bc;
     vector<QString> spenditureMonths = bc.getSpenditureMonths(this->user->getUserName()); //returned values are in the form of month-year, hence convert it to the string form
@@ -106,15 +112,19 @@ void ReportPane::initMonthPieChartPane(){
 }
 void ReportPane::menuSelectionSlot(){
     QObject* eventSource = QObject::sender();
+    qDebug() << "Debug: ReportPane::menuSelectionSlot invoked";
     this->vbox->takeAt(1);
     if(eventSource == this->tbMPCP){
         this->vbox->addLayout(this->monthPieChartPane);
+        qDebug() << "Debug: branched into tbMPCP if block";
     }
     else if(eventSource == this->tbIEDP){
-        this->vbox->addLayout(this->incomeExpenseDebtPane);
+        //this->vbox->addLayout(this->incomeExpenseDebtPane);
+        qDebug() << "Debug: branched into tbIEDP if block";
     }
     else if(eventSource == this->tbECP){
         this->vbox->addLayout(this->goalsChartPane);
+        qDebug() << "Debug: branched into tbECP if block";
     }
 }
 void ReportPane::pieDateSelectionSlot(int index){
@@ -145,9 +155,26 @@ void ReportPane::pieDateSelectionSlot(int index){
 
         //now simply remove the current item from the vbox so we can insert the pieChart
         //this->vbox->takeAt(1);
-        //this->vbox->addLayout(this->monthPieChartPane);
+        //this->vbox->addLayout(this->monthcPieChartPane);
     }
     else if(eventSource == this->cbGoalDate){
+        //refresh the pie chart regarding goal distributions
+        QString currItem = this->cbGoalDate->itemText(index);
 
+        int month = ExpensePane::getMonthInteger(currItem.split(' ').at(0).toStdString());
+        int year = currItem.split(' ').at(1).toInt();
+
+        MainController mc;
+
+        vector<int> goals = mc.getUserMonthlyGoals(this->user->getUserName(), month, year);
+        vector<double> goalsDouble;
+        //convert goals to a double vector
+        for(int i = 0; i < goals.size(); i++){
+            double curr = goals.at(i);
+            goalsDouble.push_back(curr);
+        }
+        vector<string> goalHeaders = ExpensePane::CATEGORY_LABEL_STRINGS;
+
+        this->goalDistributionChart->setContents(goalsDouble, goalHeaders);
     }
 }
