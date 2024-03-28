@@ -337,4 +337,29 @@ vector<QString> BankingController::getSpenditureMonths(const string& username){
     }
     return result;
 }
+int BankingController::sumAllTransactions(int userId, bool isSent, int month, int year){
+    QSqlQuery sq(this->db);
+    int result = 0;
+
+    QString datePattern = QString::fromStdString(to_string(month) + "%" + to_string(year));
+    if(isSent){
+        sq.prepare(QString::fromStdString("SELECT SUM( CAST(SUBSTRING(amount, 2) AS REAL) FROM " + this->TRANSACTION_TABLE_NAME +
+                                          " WHERE date LIKE :datePattern AND sender_id IN (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME +
+                                          " WHERE user_id = :userId);"));
+    }
+    else{
+        sq.prepare(QString::fromStdString("SELECT SUM( CAST(SUBSTRING(amount, 2) AS REAL) FROM " + this->TRANSACTION_TABLE_NAME +
+                                          " WHERE date LIKE :datePattern AND receiver_id IN (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME +
+                                          " WHERE user_id = :userId);"));
+    }
+    sq.bindValue(":datePattern", datePattern);
+    sq.bindValue(":userId", userId);
+    bool success = sq.exec();
+    qDebug() << "Debug: sumAllTransactions in BankingController query execution yielded " << success;
+
+    if(success && sq.next()){
+        result = sq.value(0).toDouble();
+    }
+    return result;
+}
 const QDate BankingController::fromDate(2020, 1, 1);

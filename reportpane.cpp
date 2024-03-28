@@ -69,7 +69,13 @@ void ReportPane::initGoalsChartPane(){
     QObject::connect(this->cbGoalDate, &QComboBox::currentIndexChanged, this, &ReportPane::pieDateSelectionSlot);
 }
 void ReportPane::initIncomeExpenseDebtPane(){
+    this->incomeExpenseDebtPane = new QGridLayout();
+    this->dateAllCheckBox->setChecked(true);
 
+    QObject::connect(this->fromComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
+    QObject::connect(this->toComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
+    QObject::connect(this->dateAllCheckBox, &QCheckBox::stateChanged, this, &ReportPane::barChartRedrawSlot);
+    QObject::connect(this->btRefresh, &QPushButton::clicked, this, &ReportPane::barChartRedrawSlot);
 }
 void ReportPane::initMonthPieChartPane(){
     this->monthPieChartPane = new QGridLayout();
@@ -189,5 +195,18 @@ void ReportPane::pieDateSelectionSlot(int index){
 
         qDebug() << "Debug: goalsDouble array has contents " << goalsDouble << " and size " << goalsDouble.size();
         this->goalDistributionChart->setContents(goalsDouble, goalHeaders);
+    }
+}
+//for the date comboboxes of iedPane and its pushbuttons and the checkbox
+void ReportPane::barChartRedrawSlot(int index){
+    //The main approach is to retrieve income, expense, and total spenditure goal limit sums and display it on a monthly basis
+    //on the given time interval (inclusively on endpoints). If the given time interval is set to all using checkbox
+    //select the widest range in which any of the sums exist for the current user
+    if(this->dateAllCheckBox->isChecked()){
+        //select the whole range
+        //use aggregate min max functions, in the controller methods you will implement, in SQL
+    }
+    else{
+
     }
 }

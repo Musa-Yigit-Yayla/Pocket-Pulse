@@ -5,6 +5,7 @@
 #include <QToolButton>
 #include <QGridLayout>
 #include <QComboBox>
+#include <QCheckBox>
 
 #ifndef REPORTPANE_H
 #define REPORTPANE_H
@@ -24,7 +25,12 @@ private:
     QComboBox* cbGoalDate = new QComboBox();
     PieChart* goalDistributionChart = nullptr;
 
-    QLayout* incomeExpenseDebtPane = nullptr;
+    QGridLayout* incomeExpenseDebtPane = nullptr;
+    QVBoxLayout* controlWrapper = new QVBoxLayout();
+    QCheckBox* dateAllCheckBox = new QCheckBox("All dates:");
+    QPushButton* btRefresh = new QPushButton("Refresh");
+    QComboBox* fromComboBox = new QComboBox();
+    QComboBox* toComboBox = new QComboBox();
 
     QGridLayout* monthPieChartPane = nullptr;
     QComboBox* comboBox = new QComboBox();
@@ -44,6 +50,7 @@ private:
 public slots:
     void menuSelectionSlot();
     void pieDateSelectionSlot(int index); //for the combobox
+    void barChartRedrawSlot(int index); //for the date comboboxes of iedPane and its pushbutton
 
 };
 

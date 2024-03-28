@@ -40,6 +40,7 @@ public:
     vector<vector<int>> retrieveIncome(const string username);
     vector<vector<QVariant>> getSpentTransactions(const int userId, const int month, const int year, int category);
     int sumSentTransactions(int userId, int category, int month = -1, int year = -1);
+    int sumAllTransactions(int userId, bool isSent, int month, int year); //sum the transactions regardless of transaction category
     vector<QString> getSpenditureMonths(const string& username); //get the months (along with year) where the user has made any spenditure transactions
 
     static inline vector<int> splitDate(const string givenDate);
