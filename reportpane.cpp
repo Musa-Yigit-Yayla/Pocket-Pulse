@@ -29,6 +29,8 @@ ReportPane::ReportPane(User* user, QWidget* parent): AbstractPane{user, parent}{
 
     //!!! ADD THE INITIAL SELECTED PANE TO THE VBOX
     //this->vbox->addLayout(this->monthPieChartPane);
+    //this->chartWrapper->setLayout(this->monthPieChartPane);
+    this->vbox->addWidget(this->chartWrapper);
 
     this->setLayout(this->vbox);
     //invoke the combobox currIndexChanges (for piecharts) manually
@@ -113,19 +115,29 @@ void ReportPane::initMonthPieChartPane(){
 void ReportPane::menuSelectionSlot(){
     QObject* eventSource = QObject::sender();
     qDebug() << "Debug: ReportPane::menuSelectionSlot invoked";
-    this->vbox->takeAt(1);
+    this->vbox->takeAt(1); //remove the chartWrapper from its parent initially
+    this->chartWrapper->setLayout(nullptr); //remove the currently set layout
+    delete this->chartWrapper;
+    this->chartWrapper = new QWidget();
+    //QLayoutItem* takenItem = this->vbox->takeAt(1);
+    /*qDebug() << "Debug: takenItem in menuSelectionSlot is " << takenItem;
+    qDebug() << "Debug: takenItem == monthPieChartPane yields " << (takenItem == this->monthPieChartPane);
+    qDebug() << "Debug: takenItem == goalsChartPane yields " << (takenItem == this->goalsChartPane);*/
+    qDebug() << "Debug: currVBox item count before adding the selected layout is " << this->vbox->count();
+
     if(eventSource == this->tbMPCP){
-        this->vbox->addLayout(this->monthPieChartPane);
+        this->chartWrapper->setLayout(this->monthPieChartPane);
         qDebug() << "Debug: branched into tbMPCP if block";
     }
     else if(eventSource == this->tbIEDP){
-        //this->vbox->addLayout(this->incomeExpenseDebtPane);
+        this->chartWrapper->setLayout(this->incomeExpenseDebtPane);
         qDebug() << "Debug: branched into tbIEDP if block";
     }
     else if(eventSource == this->tbECP){
-        this->vbox->addLayout(this->goalsChartPane);
+        this->chartWrapper->setLayout(this->goalsChartPane);
         qDebug() << "Debug: branched into tbECP if block";
     }
+    this->vbox->addWidget(this->chartWrapper);
 }
 void ReportPane::pieDateSelectionSlot(int index){
     QObject* eventSource = QObject::sender();

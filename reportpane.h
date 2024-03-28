@@ -18,12 +18,13 @@ private:
     QToolButton* tbIEDP = new QToolButton(this);
     QToolButton* tbMPCP = new QToolButton(this);
 
+    QWidget* chartWrapper = new QWidget();
+
     QGridLayout* goalsChartPane = nullptr;
     QComboBox* cbGoalDate = new QComboBox();
     PieChart* goalDistributionChart = nullptr;
 
     QLayout* incomeExpenseDebtPane = nullptr;
-
 
     QGridLayout* monthPieChartPane = nullptr;
     QComboBox* comboBox = new QComboBox();
