@@ -117,7 +117,7 @@ void ReportPane::menuSelectionSlot(){
     qDebug() << "Debug: ReportPane::menuSelectionSlot invoked";
     this->vbox->takeAt(1); //remove the chartWrapper from its parent initially
     this->chartWrapper->setLayout(nullptr); //remove the currently set layout
-    delete this->chartWrapper;
+    //delete this->chartWrapper;
     this->chartWrapper = new QWidget();
     //QLayoutItem* takenItem = this->vbox->takeAt(1);
     /*qDebug() << "Debug: takenItem in menuSelectionSlot is " << takenItem;
@@ -134,7 +134,7 @@ void ReportPane::menuSelectionSlot(){
         qDebug() << "Debug: branched into tbIEDP if block";
     }
     else if(eventSource == this->tbECP){
-        this->chartWrapper->setLayout(this->goalsChartPane);
+        this->chartWrapper->setLayout(this->goalsChartPane); //HERE CRASHES
         qDebug() << "Debug: branched into tbECP if block";
     }
     this->vbox->addWidget(this->chartWrapper);
