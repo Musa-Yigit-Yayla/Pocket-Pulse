@@ -558,6 +558,32 @@ vector<vector<int>> MainController::getMonthsWithExpenseGoals(string username){
     }
     return result;
 }
+//returns {m1, y1, m2, y2} where m1, y1 represents the oldest date and m2, y2 is the most recent for the expense goals table
+vector<int> MainController::getMaxExpenseGoalSpan(string username){
+    vector<int> result;
+
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT year, MIN(month) FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME +
+                                      " WHERE year = (SELECT MIN(year) FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME +
+                                                        " AND user_name = :username) AND user_name = :username;"));
+    sq.bindValue(":username", QString::fromStdString(username));
+    if(sq.exec()){
+        sq.next();
+        result.push_back(sq.value(0).toInt());
+        result.push_back(sq.value(1).toInt());
+    }
+    //now retrieve the max with a similar query (most recent date)
+    sq.prepare(QString::fromStdString("SELECT year, MAX(month) FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME +
+                                      " WHERE year = (SELECT MAX(year) FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME +
+                                                        " AND user_name = :username) AND user_name = :username;"));
+    sq.bindValue(":username", QString::fromStdString(username));
+    if(sq.exec()){
+        sq.next();
+        result.push_back(sq.value(0).toInt());
+        result.push_back(sq.value(1).toInt());
+    }
+    return result;
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";

@@ -205,6 +205,23 @@ void ReportPane::barChartRedrawSlot(int index){
     if(this->dateAllCheckBox->isChecked()){
         //select the whole range
         //use aggregate min max functions, in the controller methods you will implement, in SQL
+        MainController mc;
+        vector<int> dateSpanGoals = mc.getMaxExpenseGoalSpan(this->user->getUserName());
+
+        int monthMinExpense = INT_MAX;
+        int yearMinExpense = INT_MAX;
+        int monthMaxExpense = INT_MIN;
+        int yearMaxExpense = INT_MIN;
+
+        if(dateSpanGoals.size() == 4){
+            monthMinExpense = dateSpanGoals.at(0);
+            yearMinExpense = dateSpanGoals.at(1);
+            monthMaxExpense = dateSpanGoals.at(2);
+            yearMaxExpense = dateSpanGoals.at(3);
+        }
+        //retrieve the max and min of participated transactions
+        BankingController bc;
+        vector<int> dateSpanTransactions = bc.getMaxTransactionsDateSpan(this->user->getUserName());
     }
     else{
 

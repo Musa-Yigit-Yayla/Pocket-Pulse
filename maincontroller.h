@@ -62,6 +62,7 @@ public:
     bool registerFinancialGoal(string username, string explanation, string dateOfCreation);
     unordered_map<int, string> retrieveFinancialGoals(string username, bool reached);
     bool markFinancialGoalDone(int goalID);
+    vector<int> getMaxExpenseGoalSpan(string username); //returns the minimum and maximum dates (month, year) in a 1d vector
 
     static const string USER_TABLE_NAME;
     static const string USER_CONTACTS_TABLE_NAME;

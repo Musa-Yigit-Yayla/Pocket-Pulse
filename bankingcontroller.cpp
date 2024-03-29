@@ -362,4 +362,43 @@ int BankingController::sumAllTransactions(int userId, bool isSent, int month, in
     }
     return result;
 }
+//retrieve the min and max {month, year} tuple where user has participated in a transaction
+vector<int> BankingController::getMaxTransactionsDateSpan(const string username){
+    vector<int> result;
+
+    MainController mc;
+    int userId = mc.getUserId(username);
+
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("WITH user_accounts(account_id) AS (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME + " WHERE user_id = :userId) "
+        "SELECT MIN(t1.date), FROM " + TRANSACTION_TABLE_NAME + " AS t1 WHERE t1.sender_id IN user_accounts OR t1.receiver_id IN user_accounts;"));
+    sq.bindValue(":userId", userId);
+
+    sq.exec();
+    if(sq.next()){
+        QString queryResult = sq.value(0).toString();
+        QStringList dateSegments = queryResult.split("/");
+        if(dateSegments.size() > 0){
+            //we are guaranteed to have 3 elements in string list
+            result.push_back(dateSegments.at(0).toInt());
+            result.push_back(dateSegments.at(3).toInt());
+        }
+    }
+
+    sq.prepare(QString::fromStdString("WITH user_accounts(account_id) AS (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME + " WHERE user_id = :userId) "
+        "SELECT MAX(t1.date), FROM " + TRANSACTION_TABLE_NAME + " AS t1 WHERE t1.sender_id IN user_accounts OR t1.receiver_id IN user_accounts;"));
+    sq.bindValue(":userId", userId);
+
+    sq.exec();
+    if(sq.next()){
+        QString queryResult = sq.value(0).toString();
+        QStringList dateSegments = queryResult.split("/");
+        if(dateSegments.size() > 0){
+            //we are guaranteed to have 3 elements in string list
+            result.push_back(dateSegments.at(0).toInt());
+            result.push_back(dateSegments.at(3).toInt());
+        }
+    }
+    return result;
+}
 const QDate BankingController::fromDate(2020, 1, 1);
