@@ -401,4 +401,15 @@ vector<int> BankingController::getMaxTransactionsDateSpan(const string username)
     }
     return result;
 }
+//Returns an array which contains  2 entries, holding respectively received transactions sum, sent transactions sum in the given date constraints
+vector<vector<QVariant>> BankingController::getMonthlyTransactionsFromInterval(string username, int month, int year){
+    QSqlQuery sq(this->db);
+    QString datePattern = QString::fromStdString(to_string(month) + "%" + to_string(year));
+    //1 BASED İNDEXİNG İN sql SUBSTRİNG
+    sq.prepare(QString::fromStdString("WITH user_accounts(account_id) AS (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME + " WHERE user_id = :userId)"
+                                      "SELECT SUM( CAST (SUBSTR( t1.amount, 2) AS REAL)), SUM( CAST ( SUBSTR(t2.amount, 2) AS REAL)"
+                                      " FROM " + TRANSACTION_TABLE_NAME + " AS t1, " + TRANSACTION_TABLE_NAME + " AS t2 "
+            " WHERE t1.date LIKE :datePattern AND t2.date LIKE :datePattern AND t1.receiver_id IN user_accounts AND t2.sender IN user_accounts;"));
+    //PROCEED
+}
 const QDate BankingController::fromDate(2020, 1, 1);

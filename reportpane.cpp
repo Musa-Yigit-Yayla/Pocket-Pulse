@@ -260,11 +260,18 @@ void ReportPane::barChartRedrawSlot(int index){
     //The main approach is to retrieve income, expense, and total spenditure goal limit sums and display it on a monthly basis
     //on the given time interval (inclusively on endpoints). If the given time interval is set to all using checkbox
     //select the widest range in which any of the sums exist for the current user
-    if(this->dateAllCheckBox->isChecked()){
-
+    if(this->fromComboBox->count() > 0 && this->toComboBox->count() > 0){
+        QString fromDate = "";
+        QString toDate = "";
+        if(this->dateAllCheckBox->isChecked()){
+            //select the first and last entry in one of the comboboxes
+            fromDate = this->fromComboBox->itemText(0);
+            toDate = this->toComboBox->itemText(this->toComboBox->count() - 1);
+        }
+        else{
+            fromDate = this->fromComboBox->currentText();
+            toDate = this->toComboBox->currentText();
+        }
     }
-    else{
-
-    }
-
+    //vector<vector<int>> getMonthlyTransactionsFromInterval(this->user->getUserName(), fromDate, toDate);
 }
