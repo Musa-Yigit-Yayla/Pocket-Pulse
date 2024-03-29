@@ -72,6 +72,64 @@ void ReportPane::initIncomeExpenseDebtPane(){
     this->incomeExpenseDebtPane = new QGridLayout();
     this->dateAllCheckBox->setChecked(true);
 
+    int minMonth;
+    int maxMonth;
+    int minYear;
+    int maxYear;
+    //initialize the contents of the combobox
+    //select the whole range
+    //use aggregate min max functions, in the controller methods you will implement, in SQL
+    MainController mc;
+    vector<int> dateSpanGoals = mc.getMaxExpenseGoalSpan(this->user->getUserName());
+
+    int monthMinExpense = INT_MAX;
+    int yearMinExpense = INT_MAX;
+    int monthMaxExpense = INT_MIN;
+    int yearMaxExpense = INT_MIN;
+
+    if(dateSpanGoals.size() == 4){
+        monthMinExpense = dateSpanGoals.at(0);
+        yearMinExpense = dateSpanGoals.at(1);
+        monthMaxExpense = dateSpanGoals.at(2);
+        yearMaxExpense = dateSpanGoals.at(3);
+    }
+    //retrieve the max and min of participated transactions
+    BankingController bc;
+    vector<int> dateSpanTransactions = bc.getMaxTransactionsDateSpan(this->user->getUserName());
+    int monthMinTransaction = INT_MAX;
+    int yearMinTransaction = INT_MAX;
+    int monthMaxTransaction = INT_MIN;
+    int yearMaxTransaction = INT_MIN;
+
+    if(dateSpanTransactions.size() == 4){
+        monthMinTransaction = dateSpanTransactions.at(0);
+        yearMinTransaction = dateSpanTransactions.at(1);
+        monthMaxTransaction = dateSpanTransactions.at(2);
+        yearMaxTransaction = dateSpanTransactions.at(3);
+    }
+    minMonth = min(monthMinExpense, monthMinTransaction);
+    minYear = min(yearMinExpense, yearMinTransaction);
+    maxMonth = max(monthMaxExpense, monthMaxTransaction);
+    maxYear = max(yearMaxExpense, yearMaxTransaction);
+    if(minMonth != INT_MAX){ //checking only one condition guarantees the existence of others
+        //add each and every month from min month and year to max month and year for simplicity even if no entry is found, into the combobox
+        int currMonth = minMonth, currYear = minYear;
+        while(currYear < maxYear || (currYear == maxYear && currMonth <= maxMonth)){
+            //add the curr item
+            string monthStr = ExpensePane::getMonthString(currMonth);
+            QString dateStr = QString::fromStdString(monthStr + " " + to_string(currYear));
+            this->fromComboBox->addItem(dateStr);
+            this->toComboBox->addItem(dateStr);
+            if(currMonth == 12){
+                currMonth = 1;
+                currYear++;
+            }
+            else{
+                currMonth++;
+            }
+        }
+    }
+
     QObject::connect(this->fromComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
     QObject::connect(this->toComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
     QObject::connect(this->dateAllCheckBox, &QCheckBox::stateChanged, this, &ReportPane::barChartRedrawSlot);
@@ -203,27 +261,10 @@ void ReportPane::barChartRedrawSlot(int index){
     //on the given time interval (inclusively on endpoints). If the given time interval is set to all using checkbox
     //select the widest range in which any of the sums exist for the current user
     if(this->dateAllCheckBox->isChecked()){
-        //select the whole range
-        //use aggregate min max functions, in the controller methods you will implement, in SQL
-        MainController mc;
-        vector<int> dateSpanGoals = mc.getMaxExpenseGoalSpan(this->user->getUserName());
 
-        int monthMinExpense = INT_MAX;
-        int yearMinExpense = INT_MAX;
-        int monthMaxExpense = INT_MIN;
-        int yearMaxExpense = INT_MIN;
-
-        if(dateSpanGoals.size() == 4){
-            monthMinExpense = dateSpanGoals.at(0);
-            yearMinExpense = dateSpanGoals.at(1);
-            monthMaxExpense = dateSpanGoals.at(2);
-            yearMaxExpense = dateSpanGoals.at(3);
-        }
-        //retrieve the max and min of participated transactions
-        BankingController bc;
-        vector<int> dateSpanTransactions = bc.getMaxTransactionsDateSpan(this->user->getUserName());
     }
     else{
 
     }
+
 }
