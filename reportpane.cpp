@@ -2,6 +2,7 @@
 #include "expensepane.h"
 #include "bankingcontroller.h"
 #include "maincontroller.h"
+#include <cmath>
 
 using namespace std;
 
@@ -70,7 +71,18 @@ void ReportPane::initGoalsChartPane(){
 }
 void ReportPane::initIncomeExpenseDebtPane(){
     this->incomeExpenseDebtPane = new QGridLayout();
+    this->rectGrid = new QGridLayout();
+
+    //initialize layout management for this pane
+    this->controlWrapper->addWidget(this->fromComboBox);
+    this->controlWrapper->addWidget(this->toComboBox);
+    this->controlWrapper->addWidget(this->dateAllCheckBox);
+    this->controlWrapper->addWidget(this->btRefresh);
+
+
     this->dateAllCheckBox->setChecked(true);
+    this->fromComboBox->setVisible(false);
+    this->toComboBox->setVisible(false);
 
     int minMonth;
     int maxMonth;
@@ -200,7 +212,37 @@ QWidget* ReportPane::getMonthBarChart(int month, int year){
         QVBoxLayout* rectLabelBox = new QVBoxLayout(widget);
         QHBoxLayout* rectBox = new QHBoxLayout(widget);
         rectBox->setSpacing(0);
-        //PROCEED BY initializing the rectangles and labels then complete layout management
+
+        //proceed by initializing the rectangles and labels then complete layout management
+        QLabel* dateLabel = new QLabel(QString::fromStdString(ExpensePane::getMonthString(month) + " " + to_string(year)), widget);
+        QFont font = dateLabel->font();
+        font.setBold(true);
+        dateLabel->setFont(font);
+
+        double maxSum = max(spenditureGoalsSum, max(receivedTransactionsSum, sentTransactionsSum));
+        int incomeHeight = (receivedTransactionsSum * RECT_MAX_HEIGHT) / maxSum;
+        int sentHeight = (sentTransactionsSum * RECT_MAX_HEIGHT) / maxSum;
+        int goalHeight = (spenditureGoalsSum * RECT_MAX_HEIGHT) / maxSum;
+
+        RectWidget* rectIncome = new RectWidget(RECT_WIDTH, incomeHeight, *(const_cast<QColor*>(&ReportPane::RECEIVED_TRANSACTION_COLOR)), widget);
+        RectWidget* rectSpenditure = new RectWidget(RECT_WIDTH, sentHeight, *(const_cast<QColor*>(&ReportPane::SENT_TRANSACTION_COLOR)), widget);
+        RectWidget* rectGoals = new RectWidget(RECT_WIDTH, goalHeight, *(const_cast<QColor*>(&ReportPane::TOTAL_SPENDITURE_GOAL_COLOR)), widget);
+        rectBox->addWidget(rectIncome);
+        rectBox->addWidget(rectSpenditure);
+        rectBox->addWidget(rectGoals);
+
+        QLabel* incomeLabel = new QLabel(QString::fromStdString("Income: " + to_string(receivedTransactionsSum) + "$"), widget);
+        QLabel* spenditureLabel = new QLabel(QString::fromStdString("Spenditure: " + to_string(sentTransactionsSum) + "$"), widget);
+        QLabel* goalLabel = new QLabel(QString::fromStdString("Spenditure Goals: " + to_string(spenditureGoalsSum) + "$"), widget);
+
+        rectLabelBox->addLayout(rectBox);
+        rectLabelBox->addWidget(incomeLabel);
+        rectLabelBox->addWidget(spenditureLabel);
+        rectLabelBox->addWidget(goalLabel);
+
+        grid->addWidget(dateLabel, 0, 1);
+        grid->addLayout(rectLabelBox, 0, 0);
+        widget->setLayout(grid);
     }
     return widget;
 }
@@ -226,7 +268,7 @@ void ReportPane::menuSelectionSlot(){
         qDebug() << "Debug: branched into tbIEDP if block";
     }
     else if(eventSource == this->tbECP){
-        this->chartWrapper->setLayout(this->goalsChartPane); //HERE CRASHES
+        this->chartWrapper->setLayout(this->goalsChartPane);
         qDebug() << "Debug: branched into tbECP if block";
     }
     this->vbox->addWidget(this->chartWrapper);
@@ -308,10 +350,28 @@ void ReportPane::barChartRedrawSlot(int index){
         int currMonth = fromMonth;
         int currYear = fromYear;
 
+        int currRow = 0;
+        int currColumn = 0;
+        const int columnCount = 8;
         while(currYear < toYear || (currYear == toYear && currMonth <= toMonth)){
             QWidget* monthBarChart = this->getMonthBarChart(currMonth, currYear);
             if(monthBarChart != NULL){
-
+                //insert into the rectGrid
+                this->rectGrid->addWidget(monthBarChart, currRow, currColumn);
+                if(currColumn + 1 == columnCount){
+                    currRow++;
+                    currColumn = 0;
+                }
+                else{
+                    currColumn++;
+                }
+            }
+            if(currMonth == 12){
+                currMonth = 1;
+                currYear++;
+            }
+            else{
+                currMonth++;
             }
         }
     }

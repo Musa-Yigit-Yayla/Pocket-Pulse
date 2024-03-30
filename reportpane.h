@@ -1,5 +1,6 @@
 #include "abstractpane.h"
 #include "piechart.h"
+#include "rectwidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -32,6 +33,8 @@ private:
     QPushButton* btRefresh = new QPushButton("Refresh");
     QComboBox* fromComboBox = new QComboBox();
     QComboBox* toComboBox = new QComboBox();
+    QGridLayout* rectGrid = nullptr;
+
 
     QGridLayout* monthPieChartPane = nullptr;
     QComboBox* comboBox = new QComboBox();
