@@ -141,6 +141,8 @@ void ReportPane::initIncomeExpenseDebtPane(){
             }
         }
     }
+    //manually invoke the barchart drawing slot
+    this->barChartRedrawSlot(0);
 
     QObject::connect(this->fromComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
     QObject::connect(this->toComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);

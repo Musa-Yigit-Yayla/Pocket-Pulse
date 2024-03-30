@@ -565,22 +565,22 @@ vector<int> MainController::getMaxExpenseGoalSpan(string username){
     QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("SELECT year, MIN(month) FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME +
                                       " WHERE year = (SELECT MIN(year) FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME +
-                                                        " AND user_name = :username) AND user_name = :username;"));
+                                                        " WHERE user_name = :username) AND user_name = :username;"));
     sq.bindValue(":username", QString::fromStdString(username));
     if(sq.exec()){
         sq.next();
-        result.push_back(sq.value(0).toInt());
         result.push_back(sq.value(1).toInt());
+        result.push_back(sq.value(0).toInt());
     }
     //now retrieve the max with a similar query (most recent date)
     sq.prepare(QString::fromStdString("SELECT year, MAX(month) FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME +
                                       " WHERE year = (SELECT MAX(year) FROM " + ExpensePane::MONTHLY_GOALS_TABLENAME +
-                                                        " AND user_name = :username) AND user_name = :username;"));
+                                                        " WHERE user_name = :username) AND user_name = :username;"));
     sq.bindValue(":username", QString::fromStdString(username));
     if(sq.exec()){
         sq.next();
-        result.push_back(sq.value(0).toInt());
         result.push_back(sq.value(1).toInt());
+        result.push_back(sq.value(0).toInt());
     }
     return result;
 }

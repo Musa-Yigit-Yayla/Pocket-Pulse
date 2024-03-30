@@ -371,7 +371,7 @@ vector<int> BankingController::getMaxTransactionsDateSpan(const string username)
 
     QSqlQuery sq(this->db);
     sq.prepare(QString::fromStdString("WITH user_accounts(account_id) AS (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME + " WHERE user_id = :userId) "
-        "SELECT MIN(t1.date), FROM " + TRANSACTION_TABLE_NAME + " AS t1 WHERE t1.sender_id IN user_accounts OR t1.receiver_id IN user_accounts;"));
+        "SELECT MIN(t1.date) FROM " + TRANSACTION_TABLE_NAME + " AS t1 WHERE t1.sender_id IN user_accounts OR t1.receiver_id IN user_accounts;"));
     sq.bindValue(":userId", userId);
 
     sq.exec();
@@ -381,12 +381,12 @@ vector<int> BankingController::getMaxTransactionsDateSpan(const string username)
         if(dateSegments.size() > 0){
             //we are guaranteed to have 3 elements in string list
             result.push_back(dateSegments.at(0).toInt());
-            result.push_back(dateSegments.at(3).toInt());
+            result.push_back(dateSegments.at(2).toInt());
         }
     }
 
     sq.prepare(QString::fromStdString("WITH user_accounts(account_id) AS (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME + " WHERE user_id = :userId) "
-        "SELECT MAX(t1.date), FROM " + TRANSACTION_TABLE_NAME + " AS t1 WHERE t1.sender_id IN user_accounts OR t1.receiver_id IN user_accounts;"));
+        "SELECT MAX(t1.date) FROM " + TRANSACTION_TABLE_NAME + " AS t1 WHERE t1.sender_id IN user_accounts OR t1.receiver_id IN user_accounts;"));
     sq.bindValue(":userId", userId);
 
     sq.exec();
@@ -396,7 +396,7 @@ vector<int> BankingController::getMaxTransactionsDateSpan(const string username)
         if(dateSegments.size() > 0){
             //we are guaranteed to have 3 elements in string list
             result.push_back(dateSegments.at(0).toInt());
-            result.push_back(dateSegments.at(3).toInt());
+            result.push_back(dateSegments.at(2).toInt());
         }
     }
     return result;
