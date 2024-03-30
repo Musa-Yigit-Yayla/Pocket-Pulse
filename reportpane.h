@@ -6,6 +6,7 @@
 #include <QGridLayout>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QColor>
 
 #ifndef REPORTPANE_H
 #define REPORTPANE_H
@@ -38,7 +39,10 @@ private:
 
 
 
-    QString toolButtonStrings[3] = {"Monthly Financial\nGoal Distribution", "Income Expense\n Debt Graphs", "Monthly Spenditure\n   Distribution"};
+    QString toolButtonStrings[3] = {"Monthly Spenditure\nGoal Distribution", "Income Expense\n Debt Graphs", "Monthly Spenditure\n   Distribution"};
+    static const QColor SENT_TRANSACTION_COLOR;
+    static const QColor RECEIVED_TRANSACTION_COLOR;
+    static const QColor TOTAL_SPENDITURE_GOAL_COLOR;
 
 public:
     ReportPane(User* user, QWidget* parent = nullptr);
@@ -47,6 +51,8 @@ private:
     void initGoalsChartPane();
     void initIncomeExpenseDebtPane();
     void initMonthPieChartPane();
+protected:
+    QWidget* getMonthBarChart(int month, int year);
 public slots:
     void menuSelectionSlot();
     void pieDateSelectionSlot(int index); //for the combobox

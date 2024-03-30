@@ -402,14 +402,28 @@ vector<int> BankingController::getMaxTransactionsDateSpan(const string username)
     return result;
 }
 //Returns an array which contains  2 entries, holding respectively received transactions sum, sent transactions sum in the given date constraints
-vector<vector<QVariant>> BankingController::getMonthlyTransactionsFromInterval(string username, int month, int year){
+vector<int> BankingController::getMonthlyTransactionsFromInterval(string username, int month, int year){
     QSqlQuery sq(this->db);
+    vector<int> result;
     QString datePattern = QString::fromStdString(to_string(month) + "%" + to_string(year));
-    //1 BASED İNDEXİNG İN sql SUBSTRİNG
+    MainController mc;
+    int userID = mc.getUserId(username);
+    //1 BASED İNDEXİNG İN sql SUBSTRING
     sq.prepare(QString::fromStdString("WITH user_accounts(account_id) AS (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME + " WHERE user_id = :userId)"
                                       "SELECT SUM( CAST (SUBSTR( t1.amount, 2) AS REAL)), SUM( CAST ( SUBSTR(t2.amount, 2) AS REAL)"
                                       " FROM " + TRANSACTION_TABLE_NAME + " AS t1, " + TRANSACTION_TABLE_NAME + " AS t2 "
             " WHERE t1.date LIKE :datePattern AND t2.date LIKE :datePattern AND t1.receiver_id IN user_accounts AND t2.sender IN user_accounts;"));
-    //PROCEED
+    sq.bindValue(":userId", userID);
+    sq.bindValue(":datePattern", datePattern);
+    bool success = sq.exec();
+    if(sq.next()){
+        result.push_back(sq.value(0).toInt());
+        result.push_back(sq.value(0).toInt());
+    }
+    else{
+        qDebug() << "Debug: getMonthlyTransactionsFromInterval yielded query execution " << success << " and the result has been filled with two 0s";
+        result = {0, 0};
+    }
+    return result;
 }
 const QDate BankingController::fromDate(2020, 1, 1);

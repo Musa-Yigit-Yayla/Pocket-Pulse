@@ -43,7 +43,7 @@ public:
     int sumAllTransactions(int userId, bool isSent, int month, int year); //sum the transactions regardless of transaction category
     vector<QString> getSpenditureMonths(const string& username); //get the months (along with year) where the user has made any spenditure transactions
     vector<int> getMaxTransactionsDateSpan(const string username); //retrieve the min and max month, year tuple where user has participated in a transaction
-    vector<vector<QVariant>> getMonthlyTransactionsFromInterval(string username, int month, int year);
+    vector<int> getMonthlyTransactionsFromInterval(string username, int month, int year);
 
     static inline vector<int> splitDate(const string givenDate);
     static const QDate fromDate;

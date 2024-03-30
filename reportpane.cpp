@@ -176,6 +176,34 @@ void ReportPane::initMonthPieChartPane(){
     //this->pieDateSelectionSlot(0);
     QObject::connect(this->comboBox, &QComboBox::currentIndexChanged, this, &ReportPane::pieDateSelectionSlot);
 }
+//Returns a visual element wrapped into a widget, representing visual data in barchart form regarding sent/received transactions and total spenditure goal
+//Returns nullptr if no entry has been found to visualize
+QWidget* ReportPane::getMonthBarChart(int month, int year){
+    QWidget* widget = nullptr;
+    const double RECT_MAX_HEIGHT = 350;
+    const double RECT_WIDTH = 35;
+
+    MainController mc;
+    vector<int> spenditureGoals = mc.getUserMonthlyGoals(this->user->getUserName(), month, year);
+    int spenditureGoalsSum = 0;
+    for(int currGoal: spenditureGoals){
+        spenditureGoalsSum += currGoal;
+    }
+    BankingController bc;
+    vector<int> transactions = bc.getMonthlyTransactionsFromInterval(this->user->getUserName(), month, year); //if no entry is found this vector contains two zeros
+    int receivedTransactionsSum = transactions.at(0);
+    int sentTransactionsSum = transactions.at(1);
+
+    if(spenditureGoalsSum != 0 || receivedTransactionsSum != 0 || sentTransactionsSum != 0){
+        widget = new QWidget();
+        QGridLayout* grid = new QGridLayout(widget);
+        QVBoxLayout* rectLabelBox = new QVBoxLayout(widget);
+        QHBoxLayout* rectBox = new QHBoxLayout(widget);
+        rectBox->setSpacing(0);
+        //PROCEED BY initializing the rectangles and labels then complete layout management
+    }
+    return widget;
+}
 void ReportPane::menuSelectionSlot(){
     QObject* eventSource = QObject::sender();
     qDebug() << "Debug: ReportPane::menuSelectionSlot invoked";
@@ -261,8 +289,8 @@ void ReportPane::barChartRedrawSlot(int index){
     //on the given time interval (inclusively on endpoints). If the given time interval is set to all using checkbox
     //select the widest range in which any of the sums exist for the current user
     if(this->fromComboBox->count() > 0 && this->toComboBox->count() > 0){
-        QString fromDate = "";
-        QString toDate = "";
+        QString fromDate;
+        QString toDate;
         if(this->dateAllCheckBox->isChecked()){
             //select the first and last entry in one of the comboboxes
             fromDate = this->fromComboBox->itemText(0);
@@ -272,6 +300,23 @@ void ReportPane::barChartRedrawSlot(int index){
             fromDate = this->fromComboBox->currentText();
             toDate = this->toComboBox->currentText();
         }
+        int fromMonth = ExpensePane::getMonthInteger(fromDate.split(' ').at(0).toStdString());
+        int fromYear = fromDate.split(' ').at(1).toInt();
+        int toMonth = ExpensePane::getMonthInteger(toDate.split(' ').at(0).toStdString());
+        int toYear = toDate.split(' ').at(1).toInt();
+
+        int currMonth = fromMonth;
+        int currYear = fromYear;
+
+        while(currYear < toYear || (currYear == toYear && currMonth <= toMonth)){
+            QWidget* monthBarChart = this->getMonthBarChart(currMonth, currYear);
+            if(monthBarChart != NULL){
+
+            }
+        }
     }
     //vector<vector<int>> getMonthlyTransactionsFromInterval(this->user->getUserName(), fromDate, toDate);
 }
+const QColor ReportPane::SENT_TRANSACTION_COLOR(232, 14, 2);
+const QColor ReportPane::RECEIVED_TRANSACTION_COLOR(5, 248, 8);
+const QColor ReportPane::TOTAL_SPENDITURE_GOAL_COLOR(232, 140, 2);
