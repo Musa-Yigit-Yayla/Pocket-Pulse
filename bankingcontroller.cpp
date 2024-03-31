@@ -370,9 +370,25 @@ vector<int> BankingController::getMaxTransactionsDateSpan(const string username)
     int userId = mc.getUserId(username);
 
     QSqlQuery sq(this->db);
+    string minYear = "";
+    string maxYear = "";
+    sq.prepare(QString::fromStdString("WITH year_dates(year) AS (SELECT SUBSTRING(t1.date, length(t1.date) - 3) FROM " + TRANSACTION_TABLE_NAME + " AS t1 AND ) " +
+                                      "SELECT MIN(year) FROM year_dates;"));
+    if(sq.exec() && sq.next()){
+        minYear = "%" + to_string(sq.value(0).toInt());
+    }
+    sq.prepare(QString::fromStdString("WITH year_dates(year) AS (SELECT SUBSTRING(t1.date, length(t1.date) - 3) FROM " + TRANSACTION_TABLE_NAME + " AS t1) " +
+                                      "SELECT MAX(year) FROM year_dates;"));
+    if(sq.exec() && sq.next()){
+        maxYear = "%" + to_string(sq.value(0).toInt());
+    }
+
+
     sq.prepare(QString::fromStdString("WITH user_accounts(account_id) AS (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME + " WHERE user_id = :userId) "
-        "SELECT MIN(t1.date) FROM " + TRANSACTION_TABLE_NAME + " AS t1 WHERE t1.sender_id IN user_accounts OR t1.receiver_id IN user_accounts;"));
+        "SELECT MIN(t1.date) FROM " + TRANSACTION_TABLE_NAME + " AS t1 "
+        "WHERE t1.date LIKE :minYear AND (t1.sender_id IN user_accounts OR t1.receiver_id IN user_accounts);"));
     sq.bindValue(":userId", userId);
+    sq.bindValue(":minYear", QString::fromStdString(minYear));
 
     sq.exec();
     if(sq.next()){
@@ -384,7 +400,8 @@ vector<int> BankingController::getMaxTransactionsDateSpan(const string username)
             result.push_back(dateSegments.at(2).toInt());
         }
     }
-
+    //YOU MAY WANT TO SELECT MIN AND MAX YEARS WHERE USER HAS PARTICIPATED IN A TRANSACTION SEPARATELY FOR CORRECT DATE COMPARISON BY FIRST
+    //COMPARING THE YEAR
     sq.prepare(QString::fromStdString("WITH user_accounts(account_id) AS (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME + " WHERE user_id = :userId) "
         "SELECT MAX(t1.date) FROM " + TRANSACTION_TABLE_NAME + " AS t1 WHERE t1.sender_id IN user_accounts OR t1.receiver_id IN user_accounts;"));
     sq.bindValue(":userId", userId);
