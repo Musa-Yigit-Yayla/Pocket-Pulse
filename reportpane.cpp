@@ -78,6 +78,8 @@ void ReportPane::initIncomeExpenseDebtPane(){
     this->btRefresh = new QPushButton("Refresh");
     this->fromComboBox = new QComboBox();
     this->toComboBox = new QComboBox();
+    this->rectSA = new QScrollArea();
+    this->intermediateRectWrapper = new QWidget();
 
     //initialize layout management for this pane
     this->controlWrapper->addWidget(this->fromComboBox);
@@ -150,9 +152,13 @@ void ReportPane::initIncomeExpenseDebtPane(){
     //manually invoke the barchart drawing slot
     this->barChartRedrawSlot(0);
 
+    //wrap the rectGrid into the rectSA
+    this->intermediateRectWrapper->setLayout(this->rectGrid);
+    this->rectSA->setWidget(this->intermediateRectWrapper);
+
     //set the high-level layout management for this pane
     this->incomeExpenseDebtPane->addLayout(this->controlWrapper, 0, 1);
-    this->incomeExpenseDebtPane->addLayout(this->rectGrid, 1, 0);
+    this->incomeExpenseDebtPane->addWidget(this->rectSA, 1, 0);
 
     QObject::connect(this->fromComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
     QObject::connect(this->toComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
@@ -237,12 +243,30 @@ QWidget* ReportPane::getMonthBarChart(int month, int year){
         int sentHeight = (sentTransactionsSum * RECT_MAX_HEIGHT) / maxSum;
         int goalHeight = (spenditureGoalsSum * RECT_MAX_HEIGHT) / maxSum;
 
-        RectWidget* rectIncome = new RectWidget(RECT_WIDTH, incomeHeight, *(const_cast<QColor*>(&ReportPane::RECEIVED_TRANSACTION_COLOR)), widget);
-        RectWidget* rectSpenditure = new RectWidget(RECT_WIDTH, sentHeight, *(const_cast<QColor*>(&ReportPane::SENT_TRANSACTION_COLOR)), widget);
-        RectWidget* rectGoals = new RectWidget(RECT_WIDTH, goalHeight, *(const_cast<QColor*>(&ReportPane::TOTAL_SPENDITURE_GOAL_COLOR)), widget);
-        rectBox->addWidget(rectIncome);
-        rectBox->addWidget(rectSpenditure);
-        rectBox->addWidget(rectGoals);
+        RectWidget* rectIncome = nullptr;
+        RectWidget* rectSpenditure = nullptr;
+        RectWidget* rectGoals = nullptr;
+        if(receivedTransactionsSum != 0){
+            rectIncome = new RectWidget(RECT_WIDTH, incomeHeight, *(const_cast<QColor*>(&ReportPane::RECEIVED_TRANSACTION_COLOR)), widget);
+            QVBoxLayout* wrapperVBox = new QVBoxLayout(widget);
+            wrapperVBox->addWidget(rectIncome);
+            rectBox->addLayout(wrapperVBox);
+        }
+        if(sentTransactionsSum != 0){
+            rectSpenditure = new RectWidget(RECT_WIDTH, sentHeight, *(const_cast<QColor*>(&ReportPane::SENT_TRANSACTION_COLOR)), widget);
+            QVBoxLayout* wrapperVBox = new QVBoxLayout(widget);
+            wrapperVBox->addWidget(rectSpenditure);
+            rectBox->addLayout(wrapperVBox);
+        }
+        if(spenditureGoalsSum != 0){
+            rectGoals = new RectWidget(RECT_WIDTH, goalHeight, *(const_cast<QColor*>(&ReportPane::TOTAL_SPENDITURE_GOAL_COLOR)), widget);
+            QVBoxLayout* wrapperVBox = new QVBoxLayout(widget);
+            wrapperVBox->addWidget(rectGoals);
+            rectBox->addLayout(wrapperVBox);
+        }
+        //rectBox->addWidget(rectIncome);
+        //rectBox->addWidget(rectSpenditure);
+        //rectBox->addWidget(rectGoals);
 
         QLabel* incomeLabel = new QLabel(QString::fromStdString("Income: " + to_string(receivedTransactionsSum) + "$"), widget);
         QLabel* spenditureLabel = new QLabel(QString::fromStdString("Spenditure: " + to_string(sentTransactionsSum) + "$"), widget);

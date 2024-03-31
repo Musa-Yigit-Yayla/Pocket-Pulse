@@ -33,6 +33,8 @@ private:
     QPushButton* btRefresh = nullptr;
     QComboBox* fromComboBox = nullptr;
     QComboBox* toComboBox = nullptr;
+    QScrollArea* rectSA = nullptr;
+    QWidget* intermediateRectWrapper = nullptr;
     QGridLayout* rectGrid = nullptr;
 
 
