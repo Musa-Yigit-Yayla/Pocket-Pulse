@@ -249,18 +249,24 @@ QWidget* ReportPane::getMonthBarChart(int month, int year){
         if(receivedTransactionsSum != 0){
             rectIncome = new RectWidget(RECT_WIDTH, incomeHeight, *(const_cast<QColor*>(&ReportPane::RECEIVED_TRANSACTION_COLOR)), widget);
             QVBoxLayout* wrapperVBox = new QVBoxLayout(widget);
+            QSpacerItem* spacer = new QSpacerItem(RECT_WIDTH, RECT_MAX_HEIGHT - incomeHeight);
+            wrapperVBox->addItem(spacer);
             wrapperVBox->addWidget(rectIncome);
             rectBox->addLayout(wrapperVBox);
         }
         if(sentTransactionsSum != 0){
             rectSpenditure = new RectWidget(RECT_WIDTH, sentHeight, *(const_cast<QColor*>(&ReportPane::SENT_TRANSACTION_COLOR)), widget);
             QVBoxLayout* wrapperVBox = new QVBoxLayout(widget);
+            QSpacerItem* spacer = new QSpacerItem(RECT_WIDTH, RECT_MAX_HEIGHT - sentHeight);
+            wrapperVBox->addItem(spacer);
             wrapperVBox->addWidget(rectSpenditure);
             rectBox->addLayout(wrapperVBox);
         }
         if(spenditureGoalsSum != 0){
             rectGoals = new RectWidget(RECT_WIDTH, goalHeight, *(const_cast<QColor*>(&ReportPane::TOTAL_SPENDITURE_GOAL_COLOR)), widget);
             QVBoxLayout* wrapperVBox = new QVBoxLayout(widget);
+            QSpacerItem* spacer = new QSpacerItem(RECT_WIDTH, RECT_MAX_HEIGHT - goalHeight);
+            wrapperVBox->addItem(spacer);
             wrapperVBox->addWidget(rectGoals);
             rectBox->addLayout(wrapperVBox);
         }

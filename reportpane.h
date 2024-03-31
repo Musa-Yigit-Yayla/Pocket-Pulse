@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QColor>
+#include <QSpacerItem>
 
 #ifndef REPORTPANE_H
 #define REPORTPANE_H
