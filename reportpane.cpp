@@ -144,6 +144,10 @@ void ReportPane::initIncomeExpenseDebtPane(){
     //manually invoke the barchart drawing slot
     this->barChartRedrawSlot(0);
 
+    //set the high-level layout management for this pane
+    this->incomeExpenseDebtPane->addLayout(this->controlWrapper, 0, 1);
+    this->incomeExpenseDebtPane->addLayout(this->rectGrid, 1, 0);
+
     QObject::connect(this->fromComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
     QObject::connect(this->toComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
     QObject::connect(this->dateAllCheckBox, &QCheckBox::stateChanged, this, &ReportPane::barChartRedrawSlot);

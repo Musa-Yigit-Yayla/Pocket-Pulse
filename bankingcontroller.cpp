@@ -437,9 +437,9 @@ vector<int> BankingController::getMonthlyTransactionsFromInterval(string usernam
     int userID = mc.getUserId(username);
     //1 BASED İNDEXİNG İN sql SUBSTRING
     sq.prepare(QString::fromStdString("WITH user_accounts(account_id) AS (SELECT account_id FROM " + USER_ACCOUNT_TABLE_NAME + " WHERE user_id = :userId)"
-                                      "SELECT SUM( CAST (SUBSTR( t1.amount, 2) AS REAL)), SUM( CAST ( SUBSTR(t2.amount, 2) AS REAL)"
+                                      " SELECT SUM( CAST (SUBSTR( t1.amount, 2) AS REAL)), SUM( CAST ( SUBSTR(t2.amount, 2) AS REAL))"
                                       " FROM " + TRANSACTION_TABLE_NAME + " AS t1, " + TRANSACTION_TABLE_NAME + " AS t2 "
-            " WHERE t1.date LIKE :datePattern AND t2.date LIKE :datePattern AND t1.receiver_id IN user_accounts AND t2.sender IN user_accounts;"));
+            " WHERE t1.date LIKE :datePattern AND t2.date LIKE :datePattern AND t1.receiver_id IN user_accounts AND t2.sender_id IN user_accounts;"));
     sq.bindValue(":userId", userID);
     sq.bindValue(":datePattern", datePattern);
     bool success = sq.exec();
