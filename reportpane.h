@@ -24,20 +24,20 @@ private:
     QWidget* chartWrapper = new QWidget();
 
     QGridLayout* goalsChartPane = nullptr;
-    QComboBox* cbGoalDate = new QComboBox();
+    QComboBox* cbGoalDate = nullptr;
     PieChart* goalDistributionChart = nullptr;
 
     QGridLayout* incomeExpenseDebtPane = nullptr;
-    QVBoxLayout* controlWrapper = new QVBoxLayout();
-    QCheckBox* dateAllCheckBox = new QCheckBox("All dates:");
-    QPushButton* btRefresh = new QPushButton("Refresh");
-    QComboBox* fromComboBox = new QComboBox();
-    QComboBox* toComboBox = new QComboBox();
+    QVBoxLayout* controlWrapper = nullptr;
+    QCheckBox* dateAllCheckBox = nullptr;
+    QPushButton* btRefresh = nullptr;
+    QComboBox* fromComboBox = nullptr;
+    QComboBox* toComboBox = nullptr;
     QGridLayout* rectGrid = nullptr;
 
 
     QGridLayout* monthPieChartPane = nullptr;
-    QComboBox* comboBox = new QComboBox();
+    QComboBox* comboBox = nullptr;
     PieChart* expenseDistributionChart = nullptr;
 
 

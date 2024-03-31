@@ -51,6 +51,7 @@ ReportPane::ReportPane(User* user, QWidget* parent): AbstractPane{user, parent}{
 void ReportPane::initGoalsChartPane(){
     this->goalsChartPane = new QGridLayout();
     this->goalDistributionChart = new PieChart();
+    this->cbGoalDate = new QComboBox();
 
     //retrieve the months in which the user has specified any financial goals
     MainController mc;
@@ -72,6 +73,11 @@ void ReportPane::initGoalsChartPane(){
 void ReportPane::initIncomeExpenseDebtPane(){
     this->incomeExpenseDebtPane = new QGridLayout();
     this->rectGrid = new QGridLayout();
+    this->controlWrapper = new QVBoxLayout();
+    this->dateAllCheckBox = new QCheckBox("All dates:");
+    this->btRefresh = new QPushButton("Refresh");
+    this->fromComboBox = new QComboBox();
+    this->toComboBox = new QComboBox();
 
     //initialize layout management for this pane
     this->controlWrapper->addWidget(this->fromComboBox);
@@ -156,6 +162,7 @@ void ReportPane::initIncomeExpenseDebtPane(){
 void ReportPane::initMonthPieChartPane(){
     this->monthPieChartPane = new QGridLayout();
     this->expenseDistributionChart = new PieChart();
+    this->comboBox = new QComboBox();
     //set the combobox content to the months along with years in which user has made spending transactions using any of their registered accounts
     BankingController bc;
     vector<QString> spenditureMonths = bc.getSpenditureMonths(this->user->getUserName()); //returned values are in the form of month-year, hence convert it to the string form
@@ -257,7 +264,10 @@ void ReportPane::menuSelectionSlot(){
     qDebug() << "Debug: ReportPane::menuSelectionSlot invoked";
     this->vbox->takeAt(1); //remove the chartWrapper from its parent initially
     this->chartWrapper->setLayout(nullptr); //remove the currently set layout
-    //delete this->chartWrapper;
+    //this->monthPieChartPane->setParent(nullptr);
+    //this->goalsChartPane->setParent(nullptr);
+    //this->incomeExpenseDebtPane->setParent(nullptr);
+    delete this->chartWrapper;
     this->chartWrapper = new QWidget();
     //QLayoutItem* takenItem = this->vbox->takeAt(1);
     /*qDebug() << "Debug: takenItem in menuSelectionSlot is " << takenItem;
@@ -266,14 +276,25 @@ void ReportPane::menuSelectionSlot(){
     qDebug() << "Debug: currVBox item count before adding the selected layout is " << this->vbox->count();
 
     if(eventSource == this->tbMPCP){
+        this->initMonthPieChartPane();
+        if(this->comboBox->count() >= 2){
+            this->comboBox->setCurrentIndex(1);
+            this->comboBox->setCurrentIndex(0);
+        }
         this->chartWrapper->setLayout(this->monthPieChartPane);
         qDebug() << "Debug: branched into tbMPCP if block";
     }
     else if(eventSource == this->tbIEDP){
+        this->initIncomeExpenseDebtPane(); //reinstantiate the incomeexpensedebtpane
         this->chartWrapper->setLayout(this->incomeExpenseDebtPane);
         qDebug() << "Debug: branched into tbIEDP if block";
     }
     else if(eventSource == this->tbECP){
+        this->initGoalsChartPane();
+        if(this->cbGoalDate->count() >= 2){
+            this->cbGoalDate->setCurrentIndex(1);
+            this->cbGoalDate->setCurrentIndex(0);
+        }
         this->chartWrapper->setLayout(this->goalsChartPane);
         qDebug() << "Debug: branched into tbECP if block";
     }
