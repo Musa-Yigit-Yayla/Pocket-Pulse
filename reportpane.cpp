@@ -289,6 +289,37 @@ QWidget* ReportPane::getMonthBarChart(int month, int year){
     }
     return widget;
 }
+//Given widget is obliged to be a valid barChart
+void ReportPane::deleteMonthBarChart(QWidget* barChart){
+    if(barChart != NULL){
+        QGridLayout* gridLayout = qobject_cast<QGridLayout*>(barChart->layout());
+        QWidget* dateLabelWidget = gridLayout->itemAtPosition(0, 1)->widget();
+        gridLayout->removeItem(gridLayout->itemAtPosition(0, 1));
+        delete dateLabelWidget;
+        //deallocate the rectLabelBox and its contents
+        QLayout* rectLabelBox = (gridLayout->itemAtPosition(1, 0))->layout();
+        gridLayout->removeItem(gridLayout->itemAtPosition(1, 0));
+
+        //deallocate the rectBox
+        QLayout* rectBox = rectLabelBox->takeAt(0)->layout();
+        while(rectBox->count() > 0){
+            QLayout* currLayout = rectBox->takeAt(0)->layout();
+            while(currLayout->count() > 0){
+                delete currLayout->takeAt(0);
+            }
+            delete currLayout;
+        }
+        delete rectBox;
+        //deallocate the remaining widgets at rectLabelBox
+        while(rectLabelBox->count() > 0){
+            QWidget* currWidget = rectLabelBox->takeAt(0)->widget();
+            delete currWidget;
+        }
+        delete rectLabelBox;
+        delete gridLayout;
+        delete barChart;
+    }
+}
 void ReportPane::menuSelectionSlot(){
     QObject* eventSource = QObject::sender();
     qDebug() << "Debug: ReportPane::menuSelectionSlot invoked";
@@ -384,12 +415,35 @@ void ReportPane::pieDateSelectionSlot(int index){
 }
 //for the date comboboxes of iedPane and its pushbuttons and the checkbox
 void ReportPane::barChartRedrawSlot(int index){
+    QObject* eventSource = QObject::sender();
     //first clear out the current contents of the rectGrid (if not empty)
-    deallocateItem(this->rectGrid);
+    if(eventSource == this->fromComboBox || eventSource == this->toComboBox){
+        //deallocateItem(this->rectGrid);
+        //delete this->rectGrid;
+        //qDeleteAll(this->rectGrid->findChildren<QWidget *>(QString(), Qt::FindChildrenRecursively));
+        while(this->rectGrid->count() > 0){
+            QWidget* currBarChart = this->rectGrid->takeAt(0)->widget();
+            this->deleteMonthBarChart(currBarChart);
+        }
+        //delete this->rectGrid;
+        return;
+    }
+    else{
+        if(!this->dateAllCheckBox->isChecked()){
+            this->fromComboBox->setVisible(true);
+            this->toComboBox->setVisible(true);
+        }
+        else{
+            this->fromComboBox->setVisible(false);
+            this->toComboBox->setVisible(false);
+        }
+        //delete this->rectGrid;
+    }
     /*while(this->rectGrid->count() > 0){
         QLayoutItem* currItem = this->rectGrid->itemAt(0); //we are guaranteed to have a QWidget instance
         deallocateItem(currItem);
     }*/
+    delete this->rectGrid;
     this->rectGrid = new QGridLayout();
 
     //The main approach is to retrieve income, expense, and total spenditure goal limit sums and display it on a monthly basis
@@ -443,7 +497,8 @@ void ReportPane::barChartRedrawSlot(int index){
     //vector<vector<int>> getMonthlyTransactionsFromInterval(this->user->getUserName(), fromDate, toDate);
 }
 void ReportPane::deallocateItem(QLayoutItem* item){
-    if(item != NULL){
+    qDebug() << "Debug: ReportPane::deallocateItem has been invoked";
+    if(item != nullptr){
         QWidget* widget = item->widget();
         if(widget != NULL){ //the item is a widget
             //deallocate the layout if the widget has one
@@ -451,7 +506,7 @@ void ReportPane::deallocateItem(QLayoutItem* item){
             deallocateItem(widgetLayout);
             delete widget; //delete the widget before returning
         }
-        else{
+        else if(item->layout() != NULL){
             QLayout* layout = item->layout();
             //delete each and every child of the layout using the recurisve method
             while(layout->count() > 0){

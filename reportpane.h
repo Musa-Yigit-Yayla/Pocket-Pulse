@@ -59,6 +59,7 @@ private:
     void initMonthPieChartPane();
 protected:
     QWidget* getMonthBarChart(int month, int year);
+    void deleteMonthBarChart(QWidget* barChart);
 public slots:
     void menuSelectionSlot();
     void pieDateSelectionSlot(int index); //for the combobox
