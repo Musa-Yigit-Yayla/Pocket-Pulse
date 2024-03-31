@@ -333,6 +333,14 @@ void ReportPane::pieDateSelectionSlot(int index){
 }
 //for the date comboboxes of iedPane and its pushbuttons and the checkbox
 void ReportPane::barChartRedrawSlot(int index){
+    //first clear out the current contents of the rectGrid (if not empty)
+    deallocateItem(this->rectGrid);
+    /*while(this->rectGrid->count() > 0){
+        QLayoutItem* currItem = this->rectGrid->itemAt(0); //we are guaranteed to have a QWidget instance
+        deallocateItem(currItem);
+    }*/
+    this->rectGrid = new QGridLayout();
+
     //The main approach is to retrieve income, expense, and total spenditure goal limit sums and display it on a monthly basis
     //on the given time interval (inclusively on endpoints). If the given time interval is set to all using checkbox
     //select the widest range in which any of the sums exist for the current user
@@ -358,7 +366,7 @@ void ReportPane::barChartRedrawSlot(int index){
 
         int currRow = 0;
         int currColumn = 0;
-        const int columnCount = 8;
+        const int columnCount = 6;
         while(currYear < toYear || (currYear == toYear && currMonth <= toMonth)){
             QWidget* monthBarChart = this->getMonthBarChart(currMonth, currYear);
             if(monthBarChart != NULL){
@@ -382,6 +390,25 @@ void ReportPane::barChartRedrawSlot(int index){
         }
     }
     //vector<vector<int>> getMonthlyTransactionsFromInterval(this->user->getUserName(), fromDate, toDate);
+}
+void ReportPane::deallocateItem(QLayoutItem* item){
+    if(item != NULL){
+        QWidget* widget = item->widget();
+        if(widget != NULL){ //the item is a widget
+            //deallocate the layout if the widget has one
+            QLayout* widgetLayout = widget->layout();
+            deallocateItem(widgetLayout);
+            delete widget; //delete the widget before returning
+        }
+        else{
+            QLayout* layout = item->layout();
+            //delete each and every child of the layout using the recurisve method
+            while(layout->count() > 0){
+                deallocateItem(layout->itemAt(0));
+            }
+            delete layout;
+        }
+    }
 }
 const QColor ReportPane::SENT_TRANSACTION_COLOR(232, 14, 2);
 const QColor ReportPane::RECEIVED_TRANSACTION_COLOR(5, 248, 8);

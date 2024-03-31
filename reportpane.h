@@ -49,7 +49,7 @@ private:
 
 public:
     ReportPane(User* user, QWidget* parent = nullptr);
-
+    static void deallocateItem(QLayoutItem* item); //static recursive method to deallocate a given layout item
 private:
     void initGoalsChartPane();
     void initIncomeExpenseDebtPane();
