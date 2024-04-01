@@ -297,8 +297,8 @@ void ReportPane::deleteMonthBarChart(QWidget* barChart){
         gridLayout->removeItem(gridLayout->itemAtPosition(0, 1));
         delete dateLabelWidget;
         //deallocate the rectLabelBox and its contents
-        QLayout* rectLabelBox = (gridLayout->itemAtPosition(1, 0))->layout();
-        gridLayout->removeItem(gridLayout->itemAtPosition(1, 0));
+        QLayout* rectLabelBox = (gridLayout->itemAtPosition(0, 0))->layout();
+        gridLayout->removeItem(gridLayout->itemAtPosition(0, 0));
 
         //deallocate the rectBox
         QLayout* rectBox = rectLabelBox->takeAt(0)->layout();
@@ -418,15 +418,21 @@ void ReportPane::barChartRedrawSlot(int index){
     QObject* eventSource = QObject::sender();
     //first clear out the current contents of the rectGrid (if not empty)
     if(eventSource == this->fromComboBox || eventSource == this->toComboBox){
-        //deallocateItem(this->rectGrid);
+        /*//deallocateItem(this->rectGrid);
         //delete this->rectGrid;
         //qDeleteAll(this->rectGrid->findChildren<QWidget *>(QString(), Qt::FindChildrenRecursively));
-        while(this->rectGrid->count() > 0){
-            QWidget* currBarChart = this->rectGrid->takeAt(0)->widget();
-            this->deleteMonthBarChart(currBarChart);
+        qDebug() << "Debug: rectGrid row and column counts are respectively " << this->rectGrid->rowCount() << ", " << this->rectGrid->columnCount();
+        for(int i = 0; i < this->rectGrid->rowCount(); i++){
+            for(int j = 0; j < this->rectGrid->columnCount(); j++){
+                QWidget* currBarChart = this->rectGrid->itemAtPosition(i, j)->widget();
+                this->deleteMonthBarChart(currBarChart);
+            }
         }
-        //delete this->rectGrid;
-        return;
+        //delete this->rectGrid;*/
+        delete this->intermediateRectWrapper;
+        delete this->rectSA;
+        delete this->incomeExpenseDebtPane;
+        //return;
     }
     else{
         if(!this->dateAllCheckBox->isChecked()){
