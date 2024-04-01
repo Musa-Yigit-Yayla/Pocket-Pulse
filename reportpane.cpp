@@ -483,13 +483,13 @@ void ReportPane::barChartRedrawSlot(int index){
         int toMonth = ExpensePane::getMonthInteger(toDate.split(' ').at(0).toStdString());
         int toYear = toDate.split(' ').at(1).toInt();
 
-        int currMonth = fromMonth;
-        int currYear = fromYear;
+        int currMonth = toMonth;
+        int currYear = toYear;
 
         int currRow = 0;
         int currColumn = 0;
         const int columnCount = 6;
-        while(currYear < toYear || (currYear == toYear && currMonth <= toMonth)){
+        while(currYear > fromYear || (currYear == fromYear && currMonth >= fromMonth)){
             QWidget* monthBarChart = this->getMonthBarChart(currMonth, currYear);
             if(monthBarChart != NULL){
                 //insert into the rectGrid
@@ -502,12 +502,12 @@ void ReportPane::barChartRedrawSlot(int index){
                     currColumn++;
                 }
             }
-            if(currMonth == 12){
-                currMonth = 1;
-                currYear++;
+            if(currMonth == 1){
+                currMonth = 12;
+                currYear--;
             }
             else{
-                currMonth++;
+                currMonth--;
             }
         }
     }
