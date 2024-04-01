@@ -37,6 +37,7 @@ private:
     QScrollArea* rectSA = nullptr;
     QWidget* intermediateRectWrapper = nullptr;
     QGridLayout* rectGrid = nullptr;
+    QGridLayout* expGrid = nullptr;
 
 
     QGridLayout* monthPieChartPane = nullptr;

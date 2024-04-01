@@ -80,6 +80,7 @@ void ReportPane::initIncomeExpenseDebtPane(){
     this->toComboBox = new QComboBox();
     this->rectSA = new QScrollArea();
     this->intermediateRectWrapper = new QWidget();
+    this->expGrid = new QGridLayout();
 
     //initialize layout management for this pane
     this->controlWrapper->addWidget(this->fromComboBox);
@@ -87,6 +88,20 @@ void ReportPane::initIncomeExpenseDebtPane(){
     this->controlWrapper->addWidget(this->dateAllCheckBox);
     this->controlWrapper->addWidget(this->btRefresh);
 
+    const int DESC_RECT_LENGTH = 18;
+    RectWidget* descRect0 = new RectWidget(DESC_RECT_LENGTH, DESC_RECT_LENGTH, *(const_cast<QColor*>(&ReportPane::RECEIVED_TRANSACTION_COLOR)));
+    RectWidget* descRect1 = new RectWidget(DESC_RECT_LENGTH, DESC_RECT_LENGTH, *(const_cast<QColor*>(&ReportPane::SENT_TRANSACTION_COLOR)));
+    RectWidget* descRect2 = new RectWidget(DESC_RECT_LENGTH, DESC_RECT_LENGTH, *(const_cast<QColor*>(&ReportPane::TOTAL_SPENDITURE_GOAL_COLOR)));
+    QLabel* descLabel0 = new QLabel(": Total Income");
+    QLabel* descLabel1 = new QLabel(": Total Spenditure");
+    QLabel* descLabel2 = new QLabel(": Total Spenditure Goal");
+
+    this->expGrid->addWidget(descRect0, 0, 0);
+    this->expGrid->addWidget(descLabel0, 0, 1);
+    this->expGrid->addWidget(descRect1, 1, 0);
+    this->expGrid->addWidget(descLabel1, 1, 1);
+    this->expGrid->addWidget(descRect2, 2, 0);
+    this->expGrid->addWidget(descLabel2, 2, 1);
 
     this->dateAllCheckBox->setChecked(true);
     this->fromComboBox->setVisible(false);
@@ -157,8 +172,10 @@ void ReportPane::initIncomeExpenseDebtPane(){
     this->rectSA->setWidget(this->intermediateRectWrapper);
 
     //set the high-level layout management for this pane
-    this->incomeExpenseDebtPane->addLayout(this->controlWrapper, 0, 1);
+    //this->incomeExpenseDebtPane->addLayout(this->controlWrapper, 0, 1);
+    this->incomeExpenseDebtPane->addLayout(this->expGrid, 0, 0);
     this->incomeExpenseDebtPane->addWidget(this->rectSA, 1, 0);
+
 
     QObject::connect(this->fromComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
     QObject::connect(this->toComboBox, &QComboBox::currentIndexChanged, this, &ReportPane::barChartRedrawSlot);
