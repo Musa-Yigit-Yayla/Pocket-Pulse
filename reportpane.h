@@ -62,7 +62,7 @@ protected:
     QWidget* getMonthBarChart(int month, int year);
     void deleteMonthBarChart(QWidget* barChart);
 public slots:
-    void menuSelectionSlot();
+    void menuSelectionSlot(int initialInvokeState);
     void pieDateSelectionSlot(int index); //for the combobox
     void barChartRedrawSlot(int index); //for the date comboboxes of iedPane and its pushbutton
 

@@ -33,6 +33,8 @@ ReportPane::ReportPane(User* user, QWidget* parent): AbstractPane{user, parent}{
     //this->chartWrapper->setLayout(this->monthPieChartPane);
     this->vbox->addWidget(this->chartWrapper);
 
+    emit this->menuSelectionSlot(1); //manually select the first pane
+
     this->setLayout(this->vbox);
     //invoke the combobox currIndexChanges (for piecharts) manually
     if(this->comboBox->count() >= 2){
@@ -337,7 +339,7 @@ void ReportPane::deleteMonthBarChart(QWidget* barChart){
         delete barChart;
     }
 }
-void ReportPane::menuSelectionSlot(){
+void ReportPane::menuSelectionSlot(int initialInvokeState){
     QObject* eventSource = QObject::sender();
     qDebug() << "Debug: ReportPane::menuSelectionSlot invoked";
     this->vbox->takeAt(1); //remove the chartWrapper from its parent initially
@@ -354,6 +356,10 @@ void ReportPane::menuSelectionSlot(){
     qDebug() << "Debug: currVBox item count before adding the selected layout is " << this->vbox->count();
 
     if(eventSource == this->tbMPCP){
+        this->tbMPCP->setStyleSheet("border: 1px solid green;");
+        this->tbIEDP->setStyleSheet("");
+        this->tbECP->setStyleSheet("");
+
         this->initMonthPieChartPane();
         if(this->comboBox->count() >= 2){
             this->comboBox->setCurrentIndex(1);
@@ -363,11 +369,19 @@ void ReportPane::menuSelectionSlot(){
         qDebug() << "Debug: branched into tbMPCP if block";
     }
     else if(eventSource == this->tbIEDP){
+        this->tbMPCP->setStyleSheet("");
+        this->tbIEDP->setStyleSheet("border: 1px solid green;");
+        this->tbECP->setStyleSheet("");
+
         this->initIncomeExpenseDebtPane(); //reinstantiate the incomeexpensedebtpane
         this->chartWrapper->setLayout(this->incomeExpenseDebtPane);
         qDebug() << "Debug: branched into tbIEDP if block";
     }
-    else if(eventSource == this->tbECP){
+    else if(eventSource == this->tbECP || initialInvokeState == 1){ //branch when initially invoked by emit signal manually
+        this->tbMPCP->setStyleSheet("");
+        this->tbIEDP->setStyleSheet("");
+        this->tbECP->setStyleSheet("border: 1px solid green;");
+
         this->initGoalsChartPane();
         if(this->cbGoalDate->count() >= 2){
             this->cbGoalDate->setCurrentIndex(1);
