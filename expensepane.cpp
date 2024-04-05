@@ -29,8 +29,14 @@ ExpensePane::ExpensePane(User* user, QWidget* parent): AbstractPane{user, parent
     this->headerLabel->setFont(font);
 
     this->setLayoutManagement();
+
     QObject::connect(this->btUpdate, &QPushButton::clicked, this, &ExpensePane::btUpdateSlot);
     QObject::connect(this, &ExpensePane::displayConfirmationLabel, this, &ExpensePane::confirmationLabelSlot);
+    QObject::connect(this->dateSelector, &QComboBox::currentIndexChanged, this, &ExpensePane::fetchExistingValuesSlot);
+
+    //manually select the first index of the dateSelector to display the placeholders
+    this->dateSelector->setCurrentIndex(1);
+    this->dateSelector->setCurrentIndex(0);
 }
 void ExpensePane::setLayoutManagement(){
     this->gridLayout = new QGridLayout(this);
@@ -102,8 +108,13 @@ void ExpensePane::btUpdateSlot(){
     int categoryLength =  static_cast<int>(EXPENSE_CATEGORIES::count);
     for(int i = 0; i < categoryLength; i++){
         string currText = this->textfields.at(i)->text().toStdString();
+        string placeHolder = this->textfields.at(i)->placeholderText().toStdString();
         if(currText != ""){
             values.push_back(stoi(currText));
+        }
+        else if(placeHolder != ""){
+            //push the placeholder value to preserve the persisted value upon the new update statement
+            values.push_back(stoi(placeHolder));
         }
         else{
             values.push_back(0);
@@ -180,6 +191,27 @@ int ExpensePane::getMonthInteger(string month){
         result = monthMap.at(month);
     }
     return result;
+}
+//Event handler procedure for combobox index change event, where we try to fetch existing spenditure goal values if they exist
+void ExpensePane::fetchExistingValuesSlot(int index){
+    MainController mc;
+    QString currSelection = this->dateSelector->currentText();
+    int month = getMonthInteger(currSelection.split(" ").at(0).toStdString());
+    int year = currSelection.split(" ").at(1).toInt();
+
+    vector<int> currValues = mc.getUserMonthlyGoals(this->user->getUserName(), month, year);
+    if(currValues.size() > 0){
+        for(int i = 0; i < currValues.size(); i++){
+            int currAmount = currValues.at(i);
+            this->textfields.at(i)->setPlaceholderText(QString::fromStdString(to_string(currAmount)));
+        }
+    }
+    else{
+        for(int i = 0; i < this->textfields.size(); i++){
+            //clear out the placeholders
+            this->textfields.at(i)->setPlaceholderText("");
+        }
+    }
 }
 const vector<string> ExpensePane::CATEGORY_LABEL_STRINGS = {"Health", "Education", "Grocery & Market", "Entertainment", "Vehicle & Oil", "Fees", "Other"};
 const string ExpensePane::MONTHLY_GOALS_TABLENAME = "MONTHLY_EXPENSE_GOALS";

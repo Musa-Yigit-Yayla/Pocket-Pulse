@@ -48,6 +48,7 @@ public slots:
     void btUpdateSlot();
     void confirmationLabelSlot(bool confirmed);
     void confirmTimerSlot();
+    void fetchExistingValuesSlot(int index);
 signals:
     void displayConfirmationLabel(bool confirmed);
 };
