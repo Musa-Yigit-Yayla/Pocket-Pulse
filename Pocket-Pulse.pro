@@ -30,6 +30,7 @@ SOURCES += \
     debtpane.cpp \
     expensepane.cpp \
     fingoalpane.cpp \
+    homepane.cpp \
     incomepane.cpp \
     loginscreen.cpp \
     main.cpp \
@@ -55,6 +56,7 @@ HEADERS += \
     debtpane.h \
     expensepane.h \
     fingoalpane.h \
+    homepane.h \
     incomepane.h \
     loginscreen.h \
     maincontroller.h \
