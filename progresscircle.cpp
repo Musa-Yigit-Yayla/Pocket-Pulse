@@ -1,5 +1,7 @@
 #include "progresscircle.h"
+#include <string>
 
+using namespace std;
 
 ProgressCircle::ProgressCircle(QWidget *parent): ProgressCircle{0, 0, parent}{
 
@@ -28,10 +30,12 @@ void ProgressCircle::paintEvent(QPaintEvent* event) {
         const int FULL_ANGLE = 300;
         int spareAngle = 360 - FULL_ANGLE;
         int sideAngle = (180 - spareAngle) / 2;
-        const int STROKE_WIDTH = 6; //4 pixels
+        const int STROKE_WIDTH = 6; //6 pixels
 
         QPen pen;
         pen.setWidth(STROKE_WIDTH);
+
+        const QPen& defaultPen = painter.pen();
 
         double fillRatio = ((double)(this->filledAmount)) / (this->totalAmount);
         QColor color = ProgressRectangle::getFillRatioRGB(fillRatio);
@@ -39,7 +43,12 @@ void ProgressCircle::paintEvent(QPaintEvent* event) {
         painter.setBrush(color);
         painter.drawArc(0, 0, this->width(), this->height(), 0, 180 + sideAngle);
         painter.drawArc(0, 0, this->width(), this->height(), 0, 0 - spareAngle);
-        //painter.drawText() PROCEED
+
+        //draw the correlated text in the middle
+        painter.setPen(defaultPen);
+        painter.setBrush(QColor::fromRgb(0, 0, 0));
+        string text = to_string(this->filledAmount) + "/" + to_string(this->totalAmount);
+        painter.drawText(this->width() / 2, this->height() / 2, QString::fromStdString(text));
     }
     event->ignore();
 }

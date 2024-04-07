@@ -584,6 +584,26 @@ vector<int> MainController::getMaxExpenseGoalSpan(string username){
     }
     return result;
 }
+//Returns a vector with two entries representing paidDebtCount and totalDebtCount respectively for the given user
+vector<int> MainController::getDebtStatusRatio(string username){
+    QSqlQuery sq(this->db);
+
+    vector<int> result;
+    sq.prepare(QString::fromStdString("SELECT COUNT(t1.id) FROM " + USER_DEBTS_TABLE_NAME + " AS t1," +
+                                      " WHERE t1.username = :username AND t1.paid_status = 1;"));
+    if(sq.exec() && sq.next()){
+        result.push_back(sq.value(0).toInt());
+    }
+    sq.prepare(QString::fromStdString("SELECT COUNT(id) FROM " + USER_DEBTS_TABLE_NAME + " WHERE username = :username;"));
+    if(sq.exec() && sq.next()){
+        result.push_back(sq.value(0).toInt());
+    }
+    return result;
+}
+//Returns a vector with two entries representing attainedFinancialGoalCount and totalFinancialGoalCount respectively for the given user
+vector<int> MainController::getFinancialGoalsStatusRatio(int userID){
+
+}
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";
 const string MainController::DB_PASSWORD = "123456";
