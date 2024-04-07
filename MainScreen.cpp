@@ -40,6 +40,7 @@ MainScreen::~MainScreen(){
     for(int i = 0; i < this->toolButtons.size(); i++){
         delete toolButtons.at(i);
     }
+    delete this->btHome;
     delete this->btLogout;
     delete this->wrapper;
 }
@@ -73,6 +74,18 @@ void MainScreen::setLayoutManagement(){
 void MainScreen::setScrollableContent(){
     QSpacerItem* spacer0 = new QSpacerItem(50, 50);
     this->vboxScrollable->addSpacerItem(spacer0);
+
+    //first instantiate and add the btHome
+    this->btHome = new QToolButton();
+    this->btHome->setFixedSize(MainScreen::LOGOUT_ICON_LENGTH - 5, MainScreen::LOGOUT_ICON_LENGTH);
+    QPixmap homeImg(QString::fromStdString(ICONS_FOLDER_PATH + "\\homeicon.png"));
+    QRect imgRect = homeImg.rect();
+    imgRect.setSize(QSize(LOGOUT_ICON_LENGTH, LOGOUT_ICON_LENGTH));
+    this->btHome->setIcon(homeImg);
+    const QString homeStr = "Home";
+    this->btHome->setToolTip(homeStr);
+    this->vboxScrollable->addWidget(this->btHome);
+
     //initialize the pushbuttons with their icons, then add them
     for(int i = 0; i < 7; i++){
         QToolButton* currBt = new QToolButton();
@@ -95,6 +108,8 @@ void MainScreen::setScrollableContent(){
     }
     QSpacerItem* spacer1 = new QSpacerItem(*spacer0);
     this->vboxScrollable->addSpacerItem(spacer1);
+
+    QObject::connect(this->btHome, &QToolButton::clicked, this, &MainScreen::toolHomeSlot);
 
     QToolButton* bt0 = this->toolButtons.at(0);
     QObject::connect(bt0, &QToolButton::clicked, this, &MainScreen::toolExpenseSlot);
@@ -171,6 +186,7 @@ void MainScreen::setAnimatedLabel(){
     //set the animated label properties and initialize the animation
 }
 void MainScreen::setGenericPanes(){
+    this->homePane = new HomePane(this->user, this->wrapper);
     this->bankPane = new BankPane(this->user, this->wrapper);
     this->expensePane = new ExpensePane(this->user, this->wrapper);
     this->contactsPane = new ContactsPane(this->user, this->wrapper);
@@ -179,6 +195,7 @@ void MainScreen::setGenericPanes(){
     this->fingoalPane = new FingoalPane(this->user, this->wrapper);
     this->reportPane = new ReportPane(this->user, this->wrapper);
 
+    this->homePane->setVisible(false);
     this->bankPane->setVisible(false);
     this->expensePane->setVisible(false); //modify the visibility later on
     this->contactsPane->setVisible(false);
@@ -204,6 +221,13 @@ MainController* MainScreen::getMainController() const{
     return this->controller;
 }
 //public slots
+void MainScreen::toolHomeSlot(){
+    this->removeCurrGenericPane();
+    this->homePane->setVisible(true);
+    this->hbox2->addWidget(this->homePane);
+    //additionally refresh the homepane to fetch the latest data for progress circles and other panes
+    this->homePane->refresh();
+}
 void MainScreen::toolExpenseSlot(){
     this->removeCurrGenericPane();
     this->expensePane->setVisible(true);

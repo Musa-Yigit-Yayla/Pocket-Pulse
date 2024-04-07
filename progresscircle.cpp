@@ -7,9 +7,8 @@ ProgressCircle::ProgressCircle(QWidget *parent): ProgressCircle{0, 0, parent}{
 
 }
 ProgressCircle::ProgressCircle(int filledAmount, int totalAmount, QWidget* parent): QWidget(parent){
-    this->filledAmount = filledAmount;
-    this->totalAmount = totalAmount;
     this->setFixedSize(FIXED_WIDTH, FIXED_HEIGHT);
+    this->setAmounts(filledAmount, totalAmount);
 }
 int ProgressCircle::getFilledAmount() const{
     return this->filledAmount;
@@ -18,6 +17,9 @@ int ProgressCircle::getTotalAmount() const{
     return this->totalAmount;
 }
 void ProgressCircle::setAmounts(int filledAmount, int totalAmount){
+    if(totalAmount == 0){
+        this->totalAmount = 1; //set it to 1 for avoiding division by zero
+    }
     this->filledAmount = filledAmount;
     this->totalAmount = totalAmount;
     this->update();

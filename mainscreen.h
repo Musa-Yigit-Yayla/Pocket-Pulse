@@ -11,6 +11,7 @@
 #include "debtpane.h"
 #include "fingoalpane.h"
 #include "reportpane.h"
+#include "homepane.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -53,11 +54,13 @@ private:
     QLabel* topLeftImgLabel = nullptr;
     AnimatedLabel* animatedLabel = nullptr;
 
+    QToolButton* btHome = nullptr;
     vector<QToolButton*> toolButtons;
     QToolButton* btLogout = nullptr; //add widget
     QToolButton* btEditProfile = nullptr;
 
     //generic pane datafields
+    HomePane* homePane = nullptr;
     BankPane* bankPane = nullptr;
     ExpensePane* expensePane = nullptr;
     ContactsPane* contactsPane = nullptr;
@@ -91,6 +94,7 @@ private:
     void setGenericPanes(); //method for initializing the generic pane datafields
     inline void removeCurrGenericPane();
 public slots:
+    void toolHomeSlot();
     void toolExpenseSlot();
     void toolIncomeSlot();
     void toolFinGoalSlot();

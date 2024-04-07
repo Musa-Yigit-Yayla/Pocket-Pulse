@@ -585,6 +585,7 @@ vector<int> MainController::getMaxExpenseGoalSpan(string username){
     return result;
 }
 //Returns a vector with two entries representing paidDebtCount and totalDebtCount respectively for the given user
+//Returns an empty vector with two zero entries if query execution fails or no value has been found
 vector<int> MainController::getDebtStatusRatio(string username){
     QSqlQuery sq(this->db);
 
@@ -594,15 +595,45 @@ vector<int> MainController::getDebtStatusRatio(string username){
     if(sq.exec() && sq.next()){
         result.push_back(sq.value(0).toInt());
     }
+    else{
+        result.push_back(0);
+    }
     sq.prepare(QString::fromStdString("SELECT COUNT(id) FROM " + USER_DEBTS_TABLE_NAME + " WHERE username = :username;"));
     if(sq.exec() && sq.next()){
         result.push_back(sq.value(0).toInt());
     }
+    else{
+        result.push_back(0);
+    }
     return result;
 }
 //Returns a vector with two entries representing attainedFinancialGoalCount and totalFinancialGoalCount respectively for the given user
-vector<int> MainController::getFinancialGoalsStatusRatio(int userID){
+//Returns an empty vector with two zero entries if query execution fails or no value has been found
+vector<int> MainController::getFinancialGoalsStatusRatio(string username){
+    QSqlQuery sq(this->db);
 
+    int userID = this->getUserId(username);
+    vector<int> result;
+    sq.prepare(QString::fromStdString("SELECT COUNT(userID) FROM " + FINANCIAL_GOALS_TABLE_NAME + " WHERE userID = :userID AND status = 1;"));
+    sq.bindValue("userID", userID);
+
+    if(sq.exec() && sq.next()){
+        result.push_back(sq.value(0).toInt());
+    }
+    else{
+        result.push_back(0);
+    }
+
+    sq.prepare(QString::fromStdString("SELECT COUNT(userID) FROM " + FINANCIAL_GOALS_TABLE_NAME + " WHERE userID = :userID;"));
+    sq.bindValue("userID", userID);
+
+    if(sq.exec() && sq.next()){
+        result.push_back(sq.value(0).toInt());
+    }
+    else{
+        result.push_back(0);
+    }
+    return result;
 }
 const string MainController::DB_NAME = "PocketPulseDB";
 const string MainController::DB_USERNAME = "root";

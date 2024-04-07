@@ -13,7 +13,7 @@ using namespace std;
 #ifndef HOMEPANE_H
 #define HOMEPANE_H
 
-class HomePane: AbstractPane{
+class HomePane: public AbstractPane{
 private:
     ProgressCircle* goalsCircle = nullptr;
     ProgressCircle* debtCircle = nullptr;

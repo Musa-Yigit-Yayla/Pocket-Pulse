@@ -64,7 +64,7 @@ public:
     bool markFinancialGoalDone(int goalID);
     vector<int> getMaxExpenseGoalSpan(string username); //returns the minimum and maximum dates (month, year) in a 1d vector
     vector<int> getDebtStatusRatio(string username);
-    vector<int> getFinancialGoalsStatusRatio(int userID);
+    vector<int> getFinancialGoalsStatusRatio(string username);
 
     static const string USER_TABLE_NAME;
     static const string USER_CONTACTS_TABLE_NAME;
