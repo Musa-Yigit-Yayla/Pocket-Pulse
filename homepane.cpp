@@ -1,6 +1,8 @@
 #include "homepane.h"
 
 HomePane::HomePane(User* user, QWidget* parent): AbstractPane{user, parent}{
+    this->initialSentence = QString::fromStdString(HomePane::MOTIVATION_SENTENCES.at(rand() % HomePane::MOTIVATION_SENTENCES.size()));
+    this->initialSentence.replace(QRegularExpression(":username"), QString::fromStdString(this->user->getUserName()));
     this->refresh(); //initial invocation
 }
 void HomePane::refresh(){
@@ -15,6 +17,13 @@ void HomePane::refresh(){
     this->hbox = new QHBoxLayout(this);
     this->vbox1 = new QVBoxLayout(this);
     this->vbox2 = new QVBoxLayout(this);
+
+    QLabel* welcomeLabel = new QLabel(this->initialSentence);
+    QFont font = welcomeLabel->font();
+    const int WELCOME_FONT_SIZE = 14;
+    font.setPointSize(WELCOME_FONT_SIZE);
+    welcomeLabel->setFont(font);
+    this->vbox1->addWidget(welcomeLabel);
 
     MainController mc;
 
@@ -36,7 +45,7 @@ void HomePane::refresh(){
     const int RATIO_LABEL_FONT_SİZE = 18;
 
     QLabel* settledDebtsRatioLabel = new QLabel("Settled Debts Ratio", this);
-    QFont font = settledDebtsRatioLabel->font();
+    font = settledDebtsRatioLabel->font();
     font.setPointSize(RATIO_LABEL_FONT_SİZE);
     settledDebtsRatioLabel->setFont(font);
     settledDebtsRatioLabel->setStyleSheet("color: rgb(255, 140, 0)");
@@ -143,3 +152,53 @@ void HomePane::refresh(){
     this->setLayout(this->hbox);
 
 }
+const vector<string> HomePane::MOTIVATION_SENTENCES = {
+    "Invest in yourself, :username. It's the best investment you can make.",
+    "Start saving today, :username. Your future self will thank you.",
+    "Take control of your finances, :username. Don't let them control you.",
+    "Live below your means, :username. It's the key to financial freedom.",
+    "Make budgeting a habit, :username. It's the foundation of financial success.",
+    "Don't wait to invest, :username. Time in the market beats timing the market.",
+    "Compound interest is your friend, :username. Start early and watch it grow.",
+    "Avoid debt whenever possible, :username. It's a roadblock to financial independence.",
+    "Set clear financial goals, :username. They'll keep you focused and motivated.",
+    "Learn to differentiate between wants and needs, :username. It's essential for financial well-being.",
+    "Automate your savings, :username. Make it effortless to build your nest egg.",
+    "Diversify your investments, :username. Don't put all your eggs in one basket.",
+    "Educate yourself about money, :username. Financial literacy is the key to success.",
+    "Track your spending, :username. It's the first step to financial awareness.",
+    "Plan for the unexpected, :username. An emergency fund is your safety net.",
+    "Don't chase after get-rich-quick schemes, :username. Slow and steady wins the race.",
+    "Invest in experiences, not things, :username. Memories last a lifetime.",
+    "Be patient with your investments, :username. Rome wasn't built in a day.",
+    "Review your financial plan regularly, :username. Adapt it as your circumstances change.",
+    "Learn from your financial mistakes, :username. They're valuable lessons in disguise.",
+    "Teach your children about money, :username. It's one of the greatest gifts you can give.",
+    "Celebrate your financial milestones, :username. They're proof of your progress.",
+    "Don't compare your financial journey to others, :username. Focus on your own path.",
+    "Be mindful of lifestyle inflation, :username. It can derail your financial goals.",
+    "Take calculated risks, :username. They're necessary for growth and innovation.",
+    "Invest in assets that generate passive income, :username. Let your money work for you.",
+    "Stay disciplined during market downturns, :username. Keep your long-term goals in mind.",
+    "Don't neglect your retirement savings, :username. Your future self deserves security.",
+    "Don't be afraid to ask for financial advice, :username. Seek wisdom from those who've walked the path.",
+    "Build multiple streams of income, :username. Diversification is key to financial resilience.",
+    "Invest in your health, :username. Medical expenses can derail even the best financial plans.",
+    "Stay informed about financial news, :username. Knowledge is power in the world of finance.",
+    "Invest in assets with intrinsic value, :username. They'll withstand the test of time.",
+    "Embrace frugality, :username. Small sacrifices today lead to big rewards tomorrow.",
+    "Don't let fear dictate your financial decisions, :username. Rationality is your greatest ally.",
+    "Negotiate for better deals, :username. It's your money; make it work harder for you.",
+    "Seek out mentors in the financial world, :username. Learn from those who've achieved what you aspire to.",
+    "Invest in yourself, :username. Continuous learning and self-improvement pay the highest dividends.",
+    "Don't let setbacks discourage you, :username. Every obstacle is an opportunity for growth.",
+    "Be proactive about your finances, :username. Don't wait for problems to arise before taking action.",
+    "Learn to say no to unnecessary expenses, :username. Delayed gratification leads to lasting fulfillment.",
+    "Give back to your community, :username. Generosity is a cornerstone of true wealth.",
+    "Be mindful of taxes, :username. They can eat away at your returns if you're not careful.",
+    "Protect your assets with insurance, :username. It's a safety net for life's uncertainties.",
+    "Invest in renewable energy, :username. It's not just good for the planet; it's good for your portfolio.",
+    "Plan for the long term, :username. Financial success is a marathon, not a sprint.",
+    "Stay disciplined in good times and bad, :username. Consistency is the hallmark of true wealth.",
+    "Invest in quality over quantity, :username. It pays off in the long run.",
+    "Take calculated risks, :username. They're the engine of progress and innovation."};

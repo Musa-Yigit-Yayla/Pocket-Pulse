@@ -53,7 +53,7 @@ void ProgressCircle::paintEvent(QPaintEvent* event) {
         if(fillRatio >= 2 / 3.0){
             //ADJUST HERE
             painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, (180 + sideAngle) * 16);
-            painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, (0 - spareAngle) * 16);
+            painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, 180 * (fillRatio - 2 / 3.0) * -16);
         }
         else{
             //painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0 + (1 - fillRatio) * 180 * 16, (180 + sideAngle) * 16);
