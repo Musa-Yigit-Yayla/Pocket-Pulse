@@ -18,8 +18,10 @@ private:
 public:
     ProgressRectangle(const int width, const int height, double fillRatio, QWidget* parent = nullptr);
     void redraw(double fillRatio);
-    static QColor getFillRatioRGB(double fillRatio);
     void paintEvent(QPaintEvent* event) override;
+    static QColor getFillRatioRGB(double fillRatio);
+    static QColor getFillRatioRGB2(double fillRatio);
+
 };
 
 #endif // PROGRESSRECTANGLE_H

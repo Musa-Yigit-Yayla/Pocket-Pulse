@@ -44,11 +44,14 @@ void ProgressCircle::paintEvent(QPaintEvent* event) {
 
         double fillRatio = ((double)(this->filledAmount)) / (this->totalAmount);
         const int secondaryAngle = fillRatio * 3.0 / 2 * 240 * 16;
-        QColor color = ProgressRectangle::getFillRatioRGB(fillRatio);
+        QColor color = ProgressRectangle::getFillRatioRGB2(fillRatio);
         qDebug() << "Debug: color retrieved in progresscircle is rgb " << color.toRgb();
+        pen.setColor(color);
         painter.setPen(pen);
-        painter.setBrush(color);
+
+        painter.setBrush(QColor::fromRgb(255, 0, 0));
         if(fillRatio >= 2 / 3.0){
+            //ADJUST HERE
             painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, (180 + sideAngle) * 16);
             painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, (0 - spareAngle) * 16);
         }

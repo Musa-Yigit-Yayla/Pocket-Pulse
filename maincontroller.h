@@ -61,6 +61,7 @@ public:
     bool markDebtAsPaid(int debtId);
     bool registerFinancialGoal(string username, string explanation, string dateOfCreation);
     unordered_map<int, string> retrieveFinancialGoals(string username, bool reached);
+    vector<vector<QVariant>> getFullFinancialGoals(string username);
     bool markFinancialGoalDone(int goalID);
     vector<int> getMaxExpenseGoalSpan(string username); //returns the minimum and maximum dates (month, year) in a 1d vector
     vector<int> getDebtStatusRatio(string username);

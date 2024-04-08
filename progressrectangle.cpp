@@ -42,6 +42,25 @@ QColor ProgressRectangle::getFillRatioRGB(double fillRatio){
     int g = 255 - r;
     int b = 20;
 
+    qDebug() << "ProgressRectangle::getFillRatioRGB yields rgb values respectively (" << r << ", " << g << ", " << b << ")";
+    QColor color(r, g, b);
+    return color;
+}
+//Compared to the initial method this one returns green color when closer to full and red when near empty
+QColor ProgressRectangle::getFillRatioRGB2(double fillRatio){
+    if(fillRatio < 0){
+        fillRatio = 0.0;
+    }
+    else if(fillRatio > 1){
+        fillRatio = 1.0;
+    }
+
+    //set blue value to 0
+    int g = 255 * fillRatio;
+    int r = 255 - g;
+    int b = 20;
+
+    qDebug() << "ProgressRectangle::getFillRatioRGB2 yields rgb values respectively (" << r << ", " << g << ", " << b << ")";
     QColor color(r, g, b);
     return color;
 }

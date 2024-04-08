@@ -7,6 +7,9 @@
 #include <QScrollArea>
 #include <QLabel>
 #include <string>
+#include <vector>
+#include <unordered_map>
+#include <QVariant>
 
 using namespace std;
 
@@ -21,6 +24,8 @@ private:
     QHBoxLayout* hbox = nullptr;
     QVBoxLayout* vbox1 = nullptr;
     QVBoxLayout* vbox2 = nullptr;
+    QScrollArea* debtSA = nullptr;
+    QScrollArea* goalSA = nullptr;
 
 public:
     HomePane(User* user, QWidget* parent = nullptr);

@@ -558,6 +558,25 @@ vector<vector<int>> MainController::getMonthsWithExpenseGoals(string username){
     }
     return result;
 }
+//Returns each and every attribute of each financial goals of the specified user with the given name
+vector<vector<QVariant>> MainController::getFullFinancialGoals(string username){
+    vector<vector<QVariant>> result;
+    int userID = this->getUserId(username);
+    QSqlQuery sq(this->db);
+    sq.prepare(QString::fromStdString("SELECT * FROM " + FINANCIAL_GOALS_TABLE_NAME + " WHERE userID = :userID;"));
+    sq.bindValue(":userID", userID);
+    if(sq.exec()){
+        int columnCount = 5;
+        while(sq.next()){
+            vector<QVariant> currRow;
+            for(int i = 0; i < columnCount; i++){
+                currRow.push_back(sq.value(i));
+            }
+            result.push_back(currRow);
+        }
+    }
+    return result;
+}
 //returns {m1, y1, m2, y2} where m1, y1 represents the oldest date and m2, y2 is the most recent for the expense goals table
 vector<int> MainController::getMaxExpenseGoalSpan(string username){
     vector<int> result;
