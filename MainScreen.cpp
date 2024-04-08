@@ -186,7 +186,7 @@ void MainScreen::setAnimatedLabel(){
     //set the animated label properties and initialize the animation
 }
 void MainScreen::setGenericPanes(){
-    this->homePane = new HomePane(this->user, this->wrapper);
+
     this->bankPane = new BankPane(this->user, this->wrapper);
     this->expensePane = new ExpensePane(this->user, this->wrapper);
     this->contactsPane = new ContactsPane(this->user, this->wrapper);
@@ -194,8 +194,8 @@ void MainScreen::setGenericPanes(){
     this->debtPane = new DebtPane(this->user, this->wrapper);
     this->fingoalPane = new FingoalPane(this->user, this->wrapper);
     this->reportPane = new ReportPane(this->user, this->wrapper);
+    this->homePane = new HomePane(this->user, this->wrapper);
 
-    this->homePane->setVisible(false);
     this->bankPane->setVisible(false);
     this->expensePane->setVisible(false); //modify the visibility later on
     this->contactsPane->setVisible(false);
@@ -203,6 +203,7 @@ void MainScreen::setGenericPanes(){
     this->debtPane->setVisible(false);
     this->fingoalPane->setVisible(false);
     this->reportPane->setVisible(false);
+    this->homePane->setVisible(false);
 }
 void MainScreen::show(){
     if(this->wrapper->isHidden()){

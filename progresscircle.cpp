@@ -39,12 +39,15 @@ void ProgressCircle::paintEvent(QPaintEvent* event) {
 
         const QPen& defaultPen = painter.pen();
 
+        const int MARGIN_V = 10;
+        const int MARGIN_H = 10;
+
         double fillRatio = ((double)(this->filledAmount)) / (this->totalAmount);
         QColor color = ProgressRectangle::getFillRatioRGB(fillRatio);
         painter.setPen(pen);
         painter.setBrush(color);
-        painter.drawArc(0, 0, this->width(), this->height(), 0, 180 + sideAngle);
-        painter.drawArc(0, 0, this->width(), this->height(), 0, 0 - spareAngle);
+        painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, (180 + sideAngle) * 16);
+        painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, (0 - spareAngle) * 16);
 
         //draw the correlated text in the middle
         painter.setPen(defaultPen);

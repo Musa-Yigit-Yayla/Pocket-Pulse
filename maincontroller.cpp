@@ -590,8 +590,9 @@ vector<int> MainController::getDebtStatusRatio(string username){
     QSqlQuery sq(this->db);
 
     vector<int> result;
-    sq.prepare(QString::fromStdString("SELECT COUNT(t1.id) FROM " + USER_DEBTS_TABLE_NAME + " AS t1," +
+    sq.prepare(QString::fromStdString("SELECT COUNT(t1.id) FROM " + USER_DEBTS_TABLE_NAME + " AS t1" +
                                       " WHERE t1.username = :username AND t1.paid_status = 1;"));
+    sq.bindValue(":username", QString::fromStdString(username));
     if(sq.exec() && sq.next()){
         result.push_back(sq.value(0).toInt());
     }
@@ -599,6 +600,7 @@ vector<int> MainController::getDebtStatusRatio(string username){
         result.push_back(0);
     }
     sq.prepare(QString::fromStdString("SELECT COUNT(id) FROM " + USER_DEBTS_TABLE_NAME + " WHERE username = :username;"));
+    sq.bindValue(":username", QString::fromStdString(username));
     if(sq.exec() && sq.next()){
         result.push_back(sq.value(0).toInt());
     }
