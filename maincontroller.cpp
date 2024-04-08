@@ -617,7 +617,7 @@ vector<int> MainController::getFinancialGoalsStatusRatio(string username){
     int userID = this->getUserId(username);
     vector<int> result;
     sq.prepare(QString::fromStdString("SELECT COUNT(userID) FROM " + FINANCIAL_GOALS_TABLE_NAME + " WHERE userID = :userID AND status = 1;"));
-    sq.bindValue("userID", userID);
+    sq.bindValue(":userID", userID);
 
     if(sq.exec() && sq.next()){
         result.push_back(sq.value(0).toInt());
@@ -627,7 +627,7 @@ vector<int> MainController::getFinancialGoalsStatusRatio(string username){
     }
 
     sq.prepare(QString::fromStdString("SELECT COUNT(userID) FROM " + FINANCIAL_GOALS_TABLE_NAME + " WHERE userID = :userID;"));
-    sq.bindValue("userID", userID);
+    sq.bindValue(":userID", userID);
 
     if(sq.exec() && sq.next()){
         result.push_back(sq.value(0).toInt());

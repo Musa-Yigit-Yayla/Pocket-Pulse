@@ -6,6 +6,8 @@ HomePane::HomePane(User* user, QWidget* parent): AbstractPane{user, parent}{
 void HomePane::refresh(){
     if(this->hbox != NULL){ //everything is instantiated
         //deallocate the datafields
+        delete this->goalsCircle;
+        delete this->debtCircle;
         delete this->hbox;
     }
     this->hbox = new QHBoxLayout(this);
@@ -29,7 +31,11 @@ void HomePane::refresh(){
     this->goalsCircle = new ProgressCircle(filledAmount, totalAmount, this);
 
     //REORGANIZE AND ADJUST THE LAYOUT MANAGEMENT LATER ON
-    this->vbox1->addWidget(this->goalsCircle);
+    QHBoxLayout* hboxCircleWrapper = new QHBoxLayout(this);
+    hboxCircleWrapper->addWidget(this->goalsCircle);
+    hboxCircleWrapper->addWidget(this->debtCircle);
+    this->vbox1->addLayout(hboxCircleWrapper);
+
 
     this->hbox->addLayout(this->vbox1);
     this->hbox->addLayout(this->vbox2);

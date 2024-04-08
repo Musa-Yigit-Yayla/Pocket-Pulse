@@ -43,11 +43,22 @@ void ProgressCircle::paintEvent(QPaintEvent* event) {
         const int MARGIN_H = 10;
 
         double fillRatio = ((double)(this->filledAmount)) / (this->totalAmount);
+        const int secondaryAngle = fillRatio * 3.0 / 2 * 240 * 16;
         QColor color = ProgressRectangle::getFillRatioRGB(fillRatio);
+        qDebug() << "Debug: color retrieved in progresscircle is rgb " << color.toRgb();
         painter.setPen(pen);
         painter.setBrush(color);
-        painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, (180 + sideAngle) * 16);
-        painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, (0 - spareAngle) * 16);
+        if(fillRatio >= 2 / 3.0){
+            painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, (180 + sideAngle) * 16);
+            painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0, (0 - spareAngle) * 16);
+        }
+        else{
+            //painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0 + (1 - fillRatio) * 180 * 16, (180 + sideAngle) * 16);
+            //painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, 0 + (fillRatio) * FULL_ANGLE * 16, 2 * sideAngle * 16);
+            int startAngle = 2 * (spareAngle + sideAngle) * 16;
+            painter.drawArc(MARGIN_H, MARGIN_V, this->width() - MARGIN_H, this->height() - MARGIN_V, startAngle, -1 * secondaryAngle);
+        }
+
 
         //draw the correlated text in the middle
         painter.setPen(defaultPen);
