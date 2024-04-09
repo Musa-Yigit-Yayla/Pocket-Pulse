@@ -278,9 +278,60 @@ inline void MainScreen::removeCurrGenericPane(){
 }
 void MainScreen::logoutHandler(){
     cout << "Debug: logoutHandler has been invoked" << endl;
+    QMessageBox messageBox;
+    messageBox.setInformativeText(QString::fromStdString(this->user->getUserName() + ", are you sure to log out ?"));
+    messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    messageBox.setDefaultButton(QMessageBox::Yes);
+    int choice = messageBox.exec();
+
+    if(choice == QMessageBox::Yes){
+        this->close(); //logout
+    }
 }
 void MainScreen::editProfileHandler(){
+    //show a small widget which has two textfields for resetting the user's password
+    QWidget* popupWidget = new QWidget();
+    popupWidget->setFixedSize(300, 400);
+    QGridLayout* passGrid = new QGridLayout(popupWidget);
+    QLabel* passLabel1 = new QLabel("Password:", popupWidget);
+    QLabel* passLabel2 = new QLabel("Password again:", popupWidget);
+    QLineEdit* pass1 = new QLineEdit(popupWidget);
+    QLineEdit* pass2 = new QLineEdit(popupWidget);
+    QLabel* errLabel = new QLabel(popupWidget);
+    QPushButton* btResetPass = new QPushButton("reset", popupWidget);
+    errLabel->setVisible(false);
 
+    passGrid->addWidget(passLabel1, 0, 0);
+    passGrid->addWidget(pass1, 1, 0);
+    passGrid->addWidget(passLabel2, 2, 0);
+    passGrid->addWidget(pass2, 3, 0);
+    passGrid->addWidget(errLabel, 4, 1);
+    passGrid->addWidget(btResetPass, 5, 1);
+    popupWidget->setLayout(passGrid);
+
+    QObject::connect(btResetPass, &QPushButton::clicked, [this, pass1, pass2, errLabel](){
+        QString text1 = pass1->text();
+        QString text2 = pass2->text();
+        if(text1 == "" || text2 == ""){
+            errLabel->setText("Fields cannot be empty!");
+            errLabel->setStyleSheet("color: rgb(255, 0, 0)");
+        }
+        else if(text1 != text2){
+            errLabel->setText("Given passwords do not match");
+            errLabel->setStyleSheet("color: rgb(255, 0, 0)");
+        }
+        else{
+            //update the password
+            MainController mc;
+            bool updated = mc.updatePassword(this->user->getUserName(), text1.toStdString());
+            if(updated){
+                errLabel->setText("Password has been updated");
+                errLabel->setStyleSheet("color: rgb(0, 255, 0);");
+            }
+        }
+        errLabel->setVisible(true);
+    });
+    popupWidget->show();
 }
 const string MainScreen::ICONS_FOLDER_PATH = "C:\\Users\\yigit\\Desktop\\Qt_Container\\QT_PROJECTS\\Pocket-Pulse\\icons";
 const QColor MainScreen::USER_PP_CHAR_COLOR = QColor(249, 166, 2);

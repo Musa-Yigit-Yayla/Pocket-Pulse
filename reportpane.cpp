@@ -148,7 +148,7 @@ void ReportPane::initIncomeExpenseDebtPane(){
     minYear = min(yearMinExpense, yearMinTransaction);
     maxMonth = max(monthMaxExpense, monthMaxTransaction);
     maxYear = max(yearMaxExpense, yearMaxTransaction);
-    if(minMonth != INT_MAX){ //checking only one condition guarantees the existence of others
+    if(minMonth != INT_MAX && minMonth != 0){ //checking only one condition guarantees the existence of others
         //add each and every month from min month and year to max month and year for simplicity even if no entry is found, into the combobox
         int currMonth = minMonth, currYear = minYear;
         while(currYear < maxYear || (currYear == maxYear && currMonth <= maxMonth)){

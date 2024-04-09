@@ -32,6 +32,7 @@
 #include <QColor>
 #include <QPainter>
 #include <QPaintDevice>
+#include <QMessageBox>
 
 using namespace std;
 class MainScreen: public QVBoxLayout{
