@@ -8,7 +8,7 @@
 1-) Fork the repository, open the application folder in Qt creator.
 
 2-) Check your Qt version. Pocket-Pulse is expected to work with Qt 6. 
-    The version used for development is 6.5.2
+    The Qt version used for development is 6.5.2, and Qt Creator 11.0.2 is used.
     
 3-) Configure SQLite if you don't have it in your local machine (Qt configures it during installation generally).
 
