@@ -7,6 +7,7 @@
 #include <string>
 #include <QList>
 #include <iostream>
+#include <QCoreApplication>
 
 using namespace std;
 
@@ -302,7 +303,8 @@ void MainScreen::logoutHandler(){
     int choice = messageBox.exec();
 
     if(choice == QMessageBox::Yes){
-        this->close(); //logout
+        this->close();
+        QCoreApplication::quit();//logout
     }
 }
 void MainScreen::editProfileHandler(){
