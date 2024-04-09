@@ -20,6 +20,9 @@ MainScreen::MainScreen(User* registeredUser){
     //ToDo layout management
     this->setLayoutManagement();
     this->setGenericPanes();
+
+    //set the homepane as the initial selected abstract pane
+    this->toolHomeSlot();
 }
 //invoke when login is successfully performed
 MainScreen::MainScreen(string username){
@@ -226,6 +229,7 @@ void MainScreen::toolHomeSlot(){
     this->removeCurrGenericPane();
     this->homePane->setVisible(true);
     this->hbox2->addWidget(this->homePane);
+    this->btHome->setStyleSheet("QToolButton { border: 2px solid green; }");
     //additionally refresh the homepane to fetch the latest data for progress circles and other panes
     this->homePane->refresh();
 }
@@ -233,36 +237,43 @@ void MainScreen::toolExpenseSlot(){
     this->removeCurrGenericPane();
     this->expensePane->setVisible(true);
     this->hbox2->addWidget(this->expensePane);
+    this->toolButtons.at(0)->setStyleSheet("QToolButton { border: 2px solid green; }");
 }
 void MainScreen::toolIncomeSlot(){
     this->removeCurrGenericPane();
     this->incomePane->setVisible(true);
     this->hbox2->addWidget(this->incomePane);
+    this->toolButtons.at(1)->setStyleSheet("QToolButton { border: 2px solid green; }");
 }
 void MainScreen::toolFinGoalSlot(){
     this->removeCurrGenericPane();
     this->fingoalPane->setVisible(true);
     this->hbox2->addWidget(this->fingoalPane);
+    this->toolButtons.at(2)->setStyleSheet("QToolButton { border: 2px solid green; }");
 }
 void MainScreen::toolDebtManagerSlot(){
     this->removeCurrGenericPane();
     this->debtPane->setVisible(true);
     this->hbox2->addWidget(this->debtPane);
+    this->toolButtons.at(3)->setStyleSheet("QToolButton { border: 2px solid green; }");
 }
 void MainScreen::toolVisualReportSlot(){
     this->removeCurrGenericPane();
     this->reportPane->setVisible(true);
     this->hbox2->addWidget(this->reportPane);
+    this->toolButtons.at(4)->setStyleSheet("QToolButton { border: 2px solid green; }");
 }
 void MainScreen::toolBankAccSlot(){
     this->removeCurrGenericPane();
     this->bankPane->setVisible(true);
     this->hbox2->addWidget(this->bankPane);
+    this->toolButtons.at(5)->setStyleSheet("QToolButton { border: 2px solid green; }");
 }
 void MainScreen::toolAddContactSlot(){
     this->removeCurrGenericPane();
     this->contactsPane->setVisible(true);
     this->hbox2->addWidget(this->contactsPane);
+    this->toolButtons.at(6)->setStyleSheet("QToolButton { border: 2px solid green; }");
 }
 inline void MainScreen::removeCurrGenericPane(){
     //QList<QObject*> children = this->hbox2->children();
@@ -273,8 +284,14 @@ inline void MainScreen::removeCurrGenericPane(){
         QWidget* childWidget = childItem->widget();
         if(childWidget != NULL){
             childWidget->setVisible(false);
+            childWidget->setStyleSheet("");
         }
     }
+    //clear out the style from toolbuttons
+    for(QToolButton* bt: this->toolButtons){
+        bt->setStyleSheet("");
+    }
+    this->btHome->setStyleSheet("");
 }
 void MainScreen::logoutHandler(){
     cout << "Debug: logoutHandler has been invoked" << endl;

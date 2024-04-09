@@ -403,7 +403,7 @@ vector<int> BankingController::getMaxTransactionsDateSpan(const string username)
     if(sq.next()){
         QString queryResult = sq.value(0).toString();
         QStringList dateSegments = queryResult.split("/");
-        if(dateSegments.size() > 0){
+        if(dateSegments.size() == 3){
             //we are guaranteed to have 3 elements in string list
             result.push_back(dateSegments.at(0).toInt());
             result.push_back(dateSegments.at(2).toInt());
@@ -420,7 +420,7 @@ vector<int> BankingController::getMaxTransactionsDateSpan(const string username)
     if(sq.next()){
         QString queryResult = sq.value(0).toString();
         QStringList dateSegments = queryResult.split("/");
-        if(dateSegments.size() > 0){
+        if(dateSegments.size() == 3){
             //we are guaranteed to have 3 elements in string list
             result.push_back(dateSegments.at(0).toInt());
             result.push_back(dateSegments.at(2).toInt());

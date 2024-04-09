@@ -192,20 +192,21 @@ void ReportPane::initMonthPieChartPane(){
     BankingController bc;
     vector<QString> spenditureMonths = bc.getSpenditureMonths(this->user->getUserName()); //returned values are in the form of month-year, hence convert it to the string form
 
-    //first sort the spenditureMonths using bubble sort
-    for(int i = 0; i < spenditureMonths.size() - 1; i++){
-        for(int j = 0; j < spenditureMonths.size() - i - 1; j++){
-            QString currStr = spenditureMonths.at(j);
-            QString nextStr = spenditureMonths.at(j + 1);
-            int currVal = currStr.split("-").at(0).toInt() + 12 * currStr.split("-").at(1).toInt();
-            int nextVal = nextStr.split("-").at(0).toInt() + 12 * nextStr.split("-").at(1).toInt();
+    if(spenditureMonths.size() > 0){
+        //first sort the spenditureMonths using bubble sort
+        for(int i = 0; i < spenditureMonths.size() - 1; i++){
+            for(int j = 0; j < spenditureMonths.size() - i - 1; j++){
+                QString currStr = spenditureMonths.at(j);
+                QString nextStr = spenditureMonths.at(j + 1);
+                int currVal = currStr.split("-").at(0).toInt() + 12 * currStr.split("-").at(1).toInt();
+                int nextVal = nextStr.split("-").at(0).toInt() + 12 * nextStr.split("-").at(1).toInt();
 
-            if(currVal > nextVal){
-                swap(spenditureMonths.at(j), spenditureMonths.at(j + 1));
+                if(currVal > nextVal){
+                    swap(spenditureMonths.at(j), spenditureMonths.at(j + 1));
+                }
             }
         }
     }
-
     //then swap the elements to obtain descending order of dates
     for(int i = 0; i < spenditureMonths.size() / 2; i++){
         swap(spenditureMonths.at(i), spenditureMonths.at(spenditureMonths.size() - i - 1));
